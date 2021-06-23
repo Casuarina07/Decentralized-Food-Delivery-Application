@@ -12,12 +12,12 @@ line-height: 1.4em;
 }
 `;
 
-function Sell() {
+function Profile({ account }) {
     return (
       <StyledDiv className="container-fluid mt-5">
-        <h1 style={{ color: '#000' }}>Sell Product</h1>
+        <h1 style={{ color: '#000' }}>{ account }</h1>
       </StyledDiv>
     );
 }
 
-export default Sell;
+export default Profile;

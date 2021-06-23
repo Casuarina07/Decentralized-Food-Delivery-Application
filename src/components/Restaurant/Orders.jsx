@@ -12,15 +12,12 @@ line-height: 1.4em;
 }
 `;
 
-class Orders extends Component {
-
-  render() {
+function Orders() {
     return (
       <StyledDiv className="container-fluid mt-5">
         <h1 style={{ color: '#000' }}>Orders Placed</h1>
       </StyledDiv>
     );
-  }
 }
 
 export default Orders;
