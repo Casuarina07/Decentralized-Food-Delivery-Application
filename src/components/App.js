@@ -3,8 +3,22 @@ import logo from '../logo.png';
 import './App.css';
 import Web3 from 'web3';
 import Marketplace from '../abis/Marketplace.json';
-import Navbar from './Navbar';
+import SupplierNav from './Supplier/Navbar';
+import RestNav from './Restaurant/Navbar';
 import Main from './Main';
+import styled from 'styled-components';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
+const StyledDiv = styled.div`
+width: 960px;
+position: relative;
+margin:0 auto;
+line-height: 1.4em;
+
+@media only screen and (max-width: 479px){
+  #container2 { width: 20%; }
+}
+`;
 
 class App extends Component {
 
@@ -47,6 +61,7 @@ class App extends Component {
           products: [...this.state.products, product]
         })
       }
+      console.log("Account Number: " + this.state.account)
       this.setState({ loading: false })
     }
     else {
@@ -85,10 +100,13 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Navbar account={this.state.account}/>
-        <div className="container-fluid mt-5">
+         <Router>
+            {this.state.account == '0x09Df3eb010bF64141C020b2f98d521916dF2F9a8'? <SupplierNav account={this.state.account}/>: null }
+            {this.state.account == '0x73c005D4B234C63F416F6e1038C011D55edDBF1e'? <RestNav account={this.state.account}/>: null }
+         </Router>
+        <StyledDiv className="container-fluid mt-5">
           <div className="row">
-            <main role="main" className="col-lg-12 d-flex">
+            <main role="main" className="col-lg-12 d-flex mt-2">
               { this.state.loading 
                 ? <div id="loader" className="text-center"> <p className="text-center">Loading...</p></div>
                 : <Main 
@@ -98,7 +116,7 @@ class App extends Component {
               }
             </main>
           </div>
-        </div>
+        </StyledDiv>
       </div>
     );
   }
