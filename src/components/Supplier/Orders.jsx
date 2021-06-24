@@ -1,26 +1,12 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import './Supp.css';
 
-const StyledDiv = styled.div`
-width: 960px;
-position: relative;
-margin:0 auto;
-line-height: 1.4em;
-
-@media only screen and (max-width: 479px){
-  #container2 { width: 20%; }
-}
-`;
-
-class Orders extends Component {
-
-  render() {
+function Orders() {
     return (
-      <StyledDiv className="container-fluid mt-5">
-        <h1 style={{ color: '#000' }}>Orders Made</h1>
-      </StyledDiv>
+      <div>
+          <h1 className="header">Orders Placed</h1>
+      </div>
     );
-  }
 }
 
 export default Orders;

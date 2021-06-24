@@ -3,7 +3,7 @@ import logo from '../logo.png';
 import './App.css';
 import Web3 from 'web3';
 import Marketplace from '../abis/Marketplace.json';
-import SupplierNav from './Supplier/Navbar';
+import SuppNav from './Supplier/SuppNavbar';
 import Main from './Main';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
@@ -101,7 +101,7 @@ class App extends Component {
     return (
       <div>
          <Router>
-            {this.state.account == '0x09Df3eb010bF64141C020b2f98d521916dF2F9a8'? <SupplierNav account={this.state.account}/>: null }
+            {this.state.account == '0x09Df3eb010bF64141C020b2f98d521916dF2F9a8'? <SuppNav account={this.state.account}/>: null }
             {this.state.account == '0x73c005D4B234C63F416F6e1038C011D55edDBF1e'? <RestNavbar account={this.state.account}/>: null }
          </Router>
       </div>

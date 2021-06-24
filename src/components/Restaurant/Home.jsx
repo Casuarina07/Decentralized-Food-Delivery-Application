@@ -4,7 +4,7 @@ import './Rest.css';
 function Home() {
     return (
       <div> 
-          <h1 className="header">Home</h1>
+          <h1 className="header">Restaurant's Home</h1>
       </div>
     );
 }
