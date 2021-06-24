@@ -1,112 +1,105 @@
-import React, { Component } from 'react';
-import logo from '../logo.png';
-import './App.css';
-import Web3 from 'web3';
-import Marketplace from '../abis/Marketplace.json';
-import SuppNav from './Supplier/SuppNavbar';
-import Main from './Main';
-import styled from 'styled-components';
+import React, { useState, useEffect, useCallback } from "react";
+import "./App.css";
+import Web3 from "web3";
+import Marketplace from "../abis/Marketplace.json";
+import SuppNav from "./Supplier/SuppNavbar";
+import Main from "./Main";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import RestNavbar from './Restaurant/RestNavbar';
+import RestNavbar from "./Restaurant/RestNavbar";
 
-const StyledDiv = styled.div`
-width: 960px;
-position: relative;
-margin:0 auto;
-line-height: 1.4em;
+export default function App() {
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [account, setAccount] = useState("");
+  const [productCount, setProductCount] = useState(0);
+  const [marketplace, setMarketPlace] = useState({});
 
-@media only screen and (max-width: 479px){
-  #container2 { width: 20%; }
-}
-`;
+  useEffect(() => {
+    loadWeb3();
+    loadBlockchainData();
+  }, []);
 
-class App extends Component {
-
-  async componentWillMount() {
-    await this.loadWeb3()
-    await this.loadBlockchainData()
-  }
-  
-  async loadWeb3() {
+  async function loadWeb3() {
     if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum)
-      await window.ethereum.enable()
-    }
-    else if (window.web3) {
-      window.web3 = new Web3(window.web3.currentProvider)
-    }
-    else {
-      window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+      window.web3 = new Web3(window.ethereum);
+      await window.ethereum.enable();
+    } else if (window.web3) {
+      window.web3 = new Web3(window.web3.currentProvider);
+    } else {
+      window.alert(
+        "Non-Ethereum browser detected. You should consider trying MetaMask!"
+      );
     }
   }
 
-  async loadBlockchainData() {
-    const web3 = window.web3
+  async function loadBlockchainData() {
+    const web3 = window.web3;
     //Load account
-    const accounts = await web3.eth.getAccounts()
-    this.setState({ account: accounts[0] })
-    const networkId = await web3.eth.net.getId()    //5777
-    const networkData = Marketplace.networks[networkId]
-    if(networkData) {
-      const marketplace = new web3.eth.Contract(Marketplace.abi, networkData.address)
-      this.setState({ marketplace: marketplace })
+    const accounts = await web3.eth.getAccounts();
+    setAccount(accounts[0]);
+    const networkId = await web3.eth.net.getId(); //5777
+    const networkData = Marketplace.networks[networkId];
+    if (networkData) {
+      const marketplace = new web3.eth.Contract(
+        Marketplace.abi,
+        networkData.address
+      );
+      setMarketPlace(marketplace);
       //console log the number of products
-      const productCount = await marketplace.methods.productCount().call()
-      this.setState({ productCount: productCount })
-      console.log("Number of products: " + productCount)
+      const productCount = await marketplace.methods.productCount().call();
+      setProductCount(productCount);
+      console.log("Number of products: " + productCount);
       //fetch each product from the blockchain
       for (var i = 1; i <= productCount; i++) {
-        const product = await marketplace.methods.products(i).call()
-        this.setState({
-          products: [...this.state.products, product]
-        })
+        const product = await marketplace.methods.products(i).call();
+        setProducts((products) => [...products, product]);
       }
-      console.log("Account Number: " + this.state.account)
-      this.setState({ loading: false })
+      console.log("Account Number: " + account.toString());
+      setLoading(false);
+      console.log("Product: " + products);
+      console.log("Loading: " + loading.toString());
+    } else {
+      window.alert("Marketplace contract not deployed to detected network.");
     }
-    else {
-      window.alert('Marketplace contract not deployed to detected network.')
-    }    
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      account: '',
-      productCount: 0,
-      products: [],
-      loading: true
-    }
-    this.createProduct = this.createProduct.bind(this)
-    this.purchaseProduct = this.purchaseProduct.bind(this)
-  }
+  const createProduct = (name, price) => {
+    setLoading(true);
+    marketplace.methods
+      .createProduct(name, price)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        setLoading(false);
+      });
+  };
 
-  createProduct(name, price) {
-    this.setState({ loading: true })
-    this.state.marketplace.methods.createProduct(name, price).send({ from: this.state.account })
-    .once('receipt', (receipt) => {
-      this.setState({ loading: false })
-    })
-  }
+  const purchaseProduct = (id, price) => {
+    setLoading(true);
+    marketplace.methods
+      .purchaseProduct(id)
+      .send({ from: account, value: price })
+      .once("receipt", (receipt) => {
+        setLoading(false);
+      });
+  };
 
-  purchaseProduct(id, price) {
-    this.setState({ loading: true })
-    this.state.marketplace.methods.purchaseProduct(id).send({ from: this.state.account, value: price })
-    .once('receipt', (receipt) => {
-      this.setState({ loading: false })
-    })
-  }
-
-  render() {
-    return (
-      <div>
-         <Router>
-            {this.state.account == '0x09Df3eb010bF64141C020b2f98d521916dF2F9a8'? <SuppNav account={this.state.account}/>: null }
-            {this.state.account == '0x73c005D4B234C63F416F6e1038C011D55edDBF1e'? <RestNavbar account={this.state.account}/>: null }
-         </Router>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Router>
+        {account == "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8" ? (
+          <SuppNav
+            account={account}
+            loading={loading}
+            products={products}
+            productCount={productCount}
+            createProduct={createProduct}
+            purchaseProduct={purchaseProduct}
+          />
+        ) : null}
+        {account == "0x73c005D4B234C63F416F6e1038C011D55edDBF1e" ? (
+          <RestNavbar account={account} />
+        ) : null}
+      </Router>
+    </div>
+  );
 }
-
-export default App;

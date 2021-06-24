@@ -8,7 +8,7 @@ import ResponsiveNavigation from '../ResponsiveNavigation'
 import logo from '../logo.svg'
 import '../Navbar.css';
 
-function SuppNavbar({ account }) {
+function SuppNavbar({ account, loading, products, productCount, createProduct, purchaseProduct }) {
 	const navLinks = [
 		{
 			text: 'Home',
@@ -37,7 +37,7 @@ function SuppNavbar({ account }) {
 			<ResponsiveNavigation
 				navLinks={ navLinks }
 				logo={ logo }
-        account = { account }
+        		account = { account }
 				// background="#fff"
 				// hoverBackground="#ddd"
 				// linkColor="#777"
@@ -45,8 +45,15 @@ function SuppNavbar({ account }) {
 			<Router>
 				<Home path="/" />
 				<Orders path="/orders" />
-				<Sell path="/sell" />
-        <Profile path="/profile" account={ account } />
+				<Sell path="/sell" 
+					account = { account } 
+					loading = { loading } 
+					products = { products } 
+					productCount = { productCount }
+					createProduct={ createProduct } 
+					purchaseProduct={ purchaseProduct }  
+				/>
+        		<Profile path="/profile" account={ account } />
 			</Router>
 		</div>
 	);

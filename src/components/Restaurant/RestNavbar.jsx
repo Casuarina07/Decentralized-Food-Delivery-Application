@@ -34,7 +34,7 @@ function RestNavbar({ account }) {
         {
 			text: 'Profile',
 			path: '/profile',
-			icon: 'ion-ios-business'
+			icon: 'ion-ios-person'
 		}
 	]
 
