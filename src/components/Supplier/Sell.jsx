@@ -5,7 +5,7 @@ class Sell extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{margin: 60, marginTop: 30}}>
         <h1>Add Product</h1>
         <form onSubmit={(event) => {
           event.preventDefault()
@@ -34,7 +34,7 @@ class Sell extends Component {
           <button type="submit" className="btn btn-primary">Add Product</button>
         </form>
         <p> </p>
-        <h2>Buy Product</h2>
+        <h2>Product List</h2>
         <table className="table">
           <thead>
             <tr>
@@ -53,20 +53,6 @@ class Sell extends Component {
                   <td>{product.name}</td>
                   <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
                   <td>{product.owner}</td>
-                  <td>
-                    { !product.purchased
-                      ? <button
-                          name={product.id}
-                          value={product.price}
-                          onClick={(event) => {
-                            this.props.purchaseProduct(event.target.name, event.target.value)
-                          }}
-                        >
-                          Buy
-                        </button>
-                      : null
-                    }
-                  </td>
                 </tr>
               )
             })}

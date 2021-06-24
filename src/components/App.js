@@ -3,7 +3,6 @@ import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
 import SuppNav from "./Supplier/SuppNavbar";
-import Main from "./Main";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import RestNavbar from "./Restaurant/RestNavbar";
 
@@ -13,6 +12,11 @@ export default function App() {
   const [account, setAccount] = useState("");
   const [productCount, setProductCount] = useState(0);
   const [marketplace, setMarketPlace] = useState({});
+  const [restProducts, setRestProducts] = useState([]);
+
+  //acount details
+  const restPublicKey = "0x73c005D4B234C63F416F6e1038C011D55edDBF1e";
+  const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
 
   useEffect(() => {
     loadWeb3();
@@ -61,6 +65,11 @@ export default function App() {
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
     }
+    products.map((product, key) => {
+      if (product.owner == restPublicKey) {
+        setRestProducts((restProducts) => [...restProducts, product]);
+      }
+    });
   }
 
   const createProduct = (name, price) => {
@@ -86,7 +95,7 @@ export default function App() {
   return (
     <div>
       <Router>
-        {account == "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8" ? (
+        {account == suppPublicKey ? (
           <SuppNav
             account={account}
             loading={loading}
@@ -96,8 +105,15 @@ export default function App() {
             purchaseProduct={purchaseProduct}
           />
         ) : null}
-        {account == "0x73c005D4B234C63F416F6e1038C011D55edDBF1e" ? (
-          <RestNavbar account={account} />
+        {account == restPublicKey ? (
+          <RestNavbar
+            account={account}
+            loading={loading}
+            products={products}
+            productCount={productCount}
+            createProduct={createProduct}
+            purchaseProduct={purchaseProduct}
+          />
         ) : null}
       </Router>
     </div>
