@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from "@reach/router";
 
-function ResponsiveNavigation({ background, hoverBackground, linkColor, navLinks, logo, account }) {
+function ResponsiveNavigation({ background, hoverBackground, linkColor, navLinks, logo }) {
     const [ navOpen, setNavOpen ] = useState(0)
     const [ hoverIndex, setHoverIndex ] = useState(-1)
+
     return (
         <nav
             className="responsive-toolbar"

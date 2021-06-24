@@ -50,7 +50,7 @@ function RestNavbar({ account }) {
 			/>
 			<Router>
 				<Purchase path="/purchase" />
-				<Home path="/home" />
+				<Home path="/" />
 				<Orders path="/orders" />
 				<Sell path="/sell" />
                 <Profile path="/profile" account={ account } />
