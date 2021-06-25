@@ -12,8 +12,10 @@ import "../Navbar.css";
 function RestNavbar({
   account,
   loading,
-  products,
-  productCount,
+  restProducts,
+  restProdCount,
+  suppProducts,
+  suppProdCount,
   createProduct,
   purchaseProduct,
 }) {
@@ -56,15 +58,26 @@ function RestNavbar({
         // linkColor="#777"
       />
       <Router>
-        <Purchase path="/purchase" />
+        <Purchase
+          path="/purchase"
+          account={account}
+          loading={loading}
+          restProducts={restProducts}
+          restProdCount={restProdCount}
+          suppProducts={suppProducts}
+          suppProdCount={suppProdCount}
+          purchaseProduct={purchaseProduct}
+        />
         <Home path="/" />
         <Orders path="/orders" />
         <Sell
           path="/sell"
           account={account}
           loading={loading}
-          products={products}
-          productCount={productCount}
+          restProducts={restProducts}
+          restProdCount={restProdCount}
+          suppProducts={suppProducts}
+          suppProdCount={suppProdCount}
           createProduct={createProduct}
           purchaseProduct={purchaseProduct}
         />

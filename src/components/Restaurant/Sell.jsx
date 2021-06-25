@@ -58,7 +58,7 @@ class Sell extends Component {
             </tr>
           </thead>
           <tbody id="productList">
-            {this.props.products.map((product, key) => {
+            {this.props.restProducts.map((product, key) => {
               return (
                 <tr key={key}>
                   <th scope="row">{product.id.toString()}</th>

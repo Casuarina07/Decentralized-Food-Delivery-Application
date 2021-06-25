@@ -8,11 +8,13 @@ import RestNavbar from "./Restaurant/RestNavbar";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState([]);
   const [account, setAccount] = useState("");
   const [productCount, setProductCount] = useState(0);
   const [marketplace, setMarketPlace] = useState({});
+  const [suppProducts, setSuppProducts] = useState([]);
+  const [suppProdCount, setSuppProdCount] = useState(0);
   const [restProducts, setRestProducts] = useState([]);
+  const [restProdCount, setRestProdCount] = useState(0);
 
   //acount details
   const restPublicKey = "0x73c005D4B234C63F416F6e1038C011D55edDBF1e";
@@ -49,33 +51,47 @@ export default function App() {
         networkData.address
       );
       setMarketPlace(marketplace);
-      //console log the number of products
-      const productCount = await marketplace.methods.productCount().call();
-      setProductCount(productCount);
-      console.log("Number of products: " + productCount);
-      //fetch each product from the blockchain
-      for (var i = 1; i <= productCount; i++) {
-        const product = await marketplace.methods.products(i).call();
-        setProducts((products) => [...products, product]);
+
+      //FETCH SUPPLIER PRODUCTS
+      const suppProdCount = await marketplace.methods.suppProdCount().call();
+      setSuppProdCount(suppProdCount);
+      console.log("Number of products: " + suppProdCount);
+      for (var i = 1; i <= suppProdCount; i++) {
+        const suppProduct = await marketplace.methods.suppProducts(i).call();
+        setSuppProducts((suppProducts) => [...suppProducts, suppProduct]);
       }
       console.log("Account Number: " + account.toString());
-      setLoading(false);
-      console.log("Product: " + products);
+      console.log("Product: " + suppProducts);
       console.log("Loading: " + loading.toString());
+
+      //FETCH RESTAURANT PRODUCTS
+      const restProdCount = await marketplace.methods.restProdCount().call();
+      setRestProdCount(restProdCount);
+      console.log("Rest Products: " + restProdCount);
+      for (var k = 1; k <= restProdCount; k++) {
+        const restProduct = await marketplace.methods.restProducts(k).call();
+        setRestProducts((restProducts) => [...restProducts, restProduct]);
+      }
+      setLoading(false);
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
     }
-    products.map((product, key) => {
-      if (product.owner == restPublicKey) {
-        setRestProducts((restProducts) => [...restProducts, product]);
-      }
-    });
   }
 
-  const createProduct = (name, price) => {
+  const createSuppProduct = (name, price) => {
     setLoading(true);
     marketplace.methods
-      .createProduct(name, price)
+      .createSuppProduct(name, price)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        setLoading(false);
+      });
+  };
+
+  const createRestProduct = (name, price) => {
+    setLoading(true);
+    marketplace.methods
+      .createRestProduct(name, price)
       .send({ from: account })
       .once("receipt", (receipt) => {
         setLoading(false);
@@ -99,9 +115,9 @@ export default function App() {
           <SuppNav
             account={account}
             loading={loading}
-            products={products}
+            products={suppProducts}
             productCount={productCount}
-            createProduct={createProduct}
+            createProduct={createSuppProduct}
             purchaseProduct={purchaseProduct}
           />
         ) : null}
@@ -109,9 +125,11 @@ export default function App() {
           <RestNavbar
             account={account}
             loading={loading}
-            products={products}
-            productCount={productCount}
-            createProduct={createProduct}
+            restProducts={restProducts}
+            restProdCount={restProdCount}
+            suppProducts={suppProducts}
+            suppProdCount={suppProdCount}
+            createProduct={createRestProduct}
             purchaseProduct={purchaseProduct}
           />
         ) : null}
