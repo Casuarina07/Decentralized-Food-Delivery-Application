@@ -5,6 +5,14 @@ pragma solidity ^0.5.4;
 contract Marketplace {
     string public name;
 
+    //hawkerName details
+    string public hawkerName = "Selera Rasa Nasi Lemak";
+    string public hawkerAddress =
+        "2 Adam Rd, #01-02 Food Centre, Singapore 289876";
+    string public hawkerOpeningHours =
+        "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm";
+    string public hawkerPhone = "98434509";
+
     //Supplier products
     uint256 public suppProdCount = 0;
     mapping(uint256 => SuppProduct) public suppProducts;
@@ -58,6 +66,10 @@ contract Marketplace {
 
     constructor() public {
         name = "Dapp University Marketplace";
+    }
+
+    function returnString() public view returns (string memory) {
+        return hawkerName;
     }
 
     //parameter _price is expressed in Ethereum cryptocurrency - Ether

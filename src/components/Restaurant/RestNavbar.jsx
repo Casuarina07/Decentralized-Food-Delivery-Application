@@ -18,6 +18,10 @@ function RestNavbar({
   suppProdCount,
   createProduct,
   purchaseProduct,
+  hawkerName,
+  hawkerAdd,
+  hawkerOpeningHours,
+  hawkerPhone,
 }) {
   const navLinks = [
     {
@@ -81,7 +85,14 @@ function RestNavbar({
           createProduct={createProduct}
           purchaseProduct={purchaseProduct}
         />
-        <Profile path="/profile" account={account} />
+        <Profile
+          path="/profile"
+          account={account}
+          hawkerName={hawkerName}
+          hawkerAdd={hawkerAdd}
+          hawkerOpeningHours={hawkerOpeningHours}
+          hawkerPhone={hawkerPhone}
+        />
       </Router>
     </div>
   );

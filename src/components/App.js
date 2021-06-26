@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
 import SuppNav from "./Supplier/SuppNavbar";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import RestNavbar from "./Restaurant/RestNavbar";
 
 export default function App() {
@@ -16,7 +16,13 @@ export default function App() {
   const [restProducts, setRestProducts] = useState([]);
   const [restProdCount, setRestProdCount] = useState(0);
 
-  //acount details
+  //hawker-details
+  const [hawkerName, setHawkerName] = useState("");
+  const [hawkerAdd, setHawkerAdd] = useState("");
+  const [hawkerOpeningHours, setHawkerOpeningHours] = useState("");
+  const [hawkerPhone, setHawkerPhone] = useState("");
+
+  //acount-details
   const restPublicKey = "0x73c005D4B234C63F416F6e1038C011D55edDBF1e";
   const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
 
@@ -72,6 +78,29 @@ export default function App() {
         const restProduct = await marketplace.methods.restProducts(k).call();
         setRestProducts((restProducts) => [...restProducts, restProduct]);
       }
+
+      //FETCH ACCOUNT DETAILS
+      const hawkerName = (
+        await marketplace.methods.hawkerName().call()
+      ).toString();
+      setHawkerName(hawkerName);
+      const hawkerAdd = (
+        await marketplace.methods.hawkerAddress().call()
+      ).toString();
+      setHawkerAdd(hawkerAdd);
+      const hawkerOpeningHours = (
+        await marketplace.methods.hawkerOpeningHours().call()
+      ).toString();
+      setHawkerOpeningHours(hawkerOpeningHours);
+      const hawkerPhone = (
+        await marketplace.methods.hawkerPhone().call()
+      ).toString();
+      setHawkerPhone(hawkerPhone);
+      console.log("Hawker Name: " + hawkerName);
+      console.log("Hawker Address: " + hawkerAdd);
+      console.log("Hawker Opening Hours: " + hawkerOpeningHours);
+      console.log("Hawker Phone: " + hawkerPhone);
+
       setLoading(false);
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
@@ -111,7 +140,7 @@ export default function App() {
   return (
     <div>
       <Router>
-        {account == suppPublicKey ? (
+        {account === suppPublicKey ? (
           <SuppNav
             account={account}
             loading={loading}
@@ -121,7 +150,7 @@ export default function App() {
             purchaseProduct={purchaseProduct}
           />
         ) : null}
-        {account == restPublicKey ? (
+        {account === restPublicKey ? (
           <RestNavbar
             account={account}
             loading={loading}
@@ -131,6 +160,10 @@ export default function App() {
             suppProdCount={suppProdCount}
             createProduct={createRestProduct}
             purchaseProduct={purchaseProduct}
+            hawkerName={hawkerName}
+            hawkerAdd={hawkerAdd}
+            hawkerOpeningHours={hawkerOpeningHours}
+            hawkerPhone={hawkerPhone}
           />
         ) : null}
       </Router>
