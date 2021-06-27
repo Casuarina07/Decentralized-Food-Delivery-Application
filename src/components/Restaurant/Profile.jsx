@@ -8,38 +8,89 @@ export default function Profile({
   hawkerAdd,
   hawkerOpeningHours,
   hawkerPhone,
+  editHawkerProfile,
 }) {
   const [editClicked, setEditClicked] = useState(false);
+  const [hawkerPhoneNo, setHawkerPhoneNo] = useState(hawkerPhone);
+  const [hawkerOH, setHawkerOH] = useState(hawkerOpeningHours);
   function editProfile() {
-    console.log("Button Clicked");
-    setEditClicked(true);
+    setEditClicked(!editClicked);
   }
+  const saveChanges = (evt) => {
+    evt.preventDefault();
+    editHawkerProfile(hawkerPhoneNo, hawkerOH);
+  };
   return (
-    <div style={{ marginTop: 30 }}>
+    <div style={{ marginTop: 20, marginBottom: 30 }}>
       <FaUserCircle size={60} color="#016094" />
       <h3 className="header">{account}</h3>
+      <h4 style={{ color: "#016094", marginTop: 30 }}>Hawker Details</h4>
 
       {editClicked ? (
         <div>
-          <button>Save Profile</button>
-        </div>
-      ) : (
-        <div>
-          <b>Hawker Name: </b>
+          <b>Name: </b>
           <div style={{ padding: 5 }}>
             <label>{hawkerName}</label>
           </div>
-          <b>Hawker Address: </b>
+
+          <b>Address: </b>
           <div style={{ padding: 5 }}>
             <label>{hawkerAdd}</label>
           </div>
 
-          <b>Hawker Phone: </b>
+          <form onSubmit={saveChanges}>
+            <b>Phone: </b>
+            <div style={{ padding: 5 }}>
+              <input
+                type="text"
+                value={hawkerPhoneNo}
+                onChange={(e) => setHawkerPhoneNo(e.target.value)}
+              />
+            </div>
+
+            <b>Opening Hours: </b>
+            <div>
+              <input
+                style={{ width: 500, marginTop: 7 }}
+                type="text"
+                value={hawkerOH}
+                onChange={(e) => setHawkerOH(e.target.value)}
+              />
+            </div>
+            <input
+              style={{ marginTop: 20 }}
+              type="submit"
+              className="btn btn-primary"
+              value="Save Changes"
+            />
+          </form>
+          <button
+            type="submit"
+            className="btn"
+            onClick={editProfile}
+            style={{ margin: 10, background: "#e7e7e7" }}
+          >
+            Exit Changes
+          </button>
+        </div>
+      ) : (
+        <div>
+          <b>Name: </b>
+          <div style={{ padding: 5 }}>
+            <label>{hawkerName}</label>
+          </div>
+
+          <b>Address: </b>
+          <div style={{ padding: 5 }}>
+            <label>{hawkerAdd}</label>
+          </div>
+
+          <b>Phone: </b>
           <div style={{ padding: 5 }}>
             <label>{hawkerPhone}</label>
           </div>
 
-          <b>Hawker Opening Hours: </b>
+          <b>Opening Hours: </b>
           <div>
             <label>{hawkerOpeningHours}</label>
           </div>

@@ -3,8 +3,6 @@
 pragma solidity ^0.5.4;
 
 contract Marketplace {
-    string public name;
-
     //hawkerName details
     string public hawkerName = "Selera Rasa Nasi Lemak";
     string public hawkerAddress =
@@ -64,12 +62,9 @@ contract Marketplace {
         bool purchased
     );
 
-    constructor() public {
-        name = "Dapp University Marketplace";
-    }
-
-    function returnString() public view returns (string memory) {
-        return hawkerName;
+    function editHawkerProfile(string memory _phone, string memory _OH) public {
+        hawkerPhone = _phone;
+        hawkerOpeningHours = _OH;
     }
 
     //parameter _price is expressed in Ethereum cryptocurrency - Ether

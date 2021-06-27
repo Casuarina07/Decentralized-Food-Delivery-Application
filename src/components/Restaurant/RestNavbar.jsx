@@ -18,6 +18,7 @@ function RestNavbar({
   suppProdCount,
   createProduct,
   purchaseProduct,
+  editHawkerProfile,
   hawkerName,
   hawkerAdd,
   hawkerOpeningHours,
@@ -92,6 +93,7 @@ function RestNavbar({
           hawkerAdd={hawkerAdd}
           hawkerOpeningHours={hawkerOpeningHours}
           hawkerPhone={hawkerPhone}
+          editHawkerProfile={editHawkerProfile}
         />
       </Router>
     </div>

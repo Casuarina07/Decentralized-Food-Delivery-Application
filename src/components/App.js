@@ -117,6 +117,16 @@ export default function App() {
       });
   };
 
+  const editHawkerProfile = (phone, openingHours) => {
+    setLoading(true);
+    marketplace.methods
+      .editHawkerProfile(phone, openingHours)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        setLoading(false);
+      });
+  };
+
   const createRestProduct = (name, price) => {
     setLoading(true);
     marketplace.methods
@@ -160,6 +170,7 @@ export default function App() {
             suppProdCount={suppProdCount}
             createProduct={createRestProduct}
             purchaseProduct={purchaseProduct}
+            editHawkerProfile={editHawkerProfile}
             hawkerName={hawkerName}
             hawkerAdd={hawkerAdd}
             hawkerOpeningHours={hawkerOpeningHours}
