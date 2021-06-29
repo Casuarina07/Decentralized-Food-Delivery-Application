@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
-import SuppNav from "./Supplier/SuppNavbar";
 import { BrowserRouter as Router } from "react-router-dom";
+import SuppNav from "./Supplier/SuppNavbar";
 import RestNavbar from "./Restaurant/RestNavbar";
+import CustNavbar from "./Customer/CustNavbar";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,7 @@ export default function App() {
   //acount-details
   const restPublicKey = "0x73c005D4B234C63F416F6e1038C011D55edDBF1e";
   const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
+  const custPublicKey = "0xC9342f12d49ca9e40d600eBF17266DcCc88a0639";
 
   useEffect(() => {
     loadWeb3();
@@ -66,7 +68,7 @@ export default function App() {
         const suppProduct = await marketplace.methods.suppProducts(i).call();
         setSuppProducts((suppProducts) => [...suppProducts, suppProduct]);
       }
-      console.log("Account Number: " + account.toString());
+      console.log("Account Number: " + account);
       console.log("Product: " + suppProducts);
       console.log("Loading: " + loading.toString());
 
@@ -100,6 +102,8 @@ export default function App() {
       console.log("Hawker Address: " + hawkerAdd);
       console.log("Hawker Opening Hours: " + hawkerOpeningHours);
       console.log("Hawker Phone: " + hawkerPhone);
+
+      console.log();
 
       setLoading(false);
     } else {
@@ -171,6 +175,19 @@ export default function App() {
             createProduct={createRestProduct}
             purchaseProduct={purchaseProduct}
             editHawkerProfile={editHawkerProfile}
+            hawkerName={hawkerName}
+            hawkerAdd={hawkerAdd}
+            hawkerOpeningHours={hawkerOpeningHours}
+            hawkerPhone={hawkerPhone}
+          />
+        ) : null}
+        {account === custPublicKey ? (
+          <CustNavbar
+            account={account}
+            loading={loading}
+            restProducts={restProducts}
+            restProdCount={restProdCount}
+            purchaseProduct={purchaseProduct}
             hawkerName={hawkerName}
             hawkerAdd={hawkerAdd}
             hawkerOpeningHours={hawkerOpeningHours}

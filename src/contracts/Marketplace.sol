@@ -11,14 +11,22 @@ contract Marketplace {
         "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm";
     string public hawkerPhone = "98434509";
 
+
+    address[] public hawkerUsers;
+    struct HawkerUser {
+        string name;
+        string addressLocation; 
+        string openingHours;
+        string phone;
+        int rating;
+        string[] review;
+    }
+    mapping(address => HawkerUser) public hawkerInfo;
+
+
     //Supplier products
     uint256 public suppProdCount = 0;
     mapping(uint256 => SuppProduct) public suppProducts;
-
-    //Restaurants products
-    uint256 public restProdCount = 0;
-    mapping(uint256 => RestProduct) public restProducts;
-
     struct SuppProduct {
         uint256 id;
         string name;
@@ -27,6 +35,9 @@ contract Marketplace {
         bool purchased;
     }
 
+    //Restaurants products
+    uint256 public restProdCount = 0;
+    mapping(uint256 => RestProduct) public restProducts;
     struct RestProduct {
         uint256 id;
         string name;

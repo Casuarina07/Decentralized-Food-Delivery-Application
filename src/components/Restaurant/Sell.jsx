@@ -41,6 +41,18 @@ class Sell extends Component {
               required
             />
           </div>
+          <div style={{ display: "flex" }}>
+            <button className="form-group mr-sm-1">Upload File</button>
+            <label
+              style={{
+                alignSelf: "center",
+                color: "#808080",
+              }}
+            >
+              Optional
+            </label>
+          </div>
+
           <button type="submit" className="btn btn-primary">
             Add Product
           </button>
