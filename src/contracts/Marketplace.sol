@@ -11,18 +11,60 @@ contract Marketplace {
         "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm";
     string public hawkerPhone = "98434509";
 
+    // address[] public hawkerUsers;
+    // struct HawkerUser {
+    //     string name;
+    //     string addressLocation;
+    //     string openingHours;
+    //     string phone;
+    //     int rating;
+    //     string[] review;
+    // }
+    // mapping(address => HawkerUser) public hawkerInfo;
 
-    address[] public hawkerUsers;
-    struct HawkerUser {
+    //constructor
+    constructor() public {
+        addHawker(
+            0x73c005D4B234C63F416F6e1038C011D55edDBF1e,
+            "Selera Rasa Nasi Lemak",
+            "2 Adam Rd, #01-02 Food Centre, Singapore 289876",
+            "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm",
+            "98434509"
+        );
+    }
+
+    struct Hawker {
+        uint256 id;
+        address owner;
         string name;
-        string addressLocation; 
+        string addressLocation;
         string openingHours;
         string phone;
-        int rating;
-        string[] review;
+        int256 rating;
     }
-    mapping(address => HawkerUser) public hawkerInfo;
+    // Read/write Hawkers
+    mapping(uint256 => Hawker) public hawkers;
+    //Store Hawkers Count
+    uint256 public hawkersCount;
 
+    function addHawker(
+        address _owner,
+        string memory _name,
+        string memory _addressLocation,
+        string memory _openingHours,
+        string memory _phone
+    ) public {
+        hawkersCount++;
+        hawkers[hawkersCount] = Hawker(
+            hawkersCount,
+            _owner,
+            _name,
+            _addressLocation,
+            _openingHours,
+            _phone,
+            0
+        );
+    }
 
     //Supplier products
     uint256 public suppProdCount = 0;

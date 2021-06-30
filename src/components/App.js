@@ -16,12 +16,18 @@ export default function App() {
   const [suppProdCount, setSuppProdCount] = useState(0);
   const [restProducts, setRestProducts] = useState([]);
   const [restProdCount, setRestProdCount] = useState(0);
+  const [hawkersPublicKey, setHawkersPublicKey] = useState([
+    "0x73c005D4B234C63F416F6e1038C011D55edDBF1e",
+    "0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5",
+  ]);
 
   //hawker-details
   const [hawkerName, setHawkerName] = useState("");
   const [hawkerAdd, setHawkerAdd] = useState("");
   const [hawkerOpeningHours, setHawkerOpeningHours] = useState("");
   const [hawkerPhone, setHawkerPhone] = useState("");
+  const [hawkersCount, setHawkersCount] = useState(0);
+  const [hawkers, setHawkers] = useState([]);
 
   //acount-details
   const restPublicKey = "0x73c005D4B234C63F416F6e1038C011D55edDBF1e";
@@ -50,7 +56,9 @@ export default function App() {
     const web3 = window.web3;
     //Load account
     const accounts = await web3.eth.getAccounts();
+    console.log("TEST: " + accounts);
     setAccount(accounts[0]);
+
     const networkId = await web3.eth.net.getId(); //5777
     const networkData = Marketplace.networks[networkId];
     if (networkData) {
@@ -81,29 +89,27 @@ export default function App() {
         setRestProducts((restProducts) => [...restProducts, restProduct]);
       }
 
-      //FETCH ACCOUNT DETAILS
-      const hawkerName = (
-        await marketplace.methods.hawkerName().call()
-      ).toString();
-      setHawkerName(hawkerName);
-      const hawkerAdd = (
-        await marketplace.methods.hawkerAddress().call()
-      ).toString();
-      setHawkerAdd(hawkerAdd);
-      const hawkerOpeningHours = (
-        await marketplace.methods.hawkerOpeningHours().call()
-      ).toString();
-      setHawkerOpeningHours(hawkerOpeningHours);
-      const hawkerPhone = (
-        await marketplace.methods.hawkerPhone().call()
-      ).toString();
-      setHawkerPhone(hawkerPhone);
-      console.log("Hawker Name: " + hawkerName);
-      console.log("Hawker Address: " + hawkerAdd);
-      console.log("Hawker Opening Hours: " + hawkerOpeningHours);
-      console.log("Hawker Phone: " + hawkerPhone);
-
-      console.log();
+      //FETCH HAWKERS
+      const hawkersCount = await marketplace.methods.hawkersCount().call();
+      setHawkersCount(hawkersCount);
+      for (var j = 1; j <= hawkersCount; j++) {
+        const hawker = await marketplace.methods.hawkers(j).call();
+        setHawkers((hawkers) => [...hawkers, hawker]);
+        console.log("Hawker Owner: " + hawker.owner);
+        if (hawker.owner.toString() === accounts.toString()) {
+          setHawkerName(hawker.name);
+          setHawkerAdd(hawker.addressLocation);
+          setHawkerOpeningHours(hawker.openingHours);
+          setHawkerPhone(hawker.phone);
+          console.log("SAME");
+        }
+        for (var l = 0; l < hawkersPublicKey.length; l++) {
+          console.log(hawkersPublicKey[l]);
+          if (hawkersPublicKey[l] === account) {
+            console.log("hello");
+          }
+        }
+      }
 
       setLoading(false);
     } else {

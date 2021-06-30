@@ -23,6 +23,7 @@ function RestNavbar({
   hawkerAdd,
   hawkerOpeningHours,
   hawkerPhone,
+  hawkers,
 }) {
   const navLinks = [
     {
@@ -89,6 +90,7 @@ function RestNavbar({
         <Profile
           path="/profile"
           account={account}
+          hawkers={hawkers}
           hawkerName={hawkerName}
           hawkerAdd={hawkerAdd}
           hawkerOpeningHours={hawkerOpeningHours}

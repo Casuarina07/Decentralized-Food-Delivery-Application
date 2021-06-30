@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Rest.css";
 import { FaUserCircle } from "react-icons/fa";
 
@@ -9,6 +9,7 @@ export default function Profile({
   hawkerOpeningHours,
   hawkerPhone,
   editHawkerProfile,
+  hawkers,
 }) {
   const [editClicked, setEditClicked] = useState(false);
   const [hawkerPhoneNo, setHawkerPhoneNo] = useState(hawkerPhone);
