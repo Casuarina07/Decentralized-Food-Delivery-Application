@@ -10,12 +10,18 @@ export default function Profile({
   hawkerPhone,
   editHawkerProfile,
   hawkers,
+  hawkerBoolOpen,
+  boolOpen,
 }) {
   const [editClicked, setEditClicked] = useState(false);
   const [hawkerPhoneNo, setHawkerPhoneNo] = useState(hawkerPhone);
   const [hawkerOH, setHawkerOH] = useState(hawkerOpeningHours);
   function editProfile() {
     setEditClicked(!editClicked);
+  }
+
+  function changeShopStatus() {
+    boolOpen();
   }
   const saveChanges = (evt) => {
     evt.preventDefault();
@@ -105,13 +111,25 @@ export default function Profile({
             Edit Profile
           </button>
 
-          <button
-            type="submit"
-            className="btn"
-            style={{ margin: 10, background: "red", color: "white" }}
-          >
-            Close Shop
-          </button>
+          {hawkerBoolOpen ? (
+            <button
+              type="submit"
+              className="btn"
+              onClick={changeShopStatus}
+              style={{ margin: 10, background: "red", color: "white" }}
+            >
+              Close Shop
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="btn"
+              onClick={changeShopStatus}
+              style={{ margin: 10, background: "#eba834", color: "white" }}
+            >
+              Open Shop
+            </button>
+          )}
         </div>
       )}
     </div>

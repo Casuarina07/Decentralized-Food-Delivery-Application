@@ -26,6 +26,7 @@ export default function App() {
   const [hawkerAdd, setHawkerAdd] = useState("");
   const [hawkerOpeningHours, setHawkerOpeningHours] = useState("");
   const [hawkerPhone, setHawkerPhone] = useState("");
+  const [hawkerBoolOpen, setHawkerBoolOpen] = useState(false);
   const [hawkersCount, setHawkersCount] = useState(0);
   const [hawkers, setHawkers] = useState([]);
 
@@ -101,6 +102,7 @@ export default function App() {
           setHawkerAdd(hawker.addressLocation);
           setHawkerOpeningHours(hawker.openingHours);
           setHawkerPhone(hawker.phone);
+          setHawkerBoolOpen(hawker.open);
           console.log("SAME");
         }
         for (var l = 0; l < hawkersPublicKey.length; l++) {
@@ -123,6 +125,8 @@ export default function App() {
       .createSuppProduct(name, price)
       .send({ from: account })
       .once("receipt", (receipt) => {
+        alert("Successfully created");
+        window.location.reload();
         setLoading(false);
       });
   };
@@ -133,6 +137,20 @@ export default function App() {
       .editHawkerProfile(phone, openingHours)
       .send({ from: account })
       .once("receipt", (receipt) => {
+        alert("Successfully Changed");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const boolOpen = () => {
+    setLoading(true);
+    marketplace.methods
+      .boolOpen()
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Shop status changed");
+        window.location.reload();
         setLoading(false);
       });
   };
@@ -143,6 +161,8 @@ export default function App() {
       .createRestProduct(name, price)
       .send({ from: account })
       .once("receipt", (receipt) => {
+        alert("Successfully created");
+        window.location.reload();
         setLoading(false);
       });
   };
@@ -181,10 +201,12 @@ export default function App() {
             createProduct={createRestProduct}
             purchaseProduct={purchaseProduct}
             editHawkerProfile={editHawkerProfile}
+            boolOpen={boolOpen}
             hawkerName={hawkerName}
             hawkerAdd={hawkerAdd}
             hawkerOpeningHours={hawkerOpeningHours}
             hawkerPhone={hawkerPhone}
+            hawkerBoolOpen={hawkerBoolOpen}
           />
         ) : null}
         {account === custPublicKey ? (
@@ -198,6 +220,7 @@ export default function App() {
             hawkerAdd={hawkerAdd}
             hawkerOpeningHours={hawkerOpeningHours}
             hawkerPhone={hawkerPhone}
+            hawkerBoolOpen={hawkerBoolOpen}
           />
         ) : null}
       </Router>

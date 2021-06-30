@@ -3,25 +3,6 @@
 pragma solidity ^0.5.4;
 
 contract Marketplace {
-    //hawkerName details
-    string public hawkerName = "Selera Rasa Nasi Lemak";
-    string public hawkerAddress =
-        "2 Adam Rd, #01-02 Food Centre, Singapore 289876";
-    string public hawkerOpeningHours =
-        "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm";
-    string public hawkerPhone = "98434509";
-
-    // address[] public hawkerUsers;
-    // struct HawkerUser {
-    //     string name;
-    //     string addressLocation;
-    //     string openingHours;
-    //     string phone;
-    //     int rating;
-    //     string[] review;
-    // }
-    // mapping(address => HawkerUser) public hawkerInfo;
-
     //constructor
     constructor() public {
         addHawker(
@@ -29,7 +10,16 @@ contract Marketplace {
             "Selera Rasa Nasi Lemak",
             "2 Adam Rd, #01-02 Food Centre, Singapore 289876",
             "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm",
-            "98434509"
+            "98434509",
+            false
+        );
+        addHawker(
+            0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5,
+            "Tian Tian Hainanese Chicken Rice",
+            "Maxwell Food Centre #01-10/11, 1 Kadayanallur Street, Singapore 069184",
+            "Tuesday – Sunday: 10am – 7:30pm",
+            "96914852",
+            false
         );
     }
 
@@ -41,6 +31,7 @@ contract Marketplace {
         string openingHours;
         string phone;
         int256 rating;
+        bool open;
     }
     // Read/write Hawkers
     mapping(uint256 => Hawker) public hawkers;
@@ -52,7 +43,8 @@ contract Marketplace {
         string memory _name,
         string memory _addressLocation,
         string memory _openingHours,
-        string memory _phone
+        string memory _phone,
+        bool _open
     ) public {
         hawkersCount++;
         hawkers[hawkersCount] = Hawker(
@@ -62,8 +54,28 @@ contract Marketplace {
             _addressLocation,
             _openingHours,
             _phone,
-            0
+            0,
+            _open
         );
+    }
+
+    function editHawkerProfile(string memory _phone, string memory _OH) public {
+        uint256 i = 0;
+        for (i = 0; i <= hawkersCount; i++) {
+            if (hawkers[i].owner == msg.sender) {
+                hawkers[i].phone = _phone;
+                hawkers[i].openingHours = _OH;
+            }
+        }
+    }
+
+    function boolOpen() public {
+        uint256 i = 0;
+        for (i = 0; i <= hawkersCount; i++) {
+            if (hawkers[i].owner == msg.sender) {
+                hawkers[i].open = !(hawkers[i].open);
+            }
+        }
     }
 
     //Supplier products
@@ -114,11 +126,6 @@ contract Marketplace {
         address payable owner,
         bool purchased
     );
-
-    function editHawkerProfile(string memory _phone, string memory _OH) public {
-        hawkerPhone = _phone;
-        hawkerOpeningHours = _OH;
-    }
 
     //parameter _price is expressed in Ethereum cryptocurrency - Ether
     //whenever we store Ether in the blockchain, we store it as Wei (smallest denomination of Ether )
