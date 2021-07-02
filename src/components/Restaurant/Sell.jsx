@@ -1,22 +1,61 @@
 import React, { Component } from "react";
 import "./Rest.css";
+import logo from "../logo.svg";
+
+const { create } = require("ipfs-http-client");
+const ipfs = create({
+  host: "ipfs.infura.io",
+  port: "5001",
+  protocol: "https",
+});
 
 class Sell extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { buffer: null, imageHash: "" };
+  }
+  captureFile = (event) => {
+    event.preventDefault();
+    console.log("file captured...");
+    //Process file for IPFS - convert to buffer
+    const file = event.target.files[0];
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = () => {
+      this.setState({ buffer: Buffer(reader.result) });
+    };
+  };
+  onSubmit = (event) => {
+    event.preventDefault();
+    const name = this.productName.value;
+    const price = window.web3.utils.toWei(
+      this.productPrice.value.toString(),
+      "Ether"
+    );
+    // Image file adding ipfs - Example hash - QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
+    // Example URL - https://ipfs.infura.io/ipfs/QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
+    const file = ipfs.add(this.state.buffer);
+    const resultPromise = file.then(function (result) {
+      console.log("result", result.path.toString());
+      return result.path.toString();
+    });
+
+    resultPromise.then((path) => {
+      console.log("Path: ", path);
+      this.setState({ imageHash: path });
+      const img = this.state.imageHash;
+      console.log("Img: ", img);
+
+      //create product
+      this.props.createProduct(name, price, this.state.imageHash);
+    });
+  };
+
   render() {
     return (
       <div style={{ margin: 60, marginTop: 30 }}>
         <h1>Add Product</h1>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            const name = this.productName.value;
-            const price = window.web3.utils.toWei(
-              this.productPrice.value.toString(),
-              "Ether"
-            );
-            this.props.createProduct(name, price);
-          }}
-        >
+        <form onSubmit={this.onSubmit}>
           <div className="form-group mr-sm-2">
             <input
               id="productName"
@@ -42,15 +81,11 @@ class Sell extends Component {
             />
           </div>
           <div style={{ display: "flex" }}>
-            <button className="form-group mr-sm-1">Upload File</button>
-            <label
-              style={{
-                alignSelf: "center",
-                color: "#808080",
-              }}
-            >
-              Optional
-            </label>
+            <input
+              className="form-group mr-sm-1"
+              type="file"
+              onChange={this.captureFile}
+            />
           </div>
 
           <button type="submit" className="btn btn-primary">
@@ -72,8 +107,7 @@ class Sell extends Component {
           <tbody id="productList">
             {this.props.restProducts.map((product, key) => {
               return (
-                <tr key={key}>
-                  <th scope="row">{product.id.toString()}</th>
+                <tr>
                   <td>{product.name}</td>
                   <td>
                     {window.web3.utils.fromWei(
@@ -83,6 +117,18 @@ class Sell extends Component {
                     Eth
                   </td>
                   <td>{product.owner}</td>
+                  <td>
+                    {product.imageHash == "" ? (
+                      <text>-</text>
+                    ) : (
+                      <img
+                        height="50"
+                        width="120"
+                        alt="logo"
+                        src={"https://ipfs.infura.io/ipfs/" + product.imageHash}
+                      />
+                    )}
+                  </td>
                 </tr>
               );
             })}

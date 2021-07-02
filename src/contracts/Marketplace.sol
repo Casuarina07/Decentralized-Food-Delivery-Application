@@ -98,6 +98,7 @@ contract Marketplace {
         uint256 price;
         address payable owner;
         bool purchased;
+        string imageHash;
     }
 
     struct RestProfile {
@@ -116,7 +117,8 @@ contract Marketplace {
         string name,
         uint256 price,
         address payable owner,
-        bool purchased
+        bool purchased,
+        string imageHash
     );
 
     event ProductPurchased(
@@ -146,10 +148,21 @@ contract Marketplace {
             false
         );
         // Trigger an event
-        emit ProductCreated(suppProdCount, _name, _price, msg.sender, false);
+        emit ProductCreated(
+            suppProdCount,
+            _name,
+            _price,
+            msg.sender,
+            false,
+            _name
+        );
     }
 
-    function createRestProduct(string memory _name, uint256 _price) public {
+    function createRestProduct(
+        string memory _name,
+        uint256 _price,
+        string memory _imageHash
+    ) public {
         // Require a valid name
         require(bytes(_name).length > 0);
         // Require a valid price
@@ -162,10 +175,18 @@ contract Marketplace {
             _name,
             _price,
             msg.sender,
-            false
+            false,
+            _imageHash
         );
         // Trigger an event
-        emit ProductCreated(restProdCount, _name, _price, msg.sender, false);
+        emit ProductCreated(
+            restProdCount,
+            _name,
+            _price,
+            msg.sender,
+            false,
+            _imageHash
+        );
     }
 
     // function purchaseProduct(uint256 _id) public payable {

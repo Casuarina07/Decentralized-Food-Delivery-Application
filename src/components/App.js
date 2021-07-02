@@ -87,6 +87,7 @@ export default function App() {
       console.log("Rest Products: " + restProdCount);
       for (var k = 1; k <= restProdCount; k++) {
         const restProduct = await marketplace.methods.restProducts(k).call();
+        console.log("Rest Product Hash: ", restProduct.imageHash);
         setRestProducts((restProducts) => [...restProducts, restProduct]);
       }
 
@@ -119,10 +120,10 @@ export default function App() {
     }
   }
 
-  const createSuppProduct = (name, price) => {
+  const createSuppProduct = (name, price, ipfsImgHash) => {
     setLoading(true);
     marketplace.methods
-      .createSuppProduct(name, price)
+      .createSuppProduct(name, price, ipfsImgHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully created");
@@ -155,10 +156,10 @@ export default function App() {
       });
   };
 
-  const createRestProduct = (name, price) => {
+  const createRestProduct = (name, price, imageHash) => {
     setLoading(true);
     marketplace.methods
-      .createRestProduct(name, price)
+      .createRestProduct(name, price, imageHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully created");
