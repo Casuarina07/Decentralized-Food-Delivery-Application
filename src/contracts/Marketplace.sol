@@ -54,7 +54,7 @@ contract Marketplace {
             _addressLocation,
             _openingHours,
             _phone,
-            0,
+            5,
             _open
         );
     }
@@ -187,6 +187,10 @@ contract Marketplace {
             false,
             _imageHash
         );
+    }
+
+    struct Order {
+        uint256 id;
     }
 
     // function purchaseProduct(uint256 _id) public payable {

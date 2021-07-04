@@ -97,23 +97,14 @@ export default function App() {
       for (var j = 1; j <= hawkersCount; j++) {
         const hawker = await marketplace.methods.hawkers(j).call();
         setHawkers((hawkers) => [...hawkers, hawker]);
-        console.log("Hawker Owner: " + hawker.owner);
         if (hawker.owner.toString() === accounts.toString()) {
           setHawkerName(hawker.name);
           setHawkerAdd(hawker.addressLocation);
           setHawkerOpeningHours(hawker.openingHours);
           setHawkerPhone(hawker.phone);
           setHawkerBoolOpen(hawker.open);
-          console.log("SAME");
-        }
-        for (var l = 0; l < hawkersPublicKey.length; l++) {
-          console.log(hawkersPublicKey[l]);
-          if (hawkersPublicKey[l] === account) {
-            console.log("hello");
-          }
         }
       }
-
       setLoading(false);
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
@@ -217,11 +208,8 @@ export default function App() {
             restProducts={restProducts}
             restProdCount={restProdCount}
             purchaseProduct={purchaseProduct}
-            hawkerName={hawkerName}
-            hawkerAdd={hawkerAdd}
-            hawkerOpeningHours={hawkerOpeningHours}
-            hawkerPhone={hawkerPhone}
-            hawkerBoolOpen={hawkerBoolOpen}
+            hawkers={hawkers}
+            hawkersCount={hawkersCount}
           />
         ) : null}
       </Router>

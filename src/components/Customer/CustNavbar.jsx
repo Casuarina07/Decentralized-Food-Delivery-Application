@@ -4,6 +4,8 @@ import Home from "./Home";
 import Orders from "./Orders";
 import Purchase from "./Purchase";
 import Profile from "./Profile";
+import HawkerInfo from "./HawkerInfo";
+import Cart from "./Cart";
 import ResponsiveNavigation from "../ResponsiveNavigation";
 import logo from "../logo.svg";
 import "../Navbar.css";
@@ -14,10 +16,8 @@ function CustNavbar({
   restProducts,
   restProdCount,
   purchaseProduct,
-  hawkerName,
-  hawkerAdd,
-  hawkerOpeningHours,
-  hawkerPhone,
+  hawkers,
+  hawkersCount,
 }) {
   const navLinks = [
     {
@@ -40,6 +40,11 @@ function CustNavbar({
       path: "/profile",
       icon: "ion-ios-person",
     },
+    {
+      text: "Cart",
+      path: "/cart",
+      icon: "ion-ios-cart",
+    },
   ];
 
   return (
@@ -60,17 +65,18 @@ function CustNavbar({
           restProducts={restProducts}
           restProdCount={restProdCount}
           purchaseProduct={purchaseProduct}
+          hawkers={hawkers}
+          hawkersCount={hawkersCount}
         />
         <Home path="/" />
         <Orders path="/orders" />
-        <Profile
-          path="/profile"
-          account={account}
-          hawkerName={hawkerName}
-          hawkerAdd={hawkerAdd}
-          hawkerOpeningHours={hawkerOpeningHours}
-          hawkerPhone={hawkerPhone}
+        <Profile path="/profile" account={account} />
+        <HawkerInfo
+          path="/hawkerInfo/:id"
+          hawkers={hawkers}
+          hawkersCount={hawkersCount}
         />
+        <Cart path="/cart" />
       </Router>
     </div>
   );
