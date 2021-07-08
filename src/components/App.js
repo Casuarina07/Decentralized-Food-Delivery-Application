@@ -4,7 +4,7 @@ import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
 import { BrowserRouter as Router } from "react-router-dom";
 import SuppNav from "./Supplier/SuppNavbar";
-import RestNavbar from "./Restaurant/RestNavbar";
+import RestNavbar from "./Hawker/RestNavbar";
 import CustNavbar from "./Customer/CustNavbar";
 
 export default function App() {
@@ -29,6 +29,16 @@ export default function App() {
   const [hawkerBoolOpen, setHawkerBoolOpen] = useState(false);
   const [hawkersCount, setHawkersCount] = useState(0);
   const [hawkers, setHawkers] = useState([]);
+
+  //customer-details
+  const [custId, setCustId] = useState(0);
+  const [custName, setCustName] = useState("");
+  const [custAdd, setCustAdd] = useState("");
+  const [custPhone, setCustPhone] = useState("");
+  const [cartCount, setCartCount] = useState(0);
+  const [custCart, setCustCart] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [custCount, setCustCount] = useState(0);
 
   //acount-details
   const restPublicKey = "0x73c005D4B234C63F416F6e1038C011D55edDBF1e";
@@ -57,8 +67,8 @@ export default function App() {
     const web3 = window.web3;
     //Load account
     const accounts = await web3.eth.getAccounts();
-    console.log("TEST: " + accounts);
     setAccount(accounts[0]);
+    console.log("Account: ", accounts);
 
     const networkId = await web3.eth.net.getId(); //5777
     const networkData = Marketplace.networks[networkId];
@@ -98,6 +108,7 @@ export default function App() {
         const hawker = await marketplace.methods.hawkers(j).call();
         setHawkers((hawkers) => [...hawkers, hawker]);
         if (hawker.owner.toString() === accounts.toString()) {
+          console.log("Hawker Account");
           setHawkerName(hawker.name);
           setHawkerAdd(hawker.addressLocation);
           setHawkerOpeningHours(hawker.openingHours);
@@ -105,11 +116,60 @@ export default function App() {
           setHawkerBoolOpen(hawker.open);
         }
       }
+
+      //FETCH CUSTOMERS
+      const customersCount = await marketplace.methods.customersCount().call();
+      setCustCount(customersCount);
+      for (var l = 1; l <= customersCount; l++) {
+        const cust = await marketplace.methods.customers(l).call();
+        setCustomers((customers) => [...customers, cust]);
+        if (cust.owner.toString() === accounts.toString()) {
+          console.log("Customer Account: ", cust.name);
+          setCustId(cust.id);
+          setCustName(cust.name);
+          setCustAdd(cust.addressLocation);
+          setCustPhone(cust.phone);
+          setCartCount(cust.itemCount);
+
+          for (var k = 1; k <= cust.itemCount; k++) {
+            const prodId = await marketplace.methods
+              .getCartProduct(cust.id, k)
+              .call();
+            console.log("ProdId in cart: ", prodId);
+            setCustCart((custCart) => [...custCart, prodId]);
+          }
+        }
+      }
+      console.log(custCart);
       setLoading(false);
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
     }
   }
+
+  const removeProdCart = (custId, cartId) => {
+    setLoading(true);
+    marketplace.methods
+      .removeProdCart(custId, cartId)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Successfully Removed");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const removeAllProdCart = (custId) => {
+    setLoading(true);
+    marketplace.methods
+      .removeAllProdCart(custId)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Successfully Removed All Products");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
 
   const createSuppProduct = (name, price, ipfsImgHash) => {
     setLoading(true);
@@ -142,6 +202,30 @@ export default function App() {
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Shop status changed");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const editCustProfile = (phone, address) => {
+    setLoading(true);
+    marketplace.methods
+      .editCustProfile(phone, address)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Successfully Changed");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const addToCart = (id) => {
+    setLoading(true);
+    marketplace.methods
+      .addToCart(id)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Successfully Added");
         window.location.reload();
         setLoading(false);
       });
@@ -210,6 +294,15 @@ export default function App() {
             purchaseProduct={purchaseProduct}
             hawkers={hawkers}
             hawkersCount={hawkersCount}
+            custId={custId}
+            custName={custName}
+            custAdd={custAdd}
+            custPhone={custPhone}
+            custCart={custCart}
+            editCustProfile={editCustProfile}
+            addToCart={addToCart}
+            removeProdCart={removeProdCart}
+            removeAllProdCart={removeAllProdCart}
           />
         ) : null}
       </Router>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./Cust.css";
 import { Link } from "@reach/router";
+import Dropdown from "react-bootstrap/Dropdown";
 
 class Purchase extends Component {
   render() {
@@ -26,7 +27,6 @@ class Purchase extends Component {
               <table className="table">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Price</th>
                     <th scope="col">Image</th>
@@ -38,7 +38,6 @@ class Purchase extends Component {
                     if (product.owner == hawker.owner)
                       return (
                         <tr key={key}>
-                          <th scope="row">{product.id.toString()}</th>
                           <td>{product.name}</td>
                           <td>
                             {window.web3.utils.fromWei(
@@ -47,7 +46,7 @@ class Purchase extends Component {
                             )}{" "}
                             Eth
                           </td>
-                          {/* <td>
+                          <td>
                             {product.imageHash == "" ? (
                               <text>-</text>
                             ) : (
@@ -61,13 +60,15 @@ class Purchase extends Component {
                                 }
                               />
                             )}
-                          </td> */}
+                          </td>
+                          <td>
+                            <Dropdown>Add to Cart</Dropdown>
+                          </td>
                           <td>
                             <button
                               name={product.id}
-                              value={product.price}
                               onClick={(event) => {
-                                //purchaseProduct(event.target.name, event.target.value);
+                                this.props.addToCart(event.target.name);
                               }}
                             >
                               Add to Cart

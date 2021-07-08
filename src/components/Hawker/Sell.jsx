@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./Rest.css";
-import logo from "../logo.svg";
 
 const { create } = require("ipfs-http-client");
 const ipfs = create({
@@ -97,11 +96,10 @@ class Sell extends Component {
         <table className="table">
           <thead>
             <tr>
-              <th scope="col">#</th>
               <th scope="col">Name</th>
               <th scope="col">Price</th>
               <th scope="col">Owner</th>
-              <th scope="col"></th>
+              <th scope="col">Image</th>
             </tr>
           </thead>
           <tbody id="productList">

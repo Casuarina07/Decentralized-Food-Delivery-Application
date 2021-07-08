@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Blockchain
 
 pragma solidity ^0.5.4;
+pragma experimental ABIEncoderV2;
 
 contract Marketplace {
     //constructor
@@ -21,8 +22,15 @@ contract Marketplace {
             "96914852",
             false
         );
+        addCustomer(
+            0xC9342f12d49ca9e40d600eBF17266DcCc88a0639,
+            "Casuarina",
+            "50 Nanyang Ave, Singapore 639798",
+            "98765432"
+        );
     }
 
+    //HAWKER
     struct Hawker {
         uint256 id;
         address owner;
@@ -78,7 +86,7 @@ contract Marketplace {
         }
     }
 
-    //Supplier products
+    //SUPPLIER
     uint256 public suppProdCount = 0;
     mapping(uint256 => SuppProduct) public suppProducts;
     struct SuppProduct {
@@ -190,8 +198,118 @@ contract Marketplace {
     }
 
     struct Order {
-        uint256 id;
+        address owner;
+        uint256 totalPrice;
+        mapping(uint256 => CartItem) purchasedItemId;
+        uint256 purchasedItemCount;
+        string date;
+        string time;
     }
+
+    mapping(address => Order) public orders;
+
+    struct CartItem {
+        uint256 id;
+        uint256 productId;
+    }
+
+    //CUSTOMER
+    struct Customer {
+        uint256 id;
+        address owner;
+        string name;
+        string addressLocation;
+        string phone;
+        mapping(uint256 => CartItem) cartItems;
+        uint256 itemCount;
+    }
+
+    mapping(uint256 => Customer) public customers;
+    uint256 public customersCount;
+
+    function addCustomer(
+        address _owner,
+        string memory _name,
+        string memory _addressLocation,
+        string memory _phone
+    ) public {
+        customersCount++;
+        //CartItem[] memory cartItems;
+        customers[customersCount] = Customer(
+            customersCount,
+            _owner,
+            _name,
+            _addressLocation,
+            _phone,
+            0
+        );
+    }
+
+    function editCustProfile(string memory _phone, string memory _address)
+        public
+    {
+        uint256 i = 0;
+        for (i = 0; i <= customersCount; i++) {
+            if (customers[i].owner == msg.sender) {
+                customers[i].phone = _phone;
+                customers[i].addressLocation = _address;
+            }
+        }
+    }
+
+    function addToCart(uint256 _id) public {
+        uint256 i = 0;
+        for (i = 0; i <= customersCount; i++) {
+            if (customers[i].owner == msg.sender) {
+                (customers[i].itemCount)++;
+                // customers[i].cartItems[customers[i].itemCount].push(
+                //     CartItem(customers[i].itemCount, _id)
+                // );
+                customers[i].cartItems[customers[i].itemCount] = CartItem(
+                    customers[i].itemCount,
+                    _id
+                );
+            }
+        }
+    }
+
+    function removeProdCart(uint256 custId, uint256 cartId) public {
+        Customer storage cust = customers[custId];
+        (cust.itemCount)--;
+        delete cust.cartItems[cartId];
+    }
+
+    function removeAllProdCart(uint256 custId) public {
+        Customer storage cust = customers[custId];
+        uint256 _itemCount = cust.itemCount;
+        for (uint256 i = 1; i <= _itemCount; i++) {
+            delete cust.cartItems[i];
+        }
+        (cust.itemCount) = 0;
+    }
+
+    function getCartProduct(uint256 custId, uint256 cartId)
+        public
+        returns (uint256)
+    {
+        Customer storage cust = customers[custId];
+        return (cust.cartItems[cartId].productId);
+    }
+
+    // function purchaseProduct(
+    //     uint256 _custId,
+    //     address _seller,
+    //     uint256 _totalCost,
+    //     string _date,
+    //     string _time
+    // ) public payable {
+    //     Customer memory cust = customers[_custId];
+    //     //address payable seller = _seller;
+    //     //Pay the seller by sending them Ether
+    //     address(_seller).transfer(msg.value);
+
+    //     //remove the CartItem in the Customer id
+    // }
 
     // function purchaseProduct(uint256 _id) public payable {
     //     //Fetch the product

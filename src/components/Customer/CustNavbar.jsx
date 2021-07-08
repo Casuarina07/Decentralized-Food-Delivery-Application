@@ -18,6 +18,15 @@ function CustNavbar({
   purchaseProduct,
   hawkers,
   hawkersCount,
+  custId,
+  custName,
+  custAdd,
+  custPhone,
+  custCart,
+  editCustProfile,
+  addToCart,
+  removeProdCart,
+  removeAllProdCart,
 }) {
   const navLinks = [
     {
@@ -67,16 +76,31 @@ function CustNavbar({
           purchaseProduct={purchaseProduct}
           hawkers={hawkers}
           hawkersCount={hawkersCount}
+          addToCart={addToCart}
         />
         <Home path="/" />
         <Orders path="/orders" />
-        <Profile path="/profile" account={account} />
+        <Profile
+          path="/profile"
+          account={account}
+          custName={custName}
+          custAdd={custAdd}
+          custPhone={custPhone}
+          editCustProfile={editCustProfile}
+        />
         <HawkerInfo
           path="/hawkerInfo/:id"
           hawkers={hawkers}
           hawkersCount={hawkersCount}
         />
-        <Cart path="/cart" />
+        <Cart
+          path="/cart"
+          custCart={custCart}
+          restProducts={restProducts}
+          removeProdCart={removeProdCart}
+          custId={custId}
+          removeAllProdCart={removeAllProdCart}
+        />
       </Router>
     </div>
   );
