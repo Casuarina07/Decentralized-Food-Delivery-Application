@@ -197,16 +197,29 @@ contract Marketplace {
         );
     }
 
+    enum Status {
+        OrderPlaced,
+        OrderConfirm,
+        FindingDriver,
+        DriverConfirm,
+        InTransit,
+        OrderCompleted
+    }
+    Status public state;
+
     struct Order {
+        uint256 id;
         address owner;
         uint256 totalPrice;
         mapping(uint256 => CartItem) purchasedItemId;
         uint256 purchasedItemCount;
         string date;
         string time;
+        Status state;
     }
 
-    mapping(address => Order) public orders;
+    mapping(uint256 => Order) public orders;
+    uint256 public ordersCount;
 
     struct CartItem {
         uint256 id;
@@ -262,9 +275,6 @@ contract Marketplace {
         for (i = 0; i <= customersCount; i++) {
             if (customers[i].owner == msg.sender) {
                 (customers[i].itemCount)++;
-                // customers[i].cartItems[customers[i].itemCount].push(
-                //     CartItem(customers[i].itemCount, _id)
-                // );
                 customers[i].cartItems[customers[i].itemCount] = CartItem(
                     customers[i].itemCount,
                     _id
@@ -296,20 +306,52 @@ contract Marketplace {
         return (cust.cartItems[cartId].productId);
     }
 
-    // function purchaseProduct(
-    //     uint256 _custId,
-    //     address _seller,
-    //     uint256 _totalCost,
-    //     string _date,
-    //     string _time
-    // ) public payable {
-    //     Customer memory cust = customers[_custId];
-    //     //address payable seller = _seller;
-    //     //Pay the seller by sending them Ether
-    //     address(_seller).transfer(msg.value);
+    function getOrderProduct(uint256 orderId, uint256 cartId)
+        public
+        returns (RestProduct memory)
+    {
+        Order storage ord = orders[orderId];
+        uint256 prodId = ord.purchasedItemId[cartId].productId;
+        RestProduct memory _product = restProducts[prodId];
+        return (_product);
+    }
 
-    //     //remove the CartItem in the Customer id
-    // }
+    function purchaseProduct(
+        uint256 _custId,
+        address payable _seller,
+        uint256 _totalCost,
+        string memory _date,
+        string memory _time
+    ) public payable {
+        Customer memory cust = customers[_custId];
+        // Increment order count
+        ordersCount++;
+        // Create the enum
+        state = Status.OrderPlaced;
+
+        // Create the order
+        orders[ordersCount] = Order(
+            ordersCount,
+            cust.owner,
+            _totalCost,
+            cust.itemCount,
+            _date,
+            _time,
+            state
+        );
+
+        //add the items in cartItems(Customer structure) to purchasedItemId (Order structure)
+        for (uint256 i = 1; i <= cust.itemCount; i++) {
+            uint256 item = getCartProduct(_custId, i);
+            orders[ordersCount].purchasedItemId[i] = CartItem(i, item);
+        }
+
+        //Pay the seller by sending them Ether
+        address(_seller).transfer(msg.value);
+
+        //remove the CartItem in the Customer id
+        removeAllProdCart(_custId);
+    }
 
     // function purchaseProduct(uint256 _id) public payable {
     //     //Fetch the product

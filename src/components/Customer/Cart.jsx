@@ -5,7 +5,6 @@ import { getCurrentTime } from "../utils/utils-time";
 class Cart extends Component {
   constructor(props) {
     super(props);
-    //this.state = { totalCost: 0, imageHash: "" };
   }
 
   checkOut = (event) => {
@@ -93,10 +92,16 @@ class Cart extends Component {
               <button
                 name={totalCost}
                 onClick={(event) => {
-                  console.log(getCurrentDate());
-                  console.log(getCurrentTime());
+                  var date = getCurrentDate();
+                  var time = getCurrentTime();
                   console.log(seller);
-                  //this.props.addToCart(event.target.name);
+                  this.props.purchaseProduct(
+                    this.props.custId,
+                    seller,
+                    totalCost,
+                    date,
+                    time
+                  );
                 }}
               >
                 Confirm Purchase
@@ -104,9 +109,9 @@ class Cart extends Component {
             </div>
             <div>
               <button
-                name={this.props.custId}
+                //id={this.props.custId}
                 onClick={(event) => {
-                  this.props.removeAllProdCart(event.target.name);
+                  this.props.removeAllProdCart(this.props.custId);
                 }}
               >
                 Remove All Products

@@ -61,9 +61,7 @@ class Purchase extends Component {
                               />
                             )}
                           </td>
-                          <td>
-                            <Dropdown>Add to Cart</Dropdown>
-                          </td>
+
                           <td>
                             <button
                               name={product.id}

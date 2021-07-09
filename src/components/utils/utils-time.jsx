@@ -1,7 +1,8 @@
 export function getCurrentTime() {
   let newDate = new Date();
 
-  let time = newDate.getHours() + ":" + newDate.getMinutes();
+  let hour = newDate.getHours();
+  let minutes = newDate.getMinutes();
 
-  return `${time}`;
+  return `${hour}:${minutes < 10 ? `0${minutes}` : `${minutes}`}`;
 }

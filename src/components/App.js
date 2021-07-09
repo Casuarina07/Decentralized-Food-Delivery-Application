@@ -39,6 +39,12 @@ export default function App() {
   const [custCart, setCustCart] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [custCount, setCustCount] = useState(0);
+  const [custOrders, setCustOrders] = useState([]);
+  const [custOrderItems, setCustOrderItems] = useState([]);
+
+  //order-details
+  const [orders, setOrders] = useState([]);
+  const [ordersCount, setOrdersCount] = useState(0);
 
   //acount-details
   const restPublicKey = "0x73c005D4B234C63F416F6e1038C011D55edDBF1e";
@@ -135,12 +141,33 @@ export default function App() {
             const prodId = await marketplace.methods
               .getCartProduct(cust.id, k)
               .call();
-            console.log("ProdId in cart: ", prodId);
             setCustCart((custCart) => [...custCart, prodId]);
           }
         }
       }
-      console.log(custCart);
+
+      //FETCH ORDERS
+      const ordersCount = await marketplace.methods.ordersCount().call();
+      setOrdersCount(ordersCount);
+      console.log("Orders Count: ", ordersCount);
+
+      for (var l = 1; l <= ordersCount; l++) {
+        const order = await marketplace.methods.orders(l).call();
+        setOrders((orders) => [...orders, order]);
+        if (order.owner.toString() === accounts.toString()) {
+          setCustOrders((custOrders) => [...custOrders, order]);
+          //console.log("TESTING: ", order.purchasedItemId(0));
+          //get the item that the order consists
+          for (var k = 1; k <= order.purchasedItemCount; k++) {
+            const prodId = await marketplace.methods
+              .getOrderProduct(order.id, k)
+              .call();
+            console.log("ProdId in cart: ", prodId);
+            setCustOrderItems((custOrderItems) => [...custOrderItems, prodId]);
+          }
+        }
+      }
+      console.log("Cust order Items: ", custOrderItems[0]);
       setLoading(false);
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
@@ -243,12 +270,24 @@ export default function App() {
       });
   };
 
-  const purchaseProduct = (id, price) => {
+  // const purchaseProduct = (id, price) => {
+  //   setLoading(true);
+  //   marketplace.methods
+  //     .purchaseProduct(id)
+  //     .send({ from: account, value: price })
+  //     .once("receipt", (receipt) => {
+  //       setLoading(false);
+  //     });
+  // };
+
+  const purchaseProduct = (custId, seller, totalCost, date, time) => {
     setLoading(true);
     marketplace.methods
-      .purchaseProduct(id)
-      .send({ from: account, value: price })
+      .purchaseProduct(custId, seller, totalCost, date, time)
+      .send({ from: account, value: totalCost })
       .once("receipt", (receipt) => {
+        alert("Successfully Purchased");
+        window.location.reload();
         setLoading(false);
       });
   };
@@ -303,6 +342,9 @@ export default function App() {
             addToCart={addToCart}
             removeProdCart={removeProdCart}
             removeAllProdCart={removeAllProdCart}
+            purchaseProduct={purchaseProduct}
+            custOrders={custOrders}
+            custOrderItems={custOrderItems}
           />
         ) : null}
       </Router>
