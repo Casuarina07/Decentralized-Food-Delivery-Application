@@ -43,6 +43,17 @@ class Orders extends Component {
                 {hawkerOrder.date} {hawkerOrder.time}
               </h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
+              <div style={{ display: "flex", marginBottom: 10 }}>
+                {hawkerOrder.state == 0 ? (
+                  <button
+                    onClick={(event) => {
+                      this.props.hawkerConfirmOrder(hawkerOrder.id);
+                    }}
+                  >
+                    Confirm Order
+                  </button>
+                ) : null}
+              </div>
 
               <table className="table">
                 <thead>
@@ -91,15 +102,6 @@ class Orders extends Component {
                               }
                             />
                           )}
-                        </td>
-                        <td>
-                          <button
-                            onClick={(event) => {
-                              this.props.hawkerConfirmOrder(hawkerOrder.id);
-                            }}
-                          >
-                            Confirm Order
-                          </button>
                         </td>
                       </tr>
                     );

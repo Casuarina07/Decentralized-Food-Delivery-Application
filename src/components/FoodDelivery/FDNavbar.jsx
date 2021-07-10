@@ -7,7 +7,7 @@ import ResponsiveNavigation from "../ResponsiveNavigation";
 import logo from "../logo.svg";
 import "../Navbar.css";
 
-function FDNavbar({ account }) {
+function FDNavbar({ account, custOrders }) {
   const navLinks = [
     {
       text: "Home",
@@ -38,7 +38,7 @@ function FDNavbar({ account }) {
       />
       <Router>
         <Home path="/" />
-        <Orders path="/orders" />
+        <Orders path="/orders" account={account} custOrders={custOrders} />
         <Profile path="/profile" account={account} />
       </Router>
     </div>

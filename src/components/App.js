@@ -194,7 +194,7 @@ export default function App() {
         }
       }
 
-      //set if customer, hawkers, suppliers or fooddelivery (fd)
+      // check if customer, hawkers, suppliers or fooddelivery (fd)
       for (var i = 0; i < custsPublicKey.length; i++) {
         if (accounts.toString() === custsPublicKey[i]) {
           console.log("Setting to true");
@@ -409,7 +409,7 @@ export default function App() {
             custOrderItems={custOrderItems}
           />
         ) : null}
-        {fdAcc ? <FDNavbar account={account} /> : null}
+        {fdAcc ? <FDNavbar account={account} custOrders={custOrders} /> : null}
       </Router>
     </div>
   );
