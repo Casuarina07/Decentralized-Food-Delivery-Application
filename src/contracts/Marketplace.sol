@@ -28,6 +28,12 @@ contract Marketplace {
             "50 Nanyang Ave, Singapore 639798",
             "98765432"
         );
+        addCustomer(
+            0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba,
+            "Patrick",
+            "50 Ang Mo Kio Ave 2, Singapore 639798",
+            "91234567"
+        );
     }
 
     //HAWKER
@@ -197,10 +203,10 @@ contract Marketplace {
         );
     }
 
+    //ORDERS
     enum Status {
         OrderPlaced,
         OrderConfirm,
-        FindingDriver,
         DriverConfirm,
         InTransit,
         OrderCompleted
@@ -210,6 +216,7 @@ contract Marketplace {
     struct Order {
         uint256 id;
         address owner;
+        address seller;
         uint256 totalPrice;
         mapping(uint256 => CartItem) purchasedItemId;
         uint256 purchasedItemCount;
@@ -333,6 +340,7 @@ contract Marketplace {
         orders[ordersCount] = Order(
             ordersCount,
             cust.owner,
+            _seller,
             _totalCost,
             cust.itemCount,
             _date,
@@ -353,6 +361,15 @@ contract Marketplace {
         removeAllProdCart(_custId);
     }
 
+    //hawker confirms order transaction made by customer
+    function hawkerConfirmOrder(uint256 _orderId) public {
+        uint256 i = 0;
+        for (i = 0; i <= ordersCount; i++) {
+            if (orders[i].id == _orderId) {
+                orders[i].state = Status.OrderConfirm;
+            }
+        }
+    }
     // function purchaseProduct(uint256 _id) public payable {
     //     //Fetch the product
     //     Product memory _product = products[_id];

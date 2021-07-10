@@ -26,6 +26,9 @@ function RestNavbar({
   hawkerPhone,
   hawkerBoolOpen,
   hawkers,
+  hawkerOrders,
+  hawkerOrderItems,
+  hawkerConfirmOrder,
 }) {
   const navLinks = [
     {
@@ -77,7 +80,13 @@ function RestNavbar({
           purchaseProduct={purchaseProduct}
         />
         <Home path="/" />
-        <Orders path="/orders" />
+        <Orders
+          path="/orders"
+          account={account}
+          hawkerOrders={hawkerOrders}
+          hawkerOrderItems={hawkerOrderItems}
+          hawkerConfirmOrder={hawkerConfirmOrder}
+        />
         <Sell
           path="/sell"
           account={account}

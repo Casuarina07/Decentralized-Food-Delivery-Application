@@ -6,6 +6,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import SuppNav from "./Supplier/SuppNavbar";
 import RestNavbar from "./Hawker/RestNavbar";
 import CustNavbar from "./Customer/CustNavbar";
+import FDNavbar from "./FoodDelivery/FDNavbar";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,17 @@ export default function App() {
     "0x73c005D4B234C63F416F6e1038C011D55edDBF1e",
     "0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5",
   ]);
+  const [custsPublicKey, setCustsPublicKey] = useState([
+    "0xC9342f12d49ca9e40d600eBF17266DcCc88a0639",
+    "0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba",
+  ]);
+  const [fdsPublicKey, setFDsPublicKey] = useState([
+    "0x66f8f66996aaB36b041b1cAdA9f20864a0C42698",
+  ]);
+  const [custAcc, setCustAcc] = useState(false);
+  const [hawkerAcc, setHawkerAcc] = useState(false);
+  const [supplierAcc, setSupplierAcc] = useState(false);
+  const [fdAcc, setFDAcc] = useState(false);
 
   //hawker-details
   const [hawkerName, setHawkerName] = useState("");
@@ -29,6 +41,8 @@ export default function App() {
   const [hawkerBoolOpen, setHawkerBoolOpen] = useState(false);
   const [hawkersCount, setHawkersCount] = useState(0);
   const [hawkers, setHawkers] = useState([]);
+  const [hawkerOrders, setHawkerOrders] = useState([]);
+  const [hawkerOrderItems, setHawkerOrderItems] = useState([]);
 
   //customer-details
   const [custId, setCustId] = useState(0);
@@ -49,7 +63,7 @@ export default function App() {
   //acount-details
   const restPublicKey = "0x73c005D4B234C63F416F6e1038C011D55edDBF1e";
   const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
-  const custPublicKey = "0xC9342f12d49ca9e40d600eBF17266DcCc88a0639";
+  //const custPublicKey = "0xC9342f12d49ca9e40d600eBF17266DcCc88a0639";
 
   useEffect(() => {
     loadWeb3();
@@ -156,18 +170,51 @@ export default function App() {
         setOrders((orders) => [...orders, order]);
         if (order.owner.toString() === accounts.toString()) {
           setCustOrders((custOrders) => [...custOrders, order]);
-          //console.log("TESTING: ", order.purchasedItemId(0));
           //get the item that the order consists
           for (var k = 1; k <= order.purchasedItemCount; k++) {
             const prodId = await marketplace.methods
               .getOrderProduct(order.id, k)
               .call();
-            console.log("ProdId in cart: ", prodId);
             setCustOrderItems((custOrderItems) => [...custOrderItems, prodId]);
           }
         }
+        // order inventory for each hawker
+        if (order.seller.toString() === accounts.toString()) {
+          setHawkerOrders((hawkerOrders) => [...hawkerOrders, order]);
+          //get the item that the order consists
+          for (var k = 1; k <= order.purchasedItemCount; k++) {
+            const prodId = await marketplace.methods
+              .getOrderProduct(order.id, k)
+              .call();
+            setHawkerOrderItems((hawkerOrderItems) => [
+              ...hawkerOrderItems,
+              prodId,
+            ]);
+          }
+        }
       }
-      console.log("Cust order Items: ", custOrderItems[0]);
+
+      //set if customer, hawkers, suppliers or fooddelivery (fd)
+      for (var i = 0; i < custsPublicKey.length; i++) {
+        if (accounts.toString() === custsPublicKey[i]) {
+          console.log("Setting to true");
+          setCustAcc(true);
+          return;
+        }
+      }
+      for (var i = 0; i < hawkersPublicKey.length; i++) {
+        if (accounts.toString() === hawkersPublicKey[i]) {
+          setHawkerAcc(true);
+          return;
+        }
+      }
+      for (var i = 0; i < fdsPublicKey.length; i++) {
+        if (accounts.toString() === fdsPublicKey[i]) {
+          setFDAcc(true);
+          return;
+        }
+      }
+
       setLoading(false);
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
@@ -258,6 +305,18 @@ export default function App() {
       });
   };
 
+  const hawkerConfirmOrder = (orderId) => {
+    setLoading(true);
+    marketplace.methods
+      .hawkerConfirmOrder(orderId)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Transaction confirmed");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
   const createRestProduct = (name, price, imageHash) => {
     setLoading(true);
     marketplace.methods
@@ -305,7 +364,7 @@ export default function App() {
             purchaseProduct={purchaseProduct}
           />
         ) : null}
-        {account === restPublicKey ? (
+        {hawkerAcc ? (
           <RestNavbar
             account={account}
             loading={loading}
@@ -322,9 +381,12 @@ export default function App() {
             hawkerOpeningHours={hawkerOpeningHours}
             hawkerPhone={hawkerPhone}
             hawkerBoolOpen={hawkerBoolOpen}
+            hawkerOrders={hawkerOrders}
+            hawkerOrderItems={hawkerOrderItems}
+            hawkerConfirmOrder={hawkerConfirmOrder}
           />
         ) : null}
-        {account === custPublicKey ? (
+        {custAcc ? (
           <CustNavbar
             account={account}
             loading={loading}
@@ -347,6 +409,7 @@ export default function App() {
             custOrderItems={custOrderItems}
           />
         ) : null}
+        {fdAcc ? <FDNavbar account={account} /> : null}
       </Router>
     </div>
   );

@@ -14,7 +14,7 @@ class Orders extends Component {
     var arrayCounter = 0;
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
-        <h2>Ordered</h2>
+        <h2>Transactions</h2>
         {this.props.custOrders.map((custOrder, key) => {
           this.orderNo = custOrder.id;
           this.itemCount = custOrder.purchasedItemCount;
@@ -39,9 +39,11 @@ class Orders extends Component {
           );
           return (
             <>
-              <h4 style={{ display: "flex" }}>{custOrder.date}</h4>
-              <h4 style={{ display: "flex" }}>{custOrder.time}</h4>
-              <h4 style={{ display: "flex" }}>{this.orderState}</h4>
+              <h4 style={{ display: "flex" }}>
+                {custOrder.date} {custOrder.time}
+              </h4>
+              <h4 style={{ display: "flex" }}></h4>
+              <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
 
               <table className="table">
                 <thead>

@@ -104,31 +104,34 @@ class Sell extends Component {
           </thead>
           <tbody id="productList">
             {this.props.restProducts.map((product, key) => {
-              return (
-                <tr>
-                  <td>{product.name}</td>
-                  <td>
-                    {window.web3.utils.fromWei(
-                      product.price.toString(),
-                      "Ether"
-                    )}{" "}
-                    Eth
-                  </td>
-                  <td>{product.owner}</td>
-                  <td>
-                    {product.imageHash == "" ? (
-                      <text>-</text>
-                    ) : (
-                      <img
-                        height="50"
-                        width="120"
-                        alt="logo"
-                        src={"https://ipfs.infura.io/ipfs/" + product.imageHash}
-                      />
-                    )}
-                  </td>
-                </tr>
-              );
+              if (product.owner === this.props.account)
+                return (
+                  <tr>
+                    <td>{product.name}</td>
+                    <td>
+                      {window.web3.utils.fromWei(
+                        product.price.toString(),
+                        "Ether"
+                      )}{" "}
+                      Eth
+                    </td>
+                    <td>{product.owner}</td>
+                    <td>
+                      {product.imageHash == "" ? (
+                        <text>-</text>
+                      ) : (
+                        <img
+                          height="50"
+                          width="120"
+                          alt="logo"
+                          src={
+                            "https://ipfs.infura.io/ipfs/" + product.imageHash
+                          }
+                        />
+                      )}
+                    </td>
+                  </tr>
+                );
             })}
           </tbody>
         </table>
