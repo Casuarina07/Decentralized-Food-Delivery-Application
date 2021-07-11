@@ -34,6 +34,48 @@ contract Marketplace {
             "50 Ang Mo Kio Ave 2, Singapore 639798",
             "91234567"
         );
+        addFoodDelivery(
+            0x66f8f66996aaB36b041b1cAdA9f20864a0C42698,
+            "Leo Tan",
+            "90123456",
+            false
+        );
+    }
+
+    //FOOD DELIVERY
+    struct FoodDelivery {
+        uint256 id;
+        address owner;
+        string name;
+        string phone;
+        int256 rating;
+        bool available;
+        mapping(uint256 => Order) ordersAccepted;
+        uint256 ordersAcceptedCount;
+    }
+
+    // Read/write Food Delivery
+    mapping(uint256 => FoodDelivery) public foodDeliveries;
+    //Store Food Delivery Count
+    uint256 public foodDeliveriesCount;
+
+    //add new food delivery
+    function addFoodDelivery(
+        address _owner,
+        string memory _name,
+        string memory _phone,
+        bool _available
+    ) public {
+        foodDeliveriesCount++;
+        foodDeliveries[foodDeliveriesCount] = FoodDelivery(
+            foodDeliveriesCount,
+            _owner,
+            _name,
+            _phone,
+            5,
+            _available,
+            0
+        );
     }
 
     //HAWKER
@@ -83,11 +125,22 @@ contract Marketplace {
         }
     }
 
+    //change shop status
     function boolOpen() public {
         uint256 i = 0;
         for (i = 0; i <= hawkersCount; i++) {
             if (hawkers[i].owner == msg.sender) {
                 hawkers[i].open = !(hawkers[i].open);
+            }
+        }
+    }
+
+    //change food delivery status
+    function boolWork() public {
+        uint256 i = 0;
+        for (i = 0; i <= foodDeliveriesCount; i++) {
+            if (foodDeliveries[i].owner == msg.sender) {
+                foodDeliveries[i].available = !(foodDeliveries[i].available);
             }
         }
     }

@@ -60,10 +60,13 @@ export default function App() {
   const [orders, setOrders] = useState([]);
   const [ordersCount, setOrdersCount] = useState(0);
 
+  //food-delivery
+  const [foodDeliveries, setFoodDeliveries] = useState([]);
+  const [fdCount, setFDCount] = useState(0);
+  const [fdDelivery, setFDDelivery] = useState([]);
+
   //acount-details
-  const restPublicKey = "0x73c005D4B234C63F416F6e1038C011D55edDBF1e";
   const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
-  //const custPublicKey = "0xC9342f12d49ca9e40d600eBF17266DcCc88a0639";
 
   useEffect(() => {
     loadWeb3();
@@ -194,6 +197,17 @@ export default function App() {
         }
       }
 
+      //FETCH FOOD DELIVERY
+      const fdCount = await marketplace.methods.foodDeliveriesCount().call();
+      setFDCount(fdCount);
+      for (var j = 1; j <= fdCount; j++) {
+        const foodDelivery = await marketplace.methods.foodDeliveries(j).call();
+        setFoodDeliveries((foodDelivery) => [...foodDeliveries, foodDelivery]);
+        if (foodDelivery.owner.toString() === accounts.toString()) {
+          setFDDelivery(foodDelivery);
+        }
+      }
+
       // check if customer, hawkers, suppliers or fooddelivery (fd)
       for (var i = 0; i < custsPublicKey.length; i++) {
         if (accounts.toString() === custsPublicKey[i]) {
@@ -276,6 +290,18 @@ export default function App() {
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Shop status changed");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const boolWork = () => {
+    setLoading(true);
+    marketplace.methods
+      .boolWork()
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Status changed");
         window.location.reload();
         setLoading(false);
       });
@@ -409,7 +435,14 @@ export default function App() {
             custOrderItems={custOrderItems}
           />
         ) : null}
-        {fdAcc ? <FDNavbar account={account} custOrders={custOrders} /> : null}
+        {fdAcc ? (
+          <FDNavbar
+            account={account}
+            custOrders={custOrders}
+            fdDelivery={fdDelivery}
+            boolWork={boolWork}
+          />
+        ) : null}
       </Router>
     </div>
   );
