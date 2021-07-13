@@ -14,7 +14,7 @@ class Orders extends Component {
     var arrayCounter = 0;
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
-        <h2>Transactions</h2>
+        <h2>Transaction History</h2>
         {this.props.custOrders.map((custOrder, key) => {
           this.orderNo = custOrder.id;
           this.itemCount = custOrder.purchasedItemCount;
@@ -24,8 +24,6 @@ class Orders extends Component {
             this.orderState = "Finding Driver";
           } else if (custOrder.state == 2) {
             this.orderState = "Driver Confirmed";
-          } else if (custOrder.state == 4) {
-            this.orderState = "In Transit";
           } else {
             this.orderState = "Order Completed";
           }
@@ -44,6 +42,14 @@ class Orders extends Component {
               </h4>
               <h4 style={{ display: "flex" }}></h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
+              {custOrder.state >= 2 && custOrder.state < 3 ? (
+                <div>
+                  <h5 style={{ display: "flex" }}>Delivery in Progress</h5>
+                  <h5 style={{ display: "flex" }}>
+                    Driver: {custOrder.driver}
+                  </h5>
+                </div>
+              ) : null}
 
               <table className="table">
                 <thead>

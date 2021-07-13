@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Blockchain
 
 pragma solidity ^0.5.4;
+
 pragma experimental ABIEncoderV2;
 
 contract Marketplace {
@@ -261,7 +262,6 @@ contract Marketplace {
         OrderPlaced,
         OrderConfirm,
         DriverConfirm,
-        InTransit,
         OrderCompleted
     }
     Status public state;
@@ -270,6 +270,7 @@ contract Marketplace {
         uint256 id;
         address owner;
         address seller;
+        address driver;
         uint256 totalPrice;
         mapping(uint256 => CartItem) purchasedItemId;
         uint256 purchasedItemCount;
@@ -394,6 +395,7 @@ contract Marketplace {
             ordersCount,
             cust.owner,
             _seller,
+            address(0),
             _totalCost,
             cust.itemCount,
             _date,
@@ -423,6 +425,60 @@ contract Marketplace {
             }
         }
     }
+
+    //food delivery accepts order delivery
+    function fdAcceptOrder(uint256 _orderId) public {
+        //set orderId state to DriverConfirm
+        uint256 i = 0;
+        for (i = 0; i <= ordersCount; i++) {
+            if (orders[i].id == _orderId) {
+                orders[i].state = Status.DriverConfirm;
+                orders[i].driver = msg.sender;
+            }
+        }
+
+        Order memory _order = orders[_orderId];
+        address _owner = _order.owner;
+        address _seller = _order.seller;
+        uint256 _totalPrice = _order.totalPrice;
+        uint256 _purchasedItemCount = _order.purchasedItemCount;
+        string memory _date = _order.date;
+        string memory _time = _order.time;
+        Status _state = _order.state;
+
+        //add the order to the acceptedOrder mapping for the fd
+        uint256 k = 0;
+        for (k = 0; k <= foodDeliveriesCount; k++) {
+            if (foodDeliveries[k].owner == msg.sender) {
+                (foodDeliveries[k].ordersAcceptedCount)++;
+                foodDeliveries[k].ordersAccepted[
+                    foodDeliveries[k].ordersAcceptedCount
+                ] = Order(
+                    foodDeliveries[k].ordersAcceptedCount,
+                    _owner,
+                    _seller,
+                    msg.sender,
+                    _totalPrice,
+                    _purchasedItemCount,
+                    _date,
+                    _time,
+                    _state
+                );
+            }
+        }
+    }
+
+    //food delivery completes order delivery
+    function fdCompleteOrder(uint256 _orderId) public {
+        //set orderId state to OrderCompleted
+        uint256 i = 0;
+        for (i = 0; i <= ordersCount; i++) {
+            if (orders[i].id == _orderId) {
+                orders[i].state = Status.OrderCompleted;
+            }
+        }
+    }
+
     // function purchaseProduct(uint256 _id) public payable {
     //     //Fetch the product
     //     Product memory _product = products[_id];

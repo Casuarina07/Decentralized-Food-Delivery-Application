@@ -64,6 +64,10 @@ export default function App() {
   const [foodDeliveries, setFoodDeliveries] = useState([]);
   const [fdCount, setFDCount] = useState(0);
   const [fdDelivery, setFDDelivery] = useState([]);
+  const [fdDeliveryOrders, setFDDeliveryOrders] = useState([]);
+  const [fdOrderItems, setFDOrderItems] = useState([]);
+  const [fdAcceptedOrders, setFDAcceptedOrders] = useState([]);
+  const [fdAcceptedOrderItems, setFDAcceptedOrderItems] = useState([]);
 
   //acount-details
   const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
@@ -154,6 +158,7 @@ export default function App() {
           setCustPhone(cust.phone);
           setCartCount(cust.itemCount);
 
+          //fetch cart products
           for (var k = 1; k <= cust.itemCount; k++) {
             const prodId = await marketplace.methods
               .getCartProduct(cust.id, k)
@@ -195,6 +200,42 @@ export default function App() {
             ]);
           }
         }
+
+        // orders inventory for food delivery - state.OrderConfirm
+        if (order.state == 1) {
+          setFDDeliveryOrders((fdDeliveryOrders) => [
+            ...fdDeliveryOrders,
+            order,
+          ]);
+          for (var k = 1; k <= order.purchasedItemCount; k++) {
+            const prodId = await marketplace.methods
+              .getOrderProduct(order.id, k)
+              .call();
+            setFDOrderItems((fdOrderItems) => [...fdOrderItems, prodId]);
+          }
+        }
+
+        //fetch accepted orders
+        if (
+          order.state >= 2 &&
+          order.driver.toString() == accounts.toString()
+        ) {
+          console.log("Hello");
+          setFDAcceptedOrders((fdAcceptedOrders) => [
+            ...fdAcceptedOrders,
+            order,
+          ]);
+
+          for (var k = 1; k <= order.purchasedItemCount; k++) {
+            const prodId = await marketplace.methods
+              .getOrderProduct(order.id, k)
+              .call();
+            setFDAcceptedOrderItems((fdAcceptedOrderItems) => [
+              ...fdAcceptedOrderItems,
+              prodId,
+            ]);
+          }
+        }
       }
 
       //FETCH FOOD DELIVERY
@@ -205,6 +246,7 @@ export default function App() {
         setFoodDeliveries((foodDelivery) => [...foodDeliveries, foodDelivery]);
         if (foodDelivery.owner.toString() === accounts.toString()) {
           setFDDelivery(foodDelivery);
+          console.log("Accepted count: ", foodDelivery.ordersAcceptedCount);
         }
       }
 
@@ -343,6 +385,30 @@ export default function App() {
       });
   };
 
+  const fdAcceptOrder = (orderId) => {
+    setLoading(true);
+    marketplace.methods
+      .fdAcceptOrder(orderId)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Order accepted");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const fdCompleteOrder = (orderId) => {
+    setLoading(true);
+    marketplace.methods
+      .fdCompleteOrder(orderId)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Order accepted");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
   const createRestProduct = (name, price, imageHash) => {
     setLoading(true);
     marketplace.methods
@@ -441,6 +507,12 @@ export default function App() {
             custOrders={custOrders}
             fdDelivery={fdDelivery}
             boolWork={boolWork}
+            fdDeliveryOrders={fdDeliveryOrders}
+            fdOrderItems={fdOrderItems}
+            fdAcceptOrder={fdAcceptOrder}
+            fdAcceptedOrders={fdAcceptedOrders}
+            fdAcceptedOrderItems={fdAcceptedOrderItems}
+            fdCompleteOrder={fdCompleteOrder}
           />
         ) : null}
       </Router>

@@ -8,6 +8,7 @@ export default function Profile({ account, fdDelivery, boolWork }) {
     boolWork();
   }
 
+  console.log("FDDELIVERY PROFILE: ", fdDelivery);
   return (
     <div style={{ marginTop: 20, marginBottom: 30 }}>
       <FaUserCircle size={60} color="#016094" />
@@ -26,7 +27,7 @@ export default function Profile({ account, fdDelivery, boolWork }) {
           <label>{fdDelivery.phone}</label>
         </div>
 
-        <b>Deliveries Completed: </b>
+        <b>Deliveries Accepted: </b>
         <div style={{ padding: 5 }}>
           <label>{fdDelivery.ordersAcceptedCount}</label>
         </div>
