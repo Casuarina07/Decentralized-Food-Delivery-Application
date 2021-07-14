@@ -90,7 +90,7 @@ class Orders extends Component {
                         </td>
                         <td>
                           {product.imageHash == "" ? (
-                            <text>-</text>
+                            <label>-</label>
                           ) : (
                             <img
                               height="50"

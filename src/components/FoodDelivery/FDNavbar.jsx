@@ -9,7 +9,6 @@ import "../Navbar.css";
 
 function FDNavbar({
   account,
-  custOrders,
   fdDelivery,
   boolWork,
   fdDeliveryOrders,
@@ -52,6 +51,7 @@ function FDNavbar({
         <Orders
           path="/orders"
           account={account}
+          fdDelivery={fdDelivery}
           fdDeliveryOrders={fdDeliveryOrders}
           fdOrderItems={fdOrderItems}
           fdAcceptOrder={fdAcceptOrder}
@@ -64,6 +64,7 @@ function FDNavbar({
           account={account}
           fdDelivery={fdDelivery}
           boolWork={boolWork}
+          fdAcceptedOrders={fdAcceptedOrders}
         />
       </Router>
     </div>

@@ -165,7 +165,7 @@ contract Marketplace {
         string name;
         uint256 price;
         address payable owner;
-        bool purchased;
+        bool published;
         string imageHash;
     }
 
@@ -229,6 +229,7 @@ contract Marketplace {
     function createRestProduct(
         string memory _name,
         uint256 _price,
+        bool _published,
         string memory _imageHash
     ) public {
         // Require a valid name
@@ -243,7 +244,7 @@ contract Marketplace {
             _name,
             _price,
             msg.sender,
-            false,
+            _published,
             _imageHash
         );
         // Trigger an event
@@ -252,7 +253,7 @@ contract Marketplace {
             _name,
             _price,
             msg.sender,
-            false,
+            _published,
             _imageHash
         );
     }

@@ -49,7 +49,7 @@ class Cart extends Component {
                             <td>{product.owner}</td>
                             <td>
                               {product.imageHash == "" ? (
-                                <text>-</text>
+                                <label>-</label>
                               ) : (
                                 <img
                                   height="50"
@@ -84,43 +84,45 @@ class Cart extends Component {
               );
             })}
           </table>
-          <div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
             Total: {window.web3.utils.fromWei(totalCost.toString(), "Ether")}{" "}
             Eth
           </div>
-          {this.props.custCart.length > 0 ? (
-            <>
-              <div>
-                <button
-                  name={totalCost}
-                  onClick={(event) => {
-                    var date = getCurrentDate();
-                    var time = getCurrentTime();
-                    console.log(seller);
-                    this.props.purchaseProduct(
-                      this.props.custId,
-                      seller,
-                      totalCost,
-                      date,
-                      time
-                    );
-                  }}
-                >
-                  Confirm Purchase
-                </button>
-              </div>
-              <div>
-                <button
-                  //id={this.props.custId}
-                  onClick={(event) => {
-                    this.props.removeAllProdCart(this.props.custId);
-                  }}
-                >
-                  Remove All Products
-                </button>
-              </div>
-            </>
-          ) : null}
+          <div
+            style={{
+              marginBottom: 20,
+              marginTop: 10,
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <button
+              name={totalCost}
+              onClick={(event) => {
+                var date = getCurrentDate();
+                var time = getCurrentTime();
+                console.log(seller);
+                this.props.purchaseProduct(
+                  this.props.custId,
+                  seller,
+                  totalCost,
+                  date,
+                  time
+                );
+              }}
+            >
+              Confirm Purchase
+            </button>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              onClick={(event) => {
+                this.props.removeAllProdCart(this.props.custId);
+              }}
+            >
+              Remove All Products
+            </button>
+          </div>
         </div>
       );
     } else {

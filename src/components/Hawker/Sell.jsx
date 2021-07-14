@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import "./Rest.css";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
 const { create } = require("ipfs-http-client");
 const ipfs = create({
@@ -11,9 +13,15 @@ const ipfs = create({
 class Sell extends Component {
   constructor(props) {
     super(props);
-    this.state = { buffer: null, imageHash: "" };
+    this.state = {
+      buffer: null,
+      imageHash: "",
+      imageChange: false,
+      publish: true,
+    };
   }
   captureFile = (event) => {
+    this.imageChange = true;
     event.preventDefault();
     console.log("file captured...");
     //Process file for IPFS - convert to buffer
@@ -33,24 +41,40 @@ class Sell extends Component {
     );
     // Image file adding ipfs - Example hash - QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
     // Example URL - https://ipfs.infura.io/ipfs/QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
-    const file = ipfs.add(this.state.buffer);
-    const resultPromise = file.then(function (result) {
-      console.log("result", result.path.toString());
-      return result.path.toString();
-    });
+    if (this.imageChange == true) {
+      const file = ipfs.add(this.state.buffer);
+      const resultPromise = file.then(function (result) {
+        console.log("result", result.path.toString());
+        return result.path.toString();
+      });
 
-    resultPromise.then((path) => {
-      console.log("Path: ", path);
-      this.setState({ imageHash: path });
-      const img = this.state.imageHash;
-      console.log("Img: ", img);
+      resultPromise.then((path) => {
+        console.log("Path: ", path);
+        this.setState({ imageHash: path });
+        const img = this.state.imageHash;
+        console.log("Img: ", img);
 
-      //create product
-      this.props.createProduct(name, price, this.state.imageHash);
-    });
+        //create product
+        this.props.createProduct(
+          name,
+          price,
+          this.publish,
+          this.state.imageHash
+        );
+      });
+    } else {
+      //create product without imageHash
+      this.props.createProduct(name, price, this.publish, "");
+    }
+  };
+
+  handleSwitch = (event) => {
+    this.publish = !this.publish;
+    console.log("Publish State: ", this.publish);
   };
 
   render() {
+    console.log("What is this: ", this.props.restProducts);
     return (
       <div style={{ margin: 60, marginTop: 30 }}>
         <h1>Add Product</h1>
@@ -86,6 +110,19 @@ class Sell extends Component {
               onChange={this.captureFile}
             />
           </div>
+          <div style={{ display: "flex" }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.publish}
+                  onChange={this.handleSwitch}
+                  name="publish"
+                  color="primary"
+                />
+              }
+              label="Publish"
+            />
+          </div>
 
           <button type="submit" className="btn btn-primary">
             Add Product
@@ -118,7 +155,7 @@ class Sell extends Component {
                     <td>{product.owner}</td>
                     <td>
                       {product.imageHash == "" ? (
-                        <text>-</text>
+                        <label>-</label>
                       ) : (
                         <img
                           height="50"

@@ -403,16 +403,16 @@ export default function App() {
       .fdCompleteOrder(orderId)
       .send({ from: account })
       .once("receipt", (receipt) => {
-        alert("Order accepted");
+        alert("Order completed");
         window.location.reload();
         setLoading(false);
       });
   };
 
-  const createRestProduct = (name, price, imageHash) => {
+  const createRestProduct = (name, price, published, imageHash) => {
     setLoading(true);
     marketplace.methods
-      .createRestProduct(name, price, imageHash)
+      .createRestProduct(name, price, published, imageHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully created");

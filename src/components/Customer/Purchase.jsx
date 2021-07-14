@@ -35,7 +35,10 @@ class Purchase extends Component {
                 </thead>
                 <tbody id="productList">
                   {this.props.restProducts.map((product, key) => {
-                    if (product.owner == hawker.owner)
+                    if (
+                      product.owner == hawker.owner &&
+                      product.published == true
+                    )
                       return (
                         <tr key={key}>
                           <td>{product.name}</td>
@@ -48,7 +51,7 @@ class Purchase extends Component {
                           </td>
                           <td>
                             {product.imageHash == "" ? (
-                              <text>-</text>
+                              <label>-</label>
                             ) : (
                               <img
                                 height="50"

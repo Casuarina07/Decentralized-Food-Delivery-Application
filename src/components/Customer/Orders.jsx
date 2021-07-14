@@ -9,7 +9,7 @@ class Orders extends Component {
   }
 
   render() {
-    console.log(this.props.custOrderItems);
+    console.log("History: ", this.props.custOrderItems);
     var counter = 1;
     var arrayCounter = 0;
     return (
@@ -42,6 +42,11 @@ class Orders extends Component {
               </h4>
               <h4 style={{ display: "flex" }}></h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
+              {custOrder.state == 3 ? (
+                <div style={{ display: "flex", marginBottom: 10 }}>
+                  <button>Rate Transaction</button>
+                </div>
+              ) : null}
               {custOrder.state >= 2 && custOrder.state < 3 ? (
                 <div>
                   <h5 style={{ display: "flex" }}>Delivery in Progress</h5>
@@ -86,7 +91,7 @@ class Orders extends Component {
                         </td>
                         <td>
                           {product.imageHash == "" ? (
-                            <text>-</text>
+                            <label>-</label>
                           ) : (
                             <img
                               height="50"

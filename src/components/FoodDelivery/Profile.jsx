@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
 
-export default function Profile({ account, fdDelivery, boolWork }) {
-  const [editClicked, setEditClicked] = useState(false);
-
+export default function Profile({
+  account,
+  fdDelivery,
+  boolWork,
+  fdAcceptedOrders,
+}) {
+  const [completedCount, setCompletedCount] = useState(0);
   function changeAvailability() {
+    for (var i = 0; i < fdAcceptedOrders.length; i++) {
+      if (fdAcceptedOrders[i].state < 3) {
+        alert("You still have ongoing orders. Please complete before stopping");
+        return;
+      }
+      if (fdAcceptedOrders[i].state == 3) {
+        setCompletedCount(completedCount++);
+      }
+    }
     boolWork();
   }
 
-  console.log("FDDELIVERY PROFILE: ", fdDelivery);
   return (
     <div style={{ marginTop: 20, marginBottom: 30 }}>
       <FaUserCircle size={60} color="#016094" />
@@ -39,7 +51,7 @@ export default function Profile({ account, fdDelivery, boolWork }) {
             onClick={changeAvailability}
             style={{ margin: 10, background: "red", color: "white" }}
           >
-            Stop
+            End
           </button>
         ) : (
           <button

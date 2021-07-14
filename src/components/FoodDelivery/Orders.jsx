@@ -3,7 +3,12 @@ import React, { Component } from "react";
 class Orders extends Component {
   constructor(props) {
     super(props);
-    this.state = { orderNo: 0, itemCount: 0, orderState: 0 };
+    this.state = {
+      orderNo: 0,
+      itemCount: 0,
+      orderState: 0,
+      disable: false,
+    };
   }
 
   render() {
@@ -11,12 +16,19 @@ class Orders extends Component {
       counter2 = 1;
     var arrayCounter = 0,
       arrayCounter2 = 0;
+    {
+      this.props.fdDelivery.available
+        ? (this.disable = false)
+        : (this.disable = true);
+    }
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
         {console.log("Accepted Orders: ", this.props.fdAcceptedOrders)}
 
         {/* Accepted Orders */}
-        <h2>Accepted Orders</h2>
+        {this.props.fdAcceptedOrders.length > 0 ? (
+          <h2>Accepted orders</h2>
+        ) : null}
         {this.props.fdAcceptedOrders.map((fdAcceptedOrder, key) => {
           this.orderNo = fdAcceptedOrder.id;
           this.itemCount = fdAcceptedOrder.purchasedItemCount;
@@ -36,14 +48,25 @@ class Orders extends Component {
                 {fdAcceptedOrder.date} {fdAcceptedOrder.time}
               </h4>
 
-              <button
-                style={{ display: "flex", marginBottom: 10 }}
-                onClick={(event) => {
-                  this.props.fdCompleteOrder(fdAcceptedOrder.id);
-                }}
-              >
-                Complete Order
-              </button>
+              {fdAcceptedOrder.state == 3 ? (
+                <button
+                  style={{ display: "flex", marginBottom: 10, opacity: 0.5 }}
+                  onClick={(event) => {
+                    alert("This order is completed");
+                  }}
+                >
+                  Complete Order
+                </button>
+              ) : (
+                <button
+                  style={{ display: "flex", marginBottom: 10 }}
+                  onClick={(event) => {
+                    this.props.fdCompleteOrder(fdAcceptedOrder.id);
+                  }}
+                >
+                  Complete Order
+                </button>
+              )}
 
               <table className="table">
                 <thead>
@@ -82,7 +105,7 @@ class Orders extends Component {
                         </td>
                         <td>
                           {product.imageHash == "" ? (
-                            <text>-</text>
+                            <label>-</label>
                           ) : (
                             <img
                               height="50"
@@ -105,7 +128,11 @@ class Orders extends Component {
         })}
 
         {/* Not Accepted Orders */}
-        <h2>Other Orders</h2>
+        {this.props.fdDeliveryOrders.length < 1 ? (
+          <h2>No available orders</h2>
+        ) : (
+          <h2>Available Orders</h2>
+        )}
         {this.props.fdDeliveryOrders.map((fdDeliveryOrder, key) => {
           this.orderNo = fdDeliveryOrder.id;
           this.itemCount = fdDeliveryOrder.purchasedItemCount;
@@ -137,7 +164,7 @@ class Orders extends Component {
               </h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
               <div style={{ display: "flex", marginBottom: 10 }}>
-                {fdDeliveryOrder.state == 1 ? (
+                {fdDeliveryOrder.state == 1 && this.disable == false ? (
                   <button
                     onClick={(event) => {
                       this.props.fdAcceptOrder(fdDeliveryOrder.id);
@@ -145,7 +172,16 @@ class Orders extends Component {
                   >
                     Accept Order
                   </button>
-                ) : null}
+                ) : (
+                  <button
+                    style={{ opacity: 0.6 }}
+                    onClick={(event) => {
+                      alert("Please start shift");
+                    }}
+                  >
+                    Accept Order
+                  </button>
+                )}
               </div>
 
               <table className="table">
@@ -183,7 +219,7 @@ class Orders extends Component {
                         </td>
                         <td>
                           {product.imageHash == "" ? (
-                            <text>-</text>
+                            <label>-</label>
                           ) : (
                             <img
                               height="50"
