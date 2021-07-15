@@ -41,7 +41,7 @@ class Sell extends Component {
     );
     // Image file adding ipfs - Example hash - QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
     // Example URL - https://ipfs.infura.io/ipfs/QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
-    if (this.imageChange == true) {
+    if (this.imageChange === true) {
       const file = ipfs.add(this.state.buffer);
       const resultPromise = file.then(function (result) {
         console.log("result", result.path.toString());
@@ -154,7 +154,7 @@ class Sell extends Component {
                     </td>
                     <td>{product.owner}</td>
                     <td>
-                      {product.imageHash == "" ? (
+                      {product.imageHash === "" ? (
                         <label>-</label>
                       ) : (
                         <img

@@ -16,13 +16,13 @@ class Orders extends Component {
         {this.props.hawkerOrders.map((hawkerOrder, key) => {
           this.orderNo = hawkerOrder.id;
           this.itemCount = hawkerOrder.purchasedItemCount;
-          if (hawkerOrder.state == 0) {
+          if (hawkerOrder.state === 0) {
             this.orderState = "Order Placed";
-          } else if (hawkerOrder.state == 1) {
+          } else if (hawkerOrder.state === 1) {
             this.orderState = "Finding Driver";
           } else if (hawkerOrder.state == 2) {
             this.orderState = "Driver Confirmed";
-          } else if (hawkerOrder.state == 4) {
+          } else if (hawkerOrder.state === 4) {
             this.orderState = "In Transit";
           } else {
             this.orderState = "Order Completed";
@@ -44,7 +44,7 @@ class Orders extends Component {
               </h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
               <div style={{ display: "flex", marginBottom: 10 }}>
-                {hawkerOrder.state == 0 ? (
+                {hawkerOrder.state === 0 ? (
                   <button
                     onClick={(event) => {
                       this.props.hawkerConfirmOrder(hawkerOrder.id);

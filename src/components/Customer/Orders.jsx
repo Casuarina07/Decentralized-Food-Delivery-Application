@@ -1,14 +1,28 @@
 import React, { Component } from "react";
 import { BsConeStriped } from "react-icons/bs";
+import Modal from "@material-ui/core/Modal";
 import "./Cust.css";
+import { Button, ButtonToolbar } from "react-bootstrap";
+import { RateModal } from "./RateModal";
 
 class Orders extends Component {
   constructor(props) {
     super(props);
-    this.state = { orderNo: 0, itemCount: 0, orderState: 0 };
+    this.state = {
+      orderNo: 0,
+      itemCount: 0,
+      orderState: 0,
+      rateModalShow: false,
+    };
   }
 
+  handleShow = (event) => {
+    this.rateShow = !this.rateShow;
+    console.log("Rate Show: ", this.rateShow);
+  };
+
   render() {
+    let rateModalClose = () => this.setState({ rateModalShow: false });
     console.log("History: ", this.props.custOrderItems);
     var counter = 1;
     var arrayCounter = 0;
@@ -44,7 +58,24 @@ class Orders extends Component {
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
               {custOrder.state == 3 ? (
                 <div style={{ display: "flex", marginBottom: 10 }}>
-                  <button>Rate Transaction</button>
+                  <ButtonToolbar>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        this.setState({ rateModalShow: true });
+                        console.log(
+                          "What is this now: ",
+                          this.state.rateModalShow
+                        );
+                      }}
+                    >
+                      Rate
+                    </Button>
+                    <RateModal
+                      show={this.state.rateModalShow}
+                      onHide={rateModalClose}
+                    />
+                  </ButtonToolbar>
                 </div>
               ) : null}
               {custOrder.state >= 2 && custOrder.state < 3 ? (
