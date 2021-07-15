@@ -53,6 +53,8 @@ contract Marketplace {
         bool available;
         mapping(uint256 => Order) ordersAccepted;
         uint256 ordersAcceptedCount;
+        mapping(uint256 => Feedback) feedbacks;
+        uint256 feedbackCount;
     }
 
     // Read/write Food Delivery
@@ -75,6 +77,7 @@ contract Marketplace {
             _phone,
             5,
             _available,
+            0,
             0
         );
     }
@@ -87,13 +90,25 @@ contract Marketplace {
         string addressLocation;
         string openingHours;
         string phone;
-        int256 rating;
+        int256 avgRating;
         bool open;
+        mapping(uint256 => Feedback) feedbacks;
+        uint256 feedbackCount;
     }
+
     // Read/write Hawkers
     mapping(uint256 => Hawker) public hawkers;
     //Store Hawkers Count
     uint256 public hawkersCount;
+
+    //FEEDBACK
+    struct Feedback {
+        uint256 id;
+        address seller;
+        address customer;
+        uint256 rate;
+        string comment;
+    }
 
     function addHawker(
         address _owner,
@@ -112,7 +127,8 @@ contract Marketplace {
             _openingHours,
             _phone,
             5,
-            _open
+            _open,
+            0
         );
     }
 
@@ -278,6 +294,7 @@ contract Marketplace {
         string date;
         string time;
         Status state;
+        bool rated;
     }
 
     mapping(uint256 => Order) public orders;
@@ -378,6 +395,74 @@ contract Marketplace {
         return (_product);
     }
 
+    function getHawkerFeedback(uint256 hawkerId, uint256 feedbackCount)
+        public
+        returns (Feedback memory)
+    {
+        Hawker storage hawker = hawkers[hawkerId];
+        Feedback memory _feedback = hawker.feedbacks[feedbackCount];
+        return (_feedback);
+    }
+
+    function getFdFeedback(uint256 fdId, uint256 feedbackCount)
+        public
+        returns (Feedback memory)
+    {
+        FoodDelivery storage fd = foodDeliveries[fdId];
+        Feedback memory _feedback = fd.feedbacks[feedbackCount];
+        return (_feedback);
+    }
+
+    function setRating(
+        uint256 _orderId,
+        address _hawker,
+        uint256 _hawkerRate,
+        string memory _hawkerComment,
+        address _foodDelivery,
+        uint256 _fdRate,
+        string memory _fdComment
+    ) public {
+        //set order rated boolean to true
+        uint256 j = 0;
+        for (j = 0; j <= ordersCount; j++) {
+            if (orders[j].id == _orderId) {
+                orders[j].rated = true;
+            }
+        }
+
+        //set hawker feedback
+        uint256 i = 0;
+        for (i = 0; i <= hawkersCount; i++) {
+            if (hawkers[i].owner == _hawker) {
+                (hawkers[i].feedbackCount)++;
+                hawkers[i].feedbacks[hawkers[i].feedbackCount] = Feedback(
+                    hawkers[i].feedbackCount,
+                    _hawker,
+                    msg.sender,
+                    _hawkerRate,
+                    _hawkerComment
+                );
+            }
+        }
+
+        //set fd feedback
+        uint256 k = 0;
+        for (k = 0; k <= foodDeliveriesCount; k++) {
+            if (foodDeliveries[k].owner == _foodDelivery) {
+                (foodDeliveries[k].feedbackCount)++;
+                foodDeliveries[k].feedbacks[
+                    foodDeliveries[k].feedbackCount
+                ] = Feedback(
+                    foodDeliveries[k].feedbackCount,
+                    _foodDelivery,
+                    msg.sender,
+                    _fdRate,
+                    _fdComment
+                );
+            }
+        }
+    }
+
     function purchaseProduct(
         uint256 _custId,
         address payable _seller,
@@ -401,7 +486,8 @@ contract Marketplace {
             cust.itemCount,
             _date,
             _time,
-            state
+            state,
+            false
         );
 
         //add the items in cartItems(Customer structure) to purchasedItemId (Order structure)
@@ -463,7 +549,8 @@ contract Marketplace {
                     _purchasedItemCount,
                     _date,
                     _time,
-                    _state
+                    _state,
+                    false
                 );
             }
         }

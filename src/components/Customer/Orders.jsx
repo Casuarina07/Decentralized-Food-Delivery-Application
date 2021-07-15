@@ -13,6 +13,8 @@ class Orders extends Component {
       itemCount: 0,
       orderState: 0,
       rateModalShow: false,
+      seller: "",
+      driver: "",
     };
   }
 
@@ -23,7 +25,6 @@ class Orders extends Component {
 
   render() {
     let rateModalClose = () => this.setState({ rateModalShow: false });
-    console.log("History: ", this.props.custOrderItems);
     var counter = 1;
     var arrayCounter = 0;
     return (
@@ -58,24 +59,37 @@ class Orders extends Component {
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
               {custOrder.state == 3 ? (
                 <div style={{ display: "flex", marginBottom: 10 }}>
-                  <ButtonToolbar>
+                  {custOrder.rated == false ? (
+                    <ButtonToolbar>
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          this.setState({ rateModalShow: true });
+                          this.setState({ seller: custOrder.seller });
+                          this.setState({ driver: custOrder.driver });
+                        }}
+                      >
+                        Rate
+                      </Button>
+                      <RateModal
+                        show={this.state.rateModalShow}
+                        onHide={rateModalClose}
+                        orderId={custOrder.id}
+                        hawkers={this.props.hawkers}
+                        seller={this.state.seller}
+                        driver={this.state.driver}
+                        setRating={this.props.setRating}
+                      />
+                    </ButtonToolbar>
+                  ) : (
                     <Button
                       variant="primary"
-                      onClick={() => {
-                        this.setState({ rateModalShow: true });
-                        console.log(
-                          "What is this now: ",
-                          this.state.rateModalShow
-                        );
-                      }}
+                      disabled
+                      style={{ pointerEvents: "none", opacity: 0.5 }}
                     >
-                      Rate
+                      Rated
                     </Button>
-                    <RateModal
-                      show={this.state.rateModalShow}
-                      onHide={rateModalClose}
-                    />
-                  </ButtonToolbar>
+                  )}
                 </div>
               ) : null}
               {custOrder.state >= 2 && custOrder.state < 3 ? (
@@ -86,6 +100,16 @@ class Orders extends Component {
                   </h5>
                 </div>
               ) : null}
+
+              {this.props.hawkers.map((hawker, key) => {
+                if (hawker.owner == custOrder.seller) {
+                  return (
+                    <div style={{ display: "flex" }}>
+                      <h5>Ordered from: {hawker.name}</h5>
+                    </div>
+                  );
+                }
+              })}
 
               <table className="table">
                 <thead>

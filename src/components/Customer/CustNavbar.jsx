@@ -29,6 +29,8 @@ function CustNavbar({
   purchaseProduct,
   custOrders,
   custOrderItems,
+  setRating,
+  hawkerFeedback,
 }) {
   const navLinks = [
     {
@@ -86,6 +88,8 @@ function CustNavbar({
           custOrders={custOrders}
           custOrderItems={custOrderItems}
           restProducts={restProducts}
+          hawkers={hawkers}
+          setRating={setRating}
         />
         <Profile
           path="/profile"
@@ -99,6 +103,7 @@ function CustNavbar({
           path="/hawkerInfo/:id"
           hawkers={hawkers}
           hawkersCount={hawkersCount}
+          hawkerFeedback={hawkerFeedback}
         />
         <Cart
           path="/cart"

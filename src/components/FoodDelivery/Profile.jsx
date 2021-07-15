@@ -10,13 +10,16 @@ export default function Profile({
   const [completedCount, setCompletedCount] = useState(0);
   function changeAvailability() {
     for (var i = 0; i < fdAcceptedOrders.length; i++) {
+      console.log("what is this: ", fdAcceptedOrders[i].state);
       if (fdAcceptedOrders[i].state < 3) {
         alert("You still have ongoing orders. Please complete before stopping");
         return;
       }
-      if (fdAcceptedOrders[i].state == 3) {
-        setCompletedCount(completedCount++);
-      }
+
+      // if (fdAcceptedOrders[i].state == 3) {
+      //   const count = completedCount;
+      //   setCompletedCount(count + 1);
+      // }
     }
     boolWork();
   }

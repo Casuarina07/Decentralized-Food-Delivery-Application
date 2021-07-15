@@ -21,12 +21,31 @@ export class RateModal extends Component {
   }
 
   submit = (event) => {
-    const hawkerComment = this.hawkerComment.value;
-    const foodDeliveryComment = this.foodDeliveryComment.value;
+    let hawkerCommentValue;
+    let foodDeliveryCommentValue;
+    if (this.hawkerComment.value == "") {
+      hawkerCommentValue = "-";
+    } else {
+      hawkerCommentValue = this.hawkerComment.value;
+    }
+    if (this.foodDeliveryComment.value == "") {
+      foodDeliveryCommentValue = "-";
+    } else {
+      foodDeliveryCommentValue = this.foodDeliveryComment.value;
+    }
+
+    this.props.setRating(
+      this.props.orderId,
+      this.props.seller,
+      this.state.hawkerRating,
+      hawkerCommentValue,
+      this.props.driver,
+      this.state.foodDeliveryRating,
+      foodDeliveryCommentValue
+    );
   };
 
   render() {
-    console.log("What is this: ", this.props);
     return (
       <Modal
         show={this.props.show}
@@ -40,7 +59,9 @@ export class RateModal extends Component {
         <Modal.Body>
           <div className="container">
             <Box component="fieldset" mb={3} borderColor="transparent">
-              <Typography component="legend">Rate Food Stall:</Typography>
+              <Typography component="legend">
+                Rate Food Stall: ({this.props.seller})
+              </Typography>
               <Rating
                 name="hawkerRating"
                 value={this.state.hawkerRating}
@@ -60,7 +81,9 @@ export class RateModal extends Component {
               />
             </Box>
             <Box component="fieldset" mb={3} borderColor="transparent">
-              <Typography component="legend">Rate Delivery Rider:</Typography>
+              <Typography component="legend">
+                Rate Delivery Rider: ({this.props.driver})
+              </Typography>
               <Rating
                 name="foodDeliveryRating"
                 value={this.state.foodDeliveryRating}

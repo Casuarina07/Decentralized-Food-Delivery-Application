@@ -43,6 +43,7 @@ export default function App() {
   const [hawkers, setHawkers] = useState([]);
   const [hawkerOrders, setHawkerOrders] = useState([]);
   const [hawkerOrderItems, setHawkerOrderItems] = useState([]);
+  const [hawkerFeedback, setHawkerFeedback] = useState([]);
 
   //customer-details
   const [custId, setCustId] = useState(0);
@@ -141,8 +142,18 @@ export default function App() {
           setHawkerOpeningHours(hawker.openingHours);
           setHawkerPhone(hawker.phone);
           setHawkerBoolOpen(hawker.open);
+          console.log("what is this: ", hawker.feedbackCount);
+        }
+        for (var k = 1; k <= hawker.feedbackCount; k++) {
+          const prodId = await marketplace.methods
+            .getHawkerFeedback(hawker.id, k)
+            .call();
+          setHawkerFeedback((hawkerFeedback) => [...hawkerFeedback, prodId]);
         }
       }
+      // console.log(hawkers[1]);
+      // const test = await marketplace.methods.getHawkerFeedback(1, 1).call();
+      // console.log("test: ", test);
 
       //FETCH CUSTOMERS
       const customersCount = await marketplace.methods.customersCount().call();
@@ -409,6 +420,34 @@ export default function App() {
       });
   };
 
+  const setRating = (
+    orderId,
+    hawkerAdd,
+    hawkerRate,
+    hawkerComment,
+    fdAdd,
+    fdRate,
+    fdComment
+  ) => {
+    setLoading(true);
+    marketplace.methods
+      .setRating(
+        orderId,
+        hawkerAdd,
+        hawkerRate,
+        hawkerComment,
+        fdAdd,
+        fdRate,
+        fdComment
+      )
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Thank you for your feedback! ");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
   const createRestProduct = (name, price, published, imageHash) => {
     setLoading(true);
     marketplace.methods
@@ -420,16 +459,6 @@ export default function App() {
         setLoading(false);
       });
   };
-
-  // const purchaseProduct = (id, price) => {
-  //   setLoading(true);
-  //   marketplace.methods
-  //     .purchaseProduct(id)
-  //     .send({ from: account, value: price })
-  //     .once("receipt", (receipt) => {
-  //       setLoading(false);
-  //     });
-  // };
 
   const purchaseProduct = (custId, seller, totalCost, date, time) => {
     setLoading(true);
@@ -499,6 +528,8 @@ export default function App() {
             purchaseProduct={purchaseProduct}
             custOrders={custOrders}
             custOrderItems={custOrderItems}
+            setRating={setRating}
+            hawkerFeedback={hawkerFeedback}
           />
         ) : null}
         {fdAcc ? (
