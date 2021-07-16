@@ -90,7 +90,7 @@ contract Marketplace {
         string addressLocation;
         string openingHours;
         string phone;
-        int256 avgRating;
+        uint256 avgRating;
         bool open;
         mapping(uint256 => Feedback) feedbacks;
         uint256 feedbackCount;
@@ -126,7 +126,7 @@ contract Marketplace {
             _addressLocation,
             _openingHours,
             _phone,
-            5,
+            0,
             _open,
             0
         );
@@ -442,6 +442,9 @@ contract Marketplace {
                     _hawkerRate,
                     _hawkerComment
                 );
+                uint256 total = _hawkerRate + hawkers[i].avgRating;
+                uint256 avg = total / (hawkers[i].feedbackCount);
+                hawkers[i].avgRating = avg;
             }
         }
 

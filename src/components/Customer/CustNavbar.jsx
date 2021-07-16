@@ -22,6 +22,7 @@ function CustNavbar({
   custAdd,
   custPhone,
   custCart,
+  cartCount,
   editCustProfile,
   addToCart,
   removeProdCart,
@@ -57,6 +58,7 @@ function CustNavbar({
       text: "Cart",
       path: "/cart",
       icon: "ion-ios-cart",
+      cartCount: "[" + cartCount + "]",
     },
   ];
 

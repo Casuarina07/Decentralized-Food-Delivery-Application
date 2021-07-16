@@ -50,12 +50,14 @@ class Orders extends Component {
 
               {fdAcceptedOrder.state == 3 ? (
                 <button
-                  style={{ display: "flex", marginBottom: 10, opacity: 0.5 }}
-                  onClick={(event) => {
-                    alert("This order is completed");
+                  style={{
+                    display: "flex",
+                    marginBottom: 10,
+                    opacity: 0.6,
+                    pointerEvents: "none",
                   }}
                 >
-                  Complete Order
+                  Completed
                 </button>
               ) : (
                 <button

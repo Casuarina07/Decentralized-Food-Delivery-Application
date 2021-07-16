@@ -12,6 +12,8 @@ export default function Profile({
   hawkers,
   hawkerBoolOpen,
   boolOpen,
+  hawkerRating,
+  hawkerFeedback,
 }) {
   const [editClicked, setEditClicked] = useState(false);
   const [hawkerPhoneNo, setHawkerPhoneNo] = useState(hawkerPhone);
@@ -31,6 +33,7 @@ export default function Profile({
     <div style={{ marginTop: 20, marginBottom: 30 }}>
       <FaUserCircle size={60} color="#016094" />
       <h3 className="header">{account}</h3>
+      <h4>Average Rating: {hawkerRating}</h4>
       <h4 style={{ color: "#016094", marginTop: 30 }}>Hawker Details</h4>
 
       {editClicked ? (
@@ -132,6 +135,28 @@ export default function Profile({
           )}
         </div>
       )}
+      <h3 style={{ marginTop: 20 }}>Feedbacks</h3>
+      {hawkerFeedback.map((feedback, key) => {
+        if (feedback.seller.toString() == account.toString()) {
+          return (
+            <div>
+              <b>Customer: </b>
+              <div style={{ marginBottom: 20 }}>
+                <h5 style={{ color: "#016094" }}>{feedback.customer}</h5>
+              </div>
+              <b>Rating: </b>
+              <div style={{ marginBottom: 20 }}>
+                <h5 style={{ color: "#016094" }}>{feedback.rate}/5</h5>
+              </div>
+              <b>Comments: </b>
+              <div style={{ marginBottom: 20 }}>
+                <h5 style={{ color: "#016094" }}>{feedback.comment}</h5>
+              </div>
+              <hr style={{ width: "60%", display: "flex" }} />
+            </div>
+          );
+        }
+      })}
     </div>
   );
 }

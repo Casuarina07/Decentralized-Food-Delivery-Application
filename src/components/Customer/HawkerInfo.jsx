@@ -18,7 +18,7 @@ export default function HawkerInfo(props) {
             <div>
               <div style={{ flexDirection: "row" }}>
                 <h2>{hawker.name}</h2>
-                <h3>Rating: {hawker.rating}/5</h3>
+                <h3>Rating: {hawker.avgRating}/5</h3>
               </div>
               <div style={{ marginTop: 30 }}>
                 <b>Public Key: </b>

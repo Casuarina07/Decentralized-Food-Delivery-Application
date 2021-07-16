@@ -51,7 +51,7 @@ class Orders extends Component {
             "items"
           );
           return (
-            <>
+            <div>
               <h4 style={{ display: "flex" }}>
                 {custOrder.date} {custOrder.time}
               </h4>
@@ -73,6 +73,7 @@ class Orders extends Component {
                       </Button>
                       <RateModal
                         show={this.state.rateModalShow}
+                        modalId={custOrder.id}
                         onHide={rateModalClose}
                         orderId={custOrder.id}
                         hawkers={this.props.hawkers}
@@ -164,7 +165,7 @@ class Orders extends Component {
                   })}
                 </tbody>
               </table>
-            </>
+            </div>
           );
         })}
       </div>

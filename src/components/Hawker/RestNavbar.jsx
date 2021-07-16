@@ -25,10 +25,12 @@ function RestNavbar({
   hawkerOpeningHours,
   hawkerPhone,
   hawkerBoolOpen,
+  hawkerRating,
   hawkers,
   hawkerOrders,
   hawkerOrderItems,
   hawkerConfirmOrder,
+  hawkerFeedback,
 }) {
   const navLinks = [
     {
@@ -107,8 +109,10 @@ function RestNavbar({
           hawkerOpeningHours={hawkerOpeningHours}
           hawkerPhone={hawkerPhone}
           hawkerBoolOpen={hawkerBoolOpen}
+          hawkerRating={hawkerRating}
           boolOpen={boolOpen}
           editHawkerProfile={editHawkerProfile}
+          hawkerFeedback={hawkerFeedback}
         />
       </Router>
     </div>

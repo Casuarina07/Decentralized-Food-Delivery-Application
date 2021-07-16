@@ -39,6 +39,7 @@ export default function App() {
   const [hawkerOpeningHours, setHawkerOpeningHours] = useState("");
   const [hawkerPhone, setHawkerPhone] = useState("");
   const [hawkerBoolOpen, setHawkerBoolOpen] = useState(false);
+  const [hawkerRating, setHawkerRating] = useState(0);
   const [hawkersCount, setHawkersCount] = useState(0);
   const [hawkers, setHawkers] = useState([]);
   const [hawkerOrders, setHawkerOrders] = useState([]);
@@ -142,6 +143,7 @@ export default function App() {
           setHawkerOpeningHours(hawker.openingHours);
           setHawkerPhone(hawker.phone);
           setHawkerBoolOpen(hawker.open);
+          setHawkerRating(hawker.avgRating);
           console.log("what is this: ", hawker.feedbackCount);
         }
         for (var k = 1; k <= hawker.feedbackCount; k++) {
@@ -502,6 +504,8 @@ export default function App() {
             hawkerOpeningHours={hawkerOpeningHours}
             hawkerPhone={hawkerPhone}
             hawkerBoolOpen={hawkerBoolOpen}
+            hawkerRating={hawkerRating}
+            hawkerFeedback={hawkerFeedback}
             hawkerOrders={hawkerOrders}
             hawkerOrderItems={hawkerOrderItems}
             hawkerConfirmOrder={hawkerConfirmOrder}
@@ -521,6 +525,7 @@ export default function App() {
             custAdd={custAdd}
             custPhone={custPhone}
             custCart={custCart}
+            cartCount={cartCount}
             editCustProfile={editCustProfile}
             addToCart={addToCart}
             removeProdCart={removeProdCart}

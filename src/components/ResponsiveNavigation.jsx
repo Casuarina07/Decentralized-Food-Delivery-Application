@@ -40,7 +40,7 @@ function ResponsiveNavigation({
           >
             <Link to={link.path} style={{ color: linkColor }}>
               {" "}
-              {link.text}
+              {link.text} {link.cartCount}
               <i className={link.icon} />
             </Link>
           </li>
