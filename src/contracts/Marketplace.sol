@@ -349,6 +349,24 @@ contract Marketplace {
         }
     }
 
+    function editProduct(
+        uint256 _productId,
+        string memory _name,
+        uint256 _price,
+        string memory _imageHash,
+        bool _published
+    ) public {
+        uint256 i = 0;
+        for (i = 0; i <= restProdCount; i++) {
+            if (restProducts[i].id == _productId) {
+                restProducts[i].name = _name;
+                restProducts[i].price = _price;
+                restProducts[i].imageHash = _imageHash;
+                restProducts[i].published = _published;
+            }
+        }
+    }
+
     function addToCart(uint256 _id) public {
         uint256 i = 0;
         for (i = 0; i <= customersCount; i++) {
@@ -366,6 +384,12 @@ contract Marketplace {
         Customer storage cust = customers[custId];
         (cust.itemCount)--;
         delete cust.cartItems[cartId];
+    }
+
+    function deleteProduct(uint256 productId) public {
+        //RestProduct storage product = restProducts[productId];
+        restProdCount--;
+        delete restProducts[productId];
     }
 
     function removeAllProdCart(uint256 custId) public {

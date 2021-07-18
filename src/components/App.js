@@ -144,7 +144,6 @@ export default function App() {
           setHawkerPhone(hawker.phone);
           setHawkerBoolOpen(hawker.open);
           setHawkerRating(hawker.avgRating);
-          console.log("what is this: ", hawker.feedbackCount);
         }
         for (var k = 1; k <= hawker.feedbackCount; k++) {
           const prodId = await marketplace.methods
@@ -474,6 +473,30 @@ export default function App() {
       });
   };
 
+  const editProduct = (productId, name, price, imageHash, published) => {
+    setLoading(true);
+    marketplace.methods
+      .editProduct(productId, name, price, imageHash, published)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Successfully changed");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const deleteProduct = (productId) => {
+    setLoading(true);
+    marketplace.methods
+      .deleteProduct(productId)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Successfully deleted");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
   return (
     <div>
       <Router>
@@ -509,6 +532,8 @@ export default function App() {
             hawkerOrders={hawkerOrders}
             hawkerOrderItems={hawkerOrderItems}
             hawkerConfirmOrder={hawkerConfirmOrder}
+            editProduct={editProduct}
+            deleteProduct={deleteProduct}
           />
         ) : null}
         {custAcc ? (
@@ -540,6 +565,8 @@ export default function App() {
         {fdAcc ? (
           <FDNavbar
             account={account}
+            customers={customers}
+            hawkers={hawkers}
             custOrders={custOrders}
             fdDelivery={fdDelivery}
             boolWork={boolWork}

@@ -31,6 +31,8 @@ function RestNavbar({
   hawkerOrderItems,
   hawkerConfirmOrder,
   hawkerFeedback,
+  editProduct,
+  deleteProduct,
 }) {
   const navLinks = [
     {
@@ -41,12 +43,12 @@ function RestNavbar({
     {
       text: "Purchase",
       path: "/purchase",
-      icon: "ion-ios-megaphone",
+      icon: "ion-ios-card",
     },
     {
       text: "Orders",
       path: "/orders",
-      icon: "ion-ios-business",
+      icon: "ion-ios-list",
     },
     {
       text: "Sell",
@@ -99,6 +101,8 @@ function RestNavbar({
           suppProdCount={suppProdCount}
           createProduct={createProduct}
           purchaseProduct={purchaseProduct}
+          editProduct={editProduct}
+          deleteProduct={deleteProduct}
         />
         <Profile
           path="/profile"

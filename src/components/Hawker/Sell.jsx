@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import "./Rest.css";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import { Button, ButtonToolbar } from "react-bootstrap";
+import { EditModal } from "./EditModal";
+import Modal from "@material-ui/core/Modal";
+import { GoPrimitiveDot } from "react-icons/go";
 
 const { create } = require("ipfs-http-client");
 const ipfs = create({
@@ -18,6 +22,9 @@ class Sell extends Component {
       imageHash: "",
       imageChange: false,
       publish: true,
+      editModalShow: false,
+      productId: "",
+      productModal: [],
     };
   }
   captureFile = (event) => {
@@ -73,8 +80,14 @@ class Sell extends Component {
     console.log("Publish State: ", this.publish);
   };
 
+  handleShow = (event) => {
+    this.rateShow = !this.rateShow;
+    console.log("Rate Show: ", this.rateShow);
+  };
+
   render() {
-    console.log("What is this: ", this.props.restProducts);
+    let editModalClose = () => this.setState({ editModalShow: false });
+    console.log("CURRENT HAWKER PRODUCTS: ", this.props.restProducts);
     return (
       <div style={{ margin: 60, marginTop: 30 }}>
         <h1>Add Product</h1>
@@ -94,7 +107,8 @@ class Sell extends Component {
           <div className="form-group mr-sm-2">
             <input
               id="productPrice"
-              type="text"
+              type="number"
+              step="any"
               ref={(input) => {
                 this.productPrice = input;
               }}
@@ -135,8 +149,8 @@ class Sell extends Component {
             <tr>
               <th scope="col">Name</th>
               <th scope="col">Price</th>
-              <th scope="col">Owner</th>
               <th scope="col">Image</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody id="productList">
@@ -144,7 +158,23 @@ class Sell extends Component {
               if (product.owner === this.props.account)
                 return (
                   <tr>
-                    <td>{product.name}</td>
+                    <td>
+                      {product.published ? (
+                        <GoPrimitiveDot
+                          style={{ position: "relative", bottom: 2 }}
+                          size="20"
+                          color="green"
+                        />
+                      ) : (
+                        <GoPrimitiveDot
+                          style={{ position: "relative", bottom: 2 }}
+                          size="20"
+                          color="orange"
+                        />
+                      )}
+
+                      {product.name}
+                    </td>
                     <td>
                       {window.web3.utils.fromWei(
                         product.price.toString(),
@@ -152,7 +182,6 @@ class Sell extends Component {
                       )}{" "}
                       Eth
                     </td>
-                    <td>{product.owner}</td>
                     <td>
                       {product.imageHash === "" ? (
                         <label>-</label>
@@ -166,6 +195,42 @@ class Sell extends Component {
                           }
                         />
                       )}
+                    </td>
+                    <td>
+                      {/* <button>Edit</button> */}
+                      <ButtonToolbar>
+                        <Button
+                          variant="primary"
+                          onClick={() => {
+                            this.setState({ editModalShow: true });
+                            this.setState({ productId: product.id });
+                            this.setState({ productModal: product });
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          style={{ marginLeft: 10 }}
+                          variant="danger"
+                          onClick={() => {
+                            console.log("DELETE");
+                            this.props.deleteProduct(product.id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                        <EditModal
+                          show={this.state.editModalShow}
+                          onHide={editModalClose}
+                          product={this.state.productModal}
+                          price={window.web3.utils.fromWei(
+                            product.price.toString(),
+                            "Ether"
+                          )}
+                          editProduct={this.props.editProduct}
+                          deleteProduct={this.props.deleteProduct}
+                        />
+                      </ButtonToolbar>
                     </td>
                   </tr>
                 );

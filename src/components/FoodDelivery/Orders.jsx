@@ -42,11 +42,31 @@ class Orders extends Component {
           );
           return (
             <>
-              <h4 style={{ display: "flex" }}>{fdAcceptedOrder.owner}</h4>
+              <h4 style={{ display: "flex" }}>
+                Placed by: {fdAcceptedOrder.owner}
+              </h4>
 
               <h4 style={{ display: "flex" }}>
                 {fdAcceptedOrder.date} {fdAcceptedOrder.time}
               </h4>
+
+              {this.props.hawkers.map((hawker, key) => {
+                if (hawker.owner.toString() == fdAcceptedOrder.seller)
+                  return (
+                    <h4 style={{ display: "flex" }}>
+                      Hawker Address: {hawker.addressLocation}
+                    </h4>
+                  );
+              })}
+
+              {this.props.customers.map((customer, key) => {
+                if (customer.owner.toString() == fdAcceptedOrder.owner)
+                  return (
+                    <h4 style={{ display: "flex" }}>
+                      Customer Address: {customer.addressLocation}
+                    </h4>
+                  );
+              })}
 
               {fdAcceptedOrder.state == 3 ? (
                 <button
@@ -159,12 +179,31 @@ class Orders extends Component {
           );
           return (
             <>
-              <h4 style={{ display: "flex" }}>{fdDeliveryOrder.owner}</h4>
+              <h4 style={{ display: "flex" }}>
+                Placed by: {fdDeliveryOrder.owner}
+              </h4>
 
               <h4 style={{ display: "flex" }}>
                 {fdDeliveryOrder.date} {fdDeliveryOrder.time}
               </h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
+              {this.props.hawkers.map((hawker, key) => {
+                if (hawker.owner.toString() == fdDeliveryOrder.seller)
+                  return (
+                    <h4 style={{ display: "flex" }}>
+                      Hawker Address: {hawker.addressLocation}
+                    </h4>
+                  );
+              })}
+
+              {this.props.customers.map((customer, key) => {
+                if (customer.owner.toString() == fdDeliveryOrder.owner)
+                  return (
+                    <h4 style={{ display: "flex" }}>
+                      Customer Address: {customer.addressLocation}
+                    </h4>
+                  );
+              })}
               <div style={{ display: "flex", marginBottom: 10 }}>
                 {fdDeliveryOrder.state == 1 && this.disable == false ? (
                   <button
