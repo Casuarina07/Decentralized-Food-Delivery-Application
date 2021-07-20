@@ -12,8 +12,13 @@ class Cart extends Component {
   };
 
   render() {
+    const minimumOrder = 0.0033;
+    const deliveryFee = 0.0012;
     var totalCost = 0;
     var seller = "";
+    let smallOrderFee;
+    var hawkerPayment = 0;
+    var riderPayment = 0;
     if (this.props.custCart.length > 0) {
       return (
         <div style={{ margin: 60, marginTop: 20 }}>
@@ -85,8 +90,73 @@ class Cart extends Component {
             })}
           </table>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            Total: {window.web3.utils.fromWei(totalCost.toString(), "Ether")}{" "}
-            Eth
+            Order Amount:{" "}
+            {window.web3.utils.fromWei(totalCost.toString(), "Ether")} Eth
+          </div>
+          {/* order is lesser than minimumOrder */}
+          {window.web3.utils.fromWei(totalCost.toString(), "Ether") <
+          minimumOrder ? (
+            ((smallOrderFee = (
+              minimumOrder -
+              Number(window.web3.utils.fromWei(totalCost.toString(), "Ether"))
+            ).toFixed(5)),
+            (totalCost += Number(
+              window.web3.utils.toWei(smallOrderFee.toString(), "Ether")
+            )),
+            (hawkerPayment = totalCost),
+            (totalCost += Number(
+              window.web3.utils.toWei(deliveryFee.toString(), "Ether")
+            )),
+            (riderPayment = Number(
+              window.web3.utils.toWei(deliveryFee.toString(), "Ether")
+            )),
+            (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: 5,
+                }}
+              >
+                Small Order Fee: {smallOrderFee} Eth
+              </div>
+            ))
+          ) : (
+            <div style={{ display: "none" }}>
+              {(hawkerPayment = totalCost)}
+              {
+                (totalCost += Number(
+                  window.web3.utils.toWei(deliveryFee.toString(), "Ether")
+                ))
+              }
+              {
+                (riderPayment = Number(
+                  window.web3.utils.toWei(deliveryFee.toString(), "Ether")
+                ))
+              }
+            </div>
+          )}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: 5,
+            }}
+          >
+            Delivery Fee: {deliveryFee} Eth ($3 SGD)
+          </div>
+          <h2>Hawker Payment: {hawkerPayment}</h2>
+          <h2>Rider Payment: {riderPayment}</h2>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: 5,
+              fontSize: 20,
+            }}
+          >
+            Total Cost:{" "}
+            {window.web3.utils.fromWei(totalCost.toString(), "Ether")} Eth
           </div>
           <div
             style={{
@@ -97,7 +167,6 @@ class Cart extends Component {
             }}
           >
             <button
-              name={totalCost}
               onClick={(event) => {
                 var date = getCurrentDate();
                 var time = getCurrentTime();
