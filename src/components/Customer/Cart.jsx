@@ -69,7 +69,6 @@ class Cart extends Component {
                             </td>
                             <td>
                               <button
-                                //name={product.id}
                                 onClick={(event) => {
                                   this.props.removeProdCart(
                                     this.props.custId,
@@ -145,8 +144,6 @@ class Cart extends Component {
           >
             Delivery Fee: {deliveryFee} Eth ($3 SGD)
           </div>
-          <h2>Hawker Payment: {hawkerPayment}</h2>
-          <h2>Rider Payment: {riderPayment}</h2>
           <div
             style={{
               display: "flex",
@@ -174,6 +171,8 @@ class Cart extends Component {
                 this.props.purchaseProduct(
                   this.props.custId,
                   seller,
+                  hawkerPayment,
+                  riderPayment,
                   totalCost,
                   date,
                   time

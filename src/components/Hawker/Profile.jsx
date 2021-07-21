@@ -135,7 +135,10 @@ export default function Profile({
           )}
         </div>
       )}
-      <h3 style={{ marginTop: 20 }}>Feedbacks</h3>
+      {hawkerFeedback.length > 0 ? (
+        <h3 style={{ marginTop: 20 }}>Feedbacks</h3>
+      ) : null}
+
       {hawkerFeedback.map((feedback, key) => {
         if (feedback.seller.toString() == account.toString()) {
           return (

@@ -43,6 +43,8 @@ contract Marketplace {
         );
     }
 
+    event LogRefund(address receiver, uint256 amount);
+
     //FOOD DELIVERY
     struct FoodDelivery {
         uint256 id;
@@ -81,6 +83,10 @@ contract Marketplace {
             0
         );
     }
+
+    // struct OrderHistory {
+    //     address
+    // }
 
     //HAWKER
     struct Hawker {
@@ -279,7 +285,8 @@ contract Marketplace {
         OrderPlaced,
         OrderConfirm,
         DriverConfirm,
-        OrderCompleted
+        OrderCompleted,
+        OrderCancelled
     }
     Status public state;
 
@@ -288,6 +295,8 @@ contract Marketplace {
         address owner;
         address seller;
         address driver;
+        uint256 hawkerPayment;
+        uint256 riderPayment;
         uint256 totalPrice;
         mapping(uint256 => CartItem) purchasedItemId;
         uint256 purchasedItemCount;
@@ -490,9 +499,27 @@ contract Marketplace {
         }
     }
 
+    function cancelOrder(uint256 _orderId, address payable _customer)
+        public
+        payable
+    {
+        uint256 i = 0;
+        for (i = 0; i <= ordersCount; i++) {
+            if (orders[i].id == _orderId) {
+                orders[i].state = Status.OrderCancelled;
+                //address payable customer = address(orders[i].owner);
+                emit LogRefund(orders[i].owner, orders[i].totalPrice);
+                address(_customer).transfer(orders[i].totalPrice);
+                //msg.sender.transfer(orders[i].totalPrice);
+            }
+        }
+    }
+
     function purchaseProduct(
         uint256 _custId,
         address payable _seller,
+        uint256 _hawkerPayment,
+        uint256 _riderPayment,
         uint256 _totalCost,
         string memory _date,
         string memory _time
@@ -509,6 +536,8 @@ contract Marketplace {
             cust.owner,
             _seller,
             address(0),
+            _hawkerPayment,
+            _riderPayment,
             _totalCost,
             cust.itemCount,
             _date,
@@ -523,11 +552,20 @@ contract Marketplace {
             orders[ordersCount].purchasedItemId[i] = CartItem(i, item);
         }
 
-        //Pay the seller by sending them Ether
-        address(_seller).transfer(msg.value);
+        //Require that there is enough Ether in the transaction
+        require(msg.value >= _totalCost);
 
         //remove the CartItem in the Customer id
         removeAllProdCart(_custId);
+
+        // //Trigger an event
+        // emit ProductPurchased(
+        //     productCount,
+        //     _product.name,
+        //     _product.price,
+        //     msg.sender,
+        //     true
+        // );
     }
 
     //hawker confirms order transaction made by customer
@@ -536,6 +574,8 @@ contract Marketplace {
         for (i = 0; i <= ordersCount; i++) {
             if (orders[i].id == _orderId) {
                 orders[i].state = Status.OrderConfirm;
+                //Pay the hawker
+                address(msg.sender).transfer(orders[i].hawkerPayment);
             }
         }
     }
@@ -554,6 +594,8 @@ contract Marketplace {
         Order memory _order = orders[_orderId];
         address _owner = _order.owner;
         address _seller = _order.seller;
+        uint256 _hawkerPayment = _order.hawkerPayment;
+        uint256 _riderPayment = _order.riderPayment;
         uint256 _totalPrice = _order.totalPrice;
         uint256 _purchasedItemCount = _order.purchasedItemCount;
         string memory _date = _order.date;
@@ -572,6 +614,8 @@ contract Marketplace {
                     _owner,
                     _seller,
                     msg.sender,
+                    _hawkerPayment,
+                    _riderPayment,
                     _totalPrice,
                     _purchasedItemCount,
                     _date,
@@ -584,12 +628,14 @@ contract Marketplace {
     }
 
     //food delivery completes order delivery
-    function fdCompleteOrder(uint256 _orderId) public {
+    function fdCompleteOrder(uint256 _orderId) public payable {
         //set orderId state to OrderCompleted
         uint256 i = 0;
         for (i = 0; i <= ordersCount; i++) {
             if (orders[i].id == _orderId) {
                 orders[i].state = Status.OrderCompleted;
+                //Pay the rider after completion
+                address(msg.sender).transfer(orders[i].riderPayment);
             }
         }
     }

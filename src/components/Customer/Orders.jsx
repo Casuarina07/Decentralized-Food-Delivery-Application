@@ -39,8 +39,10 @@ class Orders extends Component {
             this.orderState = "Finding Driver";
           } else if (custOrder.state == 2) {
             this.orderState = "Driver Confirmed";
-          } else {
+          } else if (custOrder.state == 3) {
             this.orderState = "Order Completed";
+          } else {
+            this.orderState = "Order Cancelled";
           }
           counter = 0;
           console.log(
@@ -57,6 +59,25 @@ class Orders extends Component {
               </h4>
               <h4 style={{ display: "flex" }}></h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
+
+              {custOrder.state >= 2 && custOrder.state < 3 ? (
+                <div>
+                  <h5 style={{ display: "flex" }}>Delivery in Progress</h5>
+                  <h5 style={{ display: "flex" }}>
+                    Driver: {custOrder.driver}
+                  </h5>
+                </div>
+              ) : null}
+
+              {this.props.hawkers.map((hawker, key) => {
+                if (hawker.owner == custOrder.seller) {
+                  return (
+                    <div style={{ display: "flex" }}>
+                      <h5>Ordered from: {hawker.name}</h5>
+                    </div>
+                  );
+                }
+              })}
               {custOrder.state == 3 ? (
                 <div style={{ display: "flex", marginBottom: 10 }}>
                   {custOrder.rated == false ? (
@@ -93,24 +114,18 @@ class Orders extends Component {
                   )}
                 </div>
               ) : null}
-              {custOrder.state >= 2 && custOrder.state < 3 ? (
-                <div>
-                  <h5 style={{ display: "flex" }}>Delivery in Progress</h5>
-                  <h5 style={{ display: "flex" }}>
-                    Driver: {custOrder.driver}
-                  </h5>
-                </div>
-              ) : null}
 
-              {this.props.hawkers.map((hawker, key) => {
-                if (hawker.owner == custOrder.seller) {
-                  return (
-                    <div style={{ display: "flex" }}>
-                      <h5>Ordered from: {hawker.name}</h5>
-                    </div>
-                  );
-                }
-              })}
+              {custOrder.state == 0 ? (
+                <Button
+                  style={{ display: "flex", marginBottom: 10 }}
+                  variant="danger"
+                  onClick={(event) => {
+                    this.props.cancelOrder(custOrder.id, custOrder.owner);
+                  }}
+                >
+                  Cancel
+                </Button>
+              ) : null}
 
               <table className="table">
                 <thead>

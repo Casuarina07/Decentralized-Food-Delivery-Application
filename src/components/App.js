@@ -461,10 +461,26 @@ export default function App() {
       });
   };
 
-  const purchaseProduct = (custId, seller, totalCost, date, time) => {
+  const purchaseProduct = (
+    custId,
+    seller,
+    hawkerPayment,
+    riderPayment,
+    totalCost,
+    date,
+    time
+  ) => {
     setLoading(true);
     marketplace.methods
-      .purchaseProduct(custId, seller, totalCost, date, time)
+      .purchaseProduct(
+        custId,
+        seller,
+        hawkerPayment,
+        riderPayment,
+        totalCost,
+        date,
+        time
+      )
       .send({ from: account, value: totalCost })
       .once("receipt", (receipt) => {
         alert("Successfully Purchased");
@@ -492,6 +508,18 @@ export default function App() {
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully deleted");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const cancelOrder = (orderId, custAddress) => {
+    setLoading(true);
+    marketplace.methods
+      .cancelOrder(orderId, custAddress)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Order Cancelled");
         window.location.reload();
         setLoading(false);
       });
@@ -534,6 +562,7 @@ export default function App() {
             hawkerConfirmOrder={hawkerConfirmOrder}
             editProduct={editProduct}
             deleteProduct={deleteProduct}
+            cancelOrder={cancelOrder}
           />
         ) : null}
         {custAcc ? (
@@ -560,6 +589,7 @@ export default function App() {
             custOrderItems={custOrderItems}
             setRating={setRating}
             hawkerFeedback={hawkerFeedback}
+            cancelOrder={cancelOrder}
           />
         ) : null}
         {fdAcc ? (

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Button } from "react-bootstrap";
 
 class Orders extends Component {
   constructor(props) {
@@ -24,8 +25,10 @@ class Orders extends Component {
             this.orderState = "Finding Driver";
           } else if (hawkerOrder.state == 2) {
             this.orderState = "Driver Confirmed";
-          } else {
+          } else if (hawkerOrder.state == 3) {
             this.orderState = "Order Completed";
+          } else {
+            this.orderState = "Order Cancelled";
           }
           counter = 0;
           console.log(
@@ -45,13 +48,28 @@ class Orders extends Component {
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
               <div style={{ display: "flex", marginBottom: 10 }}>
                 {hawkerOrder.state == 0 ? (
-                  <button
-                    onClick={(event) => {
-                      this.props.hawkerConfirmOrder(hawkerOrder.id);
-                    }}
-                  >
-                    Confirm Order
-                  </button>
+                  <div>
+                    <Button
+                      variant="primary"
+                      onClick={(event) => {
+                        this.props.hawkerConfirmOrder(hawkerOrder.id);
+                      }}
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      style={{ marginLeft: 5 }}
+                      variant="danger"
+                      onClick={(event) => {
+                        this.props.cancelOrder(
+                          hawkerOrder.id,
+                          hawkerOrder.owner
+                        );
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 ) : null}
               </div>
 

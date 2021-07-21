@@ -33,6 +33,7 @@ function RestNavbar({
   hawkerFeedback,
   editProduct,
   deleteProduct,
+  cancelOrder,
 }) {
   const navLinks = [
     {
@@ -90,6 +91,7 @@ function RestNavbar({
           hawkerOrders={hawkerOrders}
           hawkerOrderItems={hawkerOrderItems}
           hawkerConfirmOrder={hawkerConfirmOrder}
+          cancelOrder={cancelOrder}
         />
         <Sell
           path="/sell"
