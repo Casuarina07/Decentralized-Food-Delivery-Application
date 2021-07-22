@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import "./Cust.css";
 import { Link } from "@reach/router";
 import Dropdown from "react-bootstrap/Dropdown";
+import Card from "react-bootstrap/Card";
+import CardGroup from "react-bootstrap/CardGroup";
+import { Row, Col, Button } from "react-bootstrap";
 
 class Purchase extends Component {
   render() {
@@ -23,63 +26,57 @@ class Purchase extends Component {
               <h5 style={{ display: "flex", color: "#808080" }}>
                 {hawker.owner}
               </h5>
-
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Image</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody id="productList">
-                  {this.props.restProducts.map((product, key) => {
-                    if (
-                      product.owner == hawker.owner &&
-                      product.published == true
-                    )
-                      return (
-                        <tr key={key}>
-                          <td>{product.name}</td>
-                          <td>
-                            {window.web3.utils.fromWei(
-                              product.price.toString(),
-                              "Ether"
-                            )}{" "}
-                            Eth
-                          </td>
-                          <td>
-                            {product.imageHash == "" ? (
-                              <label>-</label>
-                            ) : (
-                              <img
-                                height="50"
-                                width="120"
-                                alt="logo"
-                                src={
-                                  "https://ipfs.infura.io/ipfs/" +
-                                  product.imageHash
-                                }
-                              />
-                            )}
-                          </td>
-
-                          <td>
-                            <button
-                              name={product.id}
+              <CardGroup>
+                <Row xs={1} md={2}></Row>
+                {this.props.restProducts.map((product, key) => {
+                  if (
+                    product.owner == hawker.owner &&
+                    product.published == true
+                  )
+                    return (
+                      <Col md={4}>
+                        <Card style={{ marginTop: 15 }}>
+                          <Card.Img
+                            style={{
+                              width: 150,
+                              height: 150,
+                              alignSelf: "center",
+                            }}
+                            variant="top"
+                            src={
+                              "https://ipfs.infura.io/ipfs/" + product.imageHash
+                            }
+                          />
+                          <Card.Body>
+                            <Card.Title>{product.name}</Card.Title>
+                            <Card.Text>
+                              {" "}
+                              {window.web3.utils.fromWei(
+                                product.price.toString(),
+                                "Ether"
+                              )}{" "}
+                              Eth
+                            </Card.Text>
+                          </Card.Body>
+                          <Card.Footer>
+                            {/* <small className="text-muted">
+                        Owner: {this.props.account}
+                      </small> */}
+                            <Button
+                              style={{ marginLeft: 10 }}
+                              variant="primary"
                               onClick={(event) => {
-                                this.props.addToCart(event.target.name);
+                                this.props.addToCart(product.id);
                               }}
                             >
                               Add to Cart
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                  })}
-                </tbody>
-              </table>
+                            </Button>
+                          </Card.Footer>
+                        </Card>
+                      </Col>
+                    );
+                })}
+              </CardGroup>
             </>
           );
         })}

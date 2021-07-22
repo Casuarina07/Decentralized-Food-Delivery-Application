@@ -13,10 +13,10 @@ export default function App() {
   const [account, setAccount] = useState("");
   const [productCount, setProductCount] = useState(0);
   const [marketplace, setMarketPlace] = useState({});
-  const [suppProducts, setSuppProducts] = useState([]);
-  const [suppProdCount, setSuppProdCount] = useState(0);
   const [restProducts, setRestProducts] = useState([]);
   const [restProdCount, setRestProdCount] = useState(0);
+  const [suppProducts, setSuppProducts] = useState([]);
+  const [suppProdCount, setSuppProdCount] = useState(0);
   const [hawkersPublicKey, setHawkersPublicKey] = useState([
     "0x73c005D4B234C63F416F6e1038C011D55edDBF1e",
     "0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5",
@@ -27,6 +27,9 @@ export default function App() {
   ]);
   const [fdsPublicKey, setFDsPublicKey] = useState([
     "0x66f8f66996aaB36b041b1cAdA9f20864a0C42698",
+  ]);
+  const [suppliersPublicKey, setSuppliersPublicKey] = useState([
+    "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8",
   ]);
   const [custAcc, setCustAcc] = useState(false);
   const [hawkerAcc, setHawkerAcc] = useState(false);
@@ -71,8 +74,10 @@ export default function App() {
   const [fdAcceptedOrders, setFDAcceptedOrders] = useState([]);
   const [fdAcceptedOrderItems, setFDAcceptedOrderItems] = useState([]);
 
+  const [pastEvents, setPastEvents] = useState([]);
+
   //acount-details
-  const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
+  // const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
 
   useEffect(() => {
     loadWeb3();
@@ -108,26 +113,22 @@ export default function App() {
       );
       setMarketPlace(marketplace);
 
-      //FETCH SUPPLIER PRODUCTS
-      const suppProdCount = await marketplace.methods.suppProdCount().call();
-      setSuppProdCount(suppProdCount);
-      console.log("Number of products: " + suppProdCount);
-      for (var i = 1; i <= suppProdCount; i++) {
-        const suppProduct = await marketplace.methods.suppProducts(i).call();
-        setSuppProducts((suppProducts) => [...suppProducts, suppProduct]);
-      }
-      console.log("Account Number: " + account);
-      console.log("Product: " + suppProducts);
-      console.log("Loading: " + loading.toString());
-
       //FETCH RESTAURANT PRODUCTS
       const restProdCount = await marketplace.methods.restProdCount().call();
       setRestProdCount(restProdCount);
       console.log("Rest Products: " + restProdCount);
       for (var k = 1; k <= restProdCount; k++) {
         const restProduct = await marketplace.methods.restProducts(k).call();
-        console.log("Rest Product Hash: ", restProduct.imageHash);
         setRestProducts((restProducts) => [...restProducts, restProduct]);
+      }
+
+      //FETCH SUPPLIER PRODUCTS
+      const suppProductCount = await marketplace.methods.suppProdCount().call();
+      setSuppProdCount(suppProductCount);
+      console.log("Supplier Products: " + suppProductCount);
+      for (var k = 1; k <= suppProductCount; k++) {
+        const suppProduct = await marketplace.methods.suppProducts(k).call();
+        setSuppProducts((suppProducts) => [...suppProducts, suppProduct]);
       }
 
       //FETCH HAWKERS
@@ -152,9 +153,6 @@ export default function App() {
           setHawkerFeedback((hawkerFeedback) => [...hawkerFeedback, prodId]);
         }
       }
-      // console.log(hawkers[1]);
-      // const test = await marketplace.methods.getHawkerFeedback(1, 1).call();
-      // console.log("test: ", test);
 
       //FETCH CUSTOMERS
       const customersCount = await marketplace.methods.customersCount().call();
@@ -258,14 +256,28 @@ export default function App() {
         setFoodDeliveries((foodDelivery) => [...foodDeliveries, foodDelivery]);
         if (foodDelivery.owner.toString() === accounts.toString()) {
           setFDDelivery(foodDelivery);
-          console.log("Accepted count: ", foodDelivery.ordersAcceptedCount);
         }
       }
+
+      //get all previous events
+      marketplace.getPastEvents(
+        "RestProdCreated",
+        {
+          // filter: { owner: accounts },
+          fromBlock: 0,
+          toBlock: "latest",
+        },
+        (errors, results) => {
+          if (!errors) {
+            console.log("Rest Prod Created results: ", results);
+            setPastEvents(results);
+          }
+        }
+      );
 
       // check if customer, hawkers, suppliers or fooddelivery (fd)
       for (var i = 0; i < custsPublicKey.length; i++) {
         if (accounts.toString() === custsPublicKey[i]) {
-          console.log("Setting to true");
           setCustAcc(true);
           return;
         }
@@ -282,7 +294,12 @@ export default function App() {
           return;
         }
       }
-
+      for (var i = 0; i < suppliersPublicKey.length; i++) {
+        if (accounts.toString() === suppliersPublicKey[i]) {
+          setSupplierAcc(true);
+          return;
+        }
+      }
       setLoading(false);
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
@@ -308,18 +325,6 @@ export default function App() {
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Removed All Products");
-        window.location.reload();
-        setLoading(false);
-      });
-  };
-
-  const createSuppProduct = (name, price, ipfsImgHash) => {
-    setLoading(true);
-    marketplace.methods
-      .createSuppProduct(name, price, ipfsImgHash)
-      .send({ from: account })
-      .once("receipt", (receipt) => {
-        alert("Successfully created");
         window.location.reload();
         setLoading(false);
       });
@@ -461,6 +466,23 @@ export default function App() {
       });
   };
 
+  const createSuppProduct = (name, price, published, imageHash) => {
+    setLoading(true);
+    marketplace.methods
+      .createSuppProduct(name, price, published, imageHash)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        // console.log(
+        //   "TEST!!!!!! ",
+        //   createSuppProduct.events.SupplierProdCreated
+        // );
+        //console.log("TEST!!!!!! ", createSuppProduct.events);
+        alert("Successfully created");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
   const purchaseProduct = (
     custId,
     seller,
@@ -528,14 +550,15 @@ export default function App() {
   return (
     <div>
       <Router>
-        {account === suppPublicKey ? (
+        {supplierAcc ? (
           <SuppNav
             account={account}
             loading={loading}
-            products={suppProducts}
             productCount={productCount}
-            createProduct={createSuppProduct}
-            purchaseProduct={purchaseProduct}
+            createSuppProduct={createSuppProduct}
+            suppProducts={suppProducts}
+            marketplace={marketplace}
+            pastEvents={pastEvents}
           />
         ) : null}
         {hawkerAcc ? (

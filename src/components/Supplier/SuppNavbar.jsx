@@ -11,10 +11,10 @@ import "../Navbar.css";
 function SuppNavbar({
   account,
   loading,
-  products,
-  productCount,
-  createProduct,
-  purchaseProduct,
+  suppProducts,
+  createSuppProduct,
+  marketplace,
+  pastEvents,
 }) {
   const navLinks = [
     {
@@ -50,16 +50,15 @@ function SuppNavbar({
         // linkColor="#777"
       />
       <Router>
-        <Home path="/" />
+        <Home path="/" marketplace={marketplace} pastEvents={pastEvents} />
         <Orders path="/orders" />
         <Sell
           path="/sell"
           account={account}
           loading={loading}
-          products={products}
-          productCount={productCount}
-          createProduct={createProduct}
-          purchaseProduct={purchaseProduct}
+          suppProducts={suppProducts}
+          createSuppProduct={createSuppProduct}
+          marketplace={marketplace}
         />
         <Profile path="/profile" account={account} />
       </Router>

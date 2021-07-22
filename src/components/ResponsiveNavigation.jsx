@@ -12,7 +12,10 @@ function ResponsiveNavigation({
   const [hoverIndex, setHoverIndex] = useState(-1);
 
   return (
-    <nav className="responsive-toolbar" style={{ background: background }}>
+    <nav
+      className="responsive-toolbar"
+      style={{ background: background, zIndex: 1 }}
+    >
       <ul
         style={{ background: background }}
         className={navOpen ? "active" : ""}

@@ -43,7 +43,11 @@ contract Marketplace {
         );
     }
 
-    event LogRefund(address receiver, uint256 amount);
+    event LogRefund(
+        address indexed receiver,
+        uint256 amount,
+        address indexed owner
+    );
 
     //FOOD DELIVERY
     struct FoodDelivery {
@@ -175,8 +179,19 @@ contract Marketplace {
         uint256 id;
         string name;
         uint256 price;
-        address payable owner; //when listing, the owner will be the seller. when buying, the owner will change from the seller to the buyer
-        bool purchased;
+        address payable owner;
+        bool published;
+        string imageHash;
+    }
+    struct SuppProfile {
+        uint256 id;
+        string name;
+        string category;
+        string location;
+        string deliveryHours;
+        address payable owner;
+        string reviews;
+        uint256 rating;
     }
 
     //Restaurants products
@@ -202,27 +217,32 @@ contract Marketplace {
         uint256 rating;
     }
 
-    event ProductCreated(
-        uint256 id,
+    event RestProdCreated(
+        uint256 indexed id,
+        uint256 indexed date,
         string name,
         uint256 price,
-        address payable owner,
+        address payable indexed owner,
         bool purchased,
         string imageHash
     );
 
-    event ProductPurchased(
-        uint256 id,
+    event SupplierProdCreated(
+        uint256 indexed id,
+        uint256 indexed date,
         string name,
         uint256 price,
-        address payable owner,
-        bool purchased
+        address payable indexed owner,
+        bool purchased,
+        string imageHash
     );
 
-    //parameter _price is expressed in Ethereum cryptocurrency - Ether
-    //whenever we store Ether in the blockchain, we store it as Wei (smallest denomination of Ether )
-    //can check it on etherconverter.online
-    function createSuppProduct(string memory _name, uint256 _price) public {
+    function createSuppProduct(
+        string memory _name,
+        uint256 _price,
+        bool _published,
+        string memory _imageHash
+    ) public {
         // Require a valid name
         require(bytes(_name).length > 0);
         // Require a valid price
@@ -235,16 +255,18 @@ contract Marketplace {
             _name,
             _price,
             msg.sender,
-            false
+            _published,
+            _imageHash
         );
-        // Trigger an event
-        emit ProductCreated(
+        //trigger an event
+        emit SupplierProdCreated(
             suppProdCount,
+            now,
             _name,
             _price,
             msg.sender,
-            false,
-            _name
+            _published,
+            _imageHash
         );
     }
 
@@ -270,8 +292,9 @@ contract Marketplace {
             _imageHash
         );
         // Trigger an event
-        emit ProductCreated(
+        emit RestProdCreated(
             restProdCount,
+            now,
             _name,
             _price,
             msg.sender,
@@ -508,7 +531,11 @@ contract Marketplace {
             if (orders[i].id == _orderId) {
                 orders[i].state = Status.OrderCancelled;
                 //address payable customer = address(orders[i].owner);
-                emit LogRefund(orders[i].owner, orders[i].totalPrice);
+                emit LogRefund(
+                    orders[i].owner,
+                    orders[i].totalPrice,
+                    orders[i].owner
+                );
                 address(_customer).transfer(orders[i].totalPrice);
                 //msg.sender.transfer(orders[i].totalPrice);
             }

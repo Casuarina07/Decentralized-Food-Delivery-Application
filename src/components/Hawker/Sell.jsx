@@ -6,6 +6,9 @@ import { Button, ButtonToolbar } from "react-bootstrap";
 import { EditModal } from "./EditModal";
 import Modal from "@material-ui/core/Modal";
 import { GoPrimitiveDot } from "react-icons/go";
+import Card from "react-bootstrap/Card";
+import CardGroup from "react-bootstrap/CardGroup";
+import { Row, Col } from "react-bootstrap";
 
 const { create } = require("ipfs-http-client");
 const ipfs = create({
@@ -87,7 +90,6 @@ class Sell extends Component {
 
   render() {
     let editModalClose = () => this.setState({ editModalShow: false });
-    console.log("CURRENT HAWKER PRODUCTS: ", this.props.restProducts);
     return (
       <div style={{ margin: 60, marginTop: 30 }}>
         <h1>Add Product</h1>
@@ -144,61 +146,52 @@ class Sell extends Component {
         </form>
         <p> </p>
         <h2>Product List</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Image</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody id="productList">
-            {this.props.restProducts.map((product, key) => {
-              if (product.owner === this.props.account)
-                return (
-                  <tr>
-                    <td>
-                      {product.published ? (
-                        <GoPrimitiveDot
-                          style={{ position: "relative", bottom: 2 }}
-                          size="20"
-                          color="green"
-                        />
-                      ) : (
-                        <GoPrimitiveDot
-                          style={{ position: "relative", bottom: 2 }}
-                          size="20"
-                          color="orange"
-                        />
-                      )}
-
-                      {product.name}
-                    </td>
-                    <td>
-                      {window.web3.utils.fromWei(
-                        product.price.toString(),
-                        "Ether"
-                      )}{" "}
-                      Eth
-                    </td>
-                    <td>
-                      {product.imageHash === "" ? (
-                        <label>-</label>
-                      ) : (
-                        <img
-                          height="50"
-                          width="120"
-                          alt="logo"
-                          src={
-                            "https://ipfs.infura.io/ipfs/" + product.imageHash
-                          }
-                        />
-                      )}
-                    </td>
-                    <td>
-                      {/* <button>Edit</button> */}
-                      <ButtonToolbar>
+        <CardGroup>
+          {this.props.restProducts.map((product, key) => {
+            if (product.owner === this.props.account)
+              return (
+                <Col md={4}>
+                  <Card style={{ marginTop: 15 }}>
+                    <Card.Img
+                      style={{
+                        width: 150,
+                        height: 150,
+                        alignSelf: "center",
+                      }}
+                      variant="top"
+                      src={"https://ipfs.infura.io/ipfs/" + product.imageHash}
+                    />
+                    <Card.Body>
+                      <Card.Title>
+                        {product.published ? (
+                          <GoPrimitiveDot
+                            style={{ position: "relative", bottom: 2 }}
+                            size="20"
+                            color="green"
+                          />
+                        ) : (
+                          <GoPrimitiveDot
+                            style={{ position: "relative", bottom: 2 }}
+                            size="20"
+                            color="orange"
+                          />
+                        )}
+                        {product.name}
+                      </Card.Title>
+                      <Card.Text>
+                        {" "}
+                        {window.web3.utils.fromWei(
+                          product.price.toString(),
+                          "Ether"
+                        )}{" "}
+                        Eth
+                      </Card.Text>
+                    </Card.Body>
+                    <Card.Footer>
+                      {/* <small className="text-muted">
+                      Owner: {this.props.account}
+                    </small> */}
+                      <ButtonToolbar style={{ justifyContent: "center" }}>
                         <Button
                           variant="primary"
                           onClick={() => {
@@ -231,12 +224,12 @@ class Sell extends Component {
                           deleteProduct={this.props.deleteProduct}
                         />
                       </ButtonToolbar>
-                    </td>
-                  </tr>
-                );
-            })}
-          </tbody>
-        </table>
+                    </Card.Footer>
+                  </Card>
+                </Col>
+              );
+          })}
+        </CardGroup>
       </div>
     );
   }
