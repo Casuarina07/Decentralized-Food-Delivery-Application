@@ -9,12 +9,12 @@ import { Row, Col, Button } from "react-bootstrap";
 class Purchase extends Component {
   render() {
     return (
-      <div style={{ margin: 60, marginTop: 20 }}>
+      <div style={{ margin: 70, marginTop: 20 }}>
         <h2>Purchase Food</h2>
         {this.props.hawkers.map((hawker, key) => {
           return (
             <>
-              <h4 style={{ display: "flex" }}>
+              <h4 style={{ display: "flex", marginTop: 20 }}>
                 <Link
                   to={`/hawkerInfo/${hawker.owner}`}
                   state={{ chosenHawkerPk: hawker.owner }}
@@ -23,11 +23,10 @@ class Purchase extends Component {
                 </Link>
               </h4>
 
-              <h5 style={{ display: "flex", color: "#808080" }}>
+              <h6 style={{ display: "flex", color: "#808080" }}>
                 {hawker.owner}
-              </h5>
+              </h6>
               <CardGroup>
-                <Row xs={1} md={2}></Row>
                 {this.props.restProducts.map((product, key) => {
                   if (
                     product.owner == hawker.owner &&

@@ -35,6 +35,7 @@ export default function App() {
   const [hawkerAcc, setHawkerAcc] = useState(false);
   const [supplierAcc, setSupplierAcc] = useState(false);
   const [fdAcc, setFDAcc] = useState(false);
+  const [accBalance, setAccBalance] = useState(0);
 
   //hawker-details
   const [hawkerName, setHawkerName] = useState("");
@@ -103,6 +104,12 @@ export default function App() {
     const accounts = await web3.eth.getAccounts();
     setAccount(accounts[0]);
     console.log("Account: ", accounts);
+    // await web3.eth.getBalance(accounts, (err, balance) => {
+    //   console.log(accounts + " Balance: ", web3.utils.fromWei(balance));
+    // });
+    let balance = await web3.eth.getBalance(accounts.toString());
+    let accountBalance = web3.utils.fromWei(balance.toString());
+    setAccBalance(accountBalance);
 
     const networkId = await web3.eth.net.getId(); //5777
     const networkData = Marketplace.networks[networkId];
@@ -553,6 +560,7 @@ export default function App() {
         {supplierAcc ? (
           <SuppNav
             account={account}
+            accBalance={accBalance}
             loading={loading}
             productCount={productCount}
             createSuppProduct={createSuppProduct}
@@ -564,6 +572,7 @@ export default function App() {
         {hawkerAcc ? (
           <RestNavbar
             account={account}
+            accBalance={accBalance}
             loading={loading}
             restProducts={restProducts}
             restProdCount={restProdCount}
@@ -591,6 +600,7 @@ export default function App() {
         {custAcc ? (
           <CustNavbar
             account={account}
+            accBalance={accBalance}
             loading={loading}
             restProducts={restProducts}
             restProdCount={restProdCount}
@@ -618,6 +628,7 @@ export default function App() {
         {fdAcc ? (
           <FDNavbar
             account={account}
+            accBalance={accBalance}
             customers={customers}
             hawkers={hawkers}
             custOrders={custOrders}

@@ -68,6 +68,7 @@ nav.responsive-toolbar ul i {
     padding-left: 0;
     padding-right: 0;
   }
+
   nav.responsive-toolbar ul a {
     flex-direction: row;
     justify-content: space-between;

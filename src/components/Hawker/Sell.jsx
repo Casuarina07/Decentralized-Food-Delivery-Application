@@ -2,13 +2,12 @@ import React, { Component } from "react";
 import "./Rest.css";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
-import { Button, ButtonToolbar } from "react-bootstrap";
+import { Button, ButtonToolbar, Col } from "react-bootstrap";
 import { EditModal } from "./EditModal";
 import Modal from "@material-ui/core/Modal";
 import { GoPrimitiveDot } from "react-icons/go";
 import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/CardGroup";
-import { Row, Col } from "react-bootstrap";
 
 const { create } = require("ipfs-http-client");
 const ipfs = create({
@@ -90,6 +89,7 @@ class Sell extends Component {
 
   render() {
     let editModalClose = () => this.setState({ editModalShow: false });
+    console.log("REST PRODUCTS: ", this.props.restProducts);
     return (
       <div style={{ margin: 60, marginTop: 30 }}>
         <h1>Add Product</h1>

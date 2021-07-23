@@ -10,6 +10,7 @@ import "../Navbar.css";
 
 function SuppNavbar({
   account,
+  accBalance,
   loading,
   suppProducts,
   createSuppProduct,
@@ -45,6 +46,7 @@ function SuppNavbar({
         navLinks={navLinks}
         logo={logo}
         account={account}
+        accBalance={accBalance}
         // background="#fff"
         // hoverBackground="#ddd"
         // linkColor="#777"

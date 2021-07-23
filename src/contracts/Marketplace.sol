@@ -204,6 +204,7 @@ contract Marketplace {
         address payable owner;
         bool published;
         string imageHash;
+        uint256 soldCount;
     }
 
     struct RestProfile {
@@ -289,7 +290,8 @@ contract Marketplace {
             _price,
             msg.sender,
             _published,
-            _imageHash
+            _imageHash,
+            0
         );
         // Trigger an event
         emit RestProdCreated(
@@ -542,6 +544,14 @@ contract Marketplace {
         }
     }
 
+    event HawkerProdPurchased(
+        uint256 orderId,
+        address indexed buyer,
+        address indexed seller,
+        uint256 totalCost,
+        uint256 indexed date
+    );
+
     function purchaseProduct(
         uint256 _custId,
         address payable _seller,
@@ -577,6 +587,13 @@ contract Marketplace {
         for (uint256 i = 1; i <= cust.itemCount; i++) {
             uint256 item = getCartProduct(_custId, i);
             orders[ordersCount].purchasedItemId[i] = CartItem(i, item);
+
+            //increate soldCount in RestProduct
+            for (uint256 k = 1; k <= restProdCount; k++) {
+                if (restProducts[k].id == item) {
+                    restProducts[k].soldCount++;
+                }
+            }
         }
 
         //Require that there is enough Ether in the transaction
@@ -586,13 +603,13 @@ contract Marketplace {
         removeAllProdCart(_custId);
 
         // //Trigger an event
-        // emit ProductPurchased(
-        //     productCount,
-        //     _product.name,
-        //     _product.price,
-        //     msg.sender,
-        //     true
-        // );
+        emit HawkerProdPurchased(
+            ordersCount,
+            cust.owner,
+            _seller,
+            _totalCost,
+            now
+        );
     }
 
     //hawker confirms order transaction made by customer

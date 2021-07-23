@@ -9,6 +9,7 @@ import "../Navbar.css";
 
 function FDNavbar({
   account,
+  accBalance,
   fdDelivery,
   boolWork,
   fdDeliveryOrders,
@@ -44,6 +45,7 @@ function FDNavbar({
         navLinks={navLinks}
         logo={logo}
         account={account}
+        accBalance={accBalance}
         // background="#fff"
         // hoverBackground="#ddd"
         // linkColor="#777"

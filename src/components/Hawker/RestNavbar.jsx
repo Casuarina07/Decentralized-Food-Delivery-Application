@@ -11,6 +11,7 @@ import "../Navbar.css";
 
 function RestNavbar({
   account,
+  accBalance,
   loading,
   restProducts,
   restProdCount,
@@ -69,6 +70,7 @@ function RestNavbar({
         navLinks={navLinks}
         logo={logo}
         account={account}
+        accBalance={accBalance}
         // background="#fff"
         // hoverBackground="#ddd"
         // linkColor="#777"
@@ -84,7 +86,7 @@ function RestNavbar({
           suppProdCount={suppProdCount}
           purchaseProduct={purchaseProduct}
         />
-        <Home path="/" />
+        <Home path="/" restProducts={restProducts} />
         <Orders
           path="/orders"
           account={account}

@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "@reach/router";
+import Tooltip from "react-bootstrap/Tooltip";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import { Button, Image } from "react-bootstrap";
+import { RiCoinsFill } from "react-icons/ri";
 
 function ResponsiveNavigation({
   background,
@@ -7,9 +11,11 @@ function ResponsiveNavigation({
   linkColor,
   navLinks,
   logo,
+  accBalance,
 }) {
   const [navOpen, setNavOpen] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(-1);
+  const [clickedIndex, setClickedIndex] = useState(-1);
 
   return (
     <nav
@@ -30,9 +36,16 @@ function ResponsiveNavigation({
         </figure>
         {navLinks.map((link, index) => (
           <li
+            id={index.toString()}
             key={index}
             onMouseEnter={() => {
               setHoverIndex(index);
+            }}
+            onMouseDown={() => {
+              console.log("Pressed: ", index);
+              setClickedIndex(index);
+              // var a = document.getElementById(clickedIndex.toString());
+              // a.style.background = "red";
             }}
             onMouseLeave={() => {
               setHoverIndex(-1);
@@ -48,6 +61,18 @@ function ResponsiveNavigation({
             </Link>
           </li>
         ))}
+        <div
+          style={{
+            backgroundColor: "#e5e5e5",
+            marginLeft: "auto",
+            marginRight: 15,
+            borderRadius: 5,
+            padding: 5,
+          }}
+        >
+          <RiCoinsFill />
+          <b>{Number(accBalance).toFixed(4)} Eth</b>
+        </div>
       </ul>
     </nav>
   );

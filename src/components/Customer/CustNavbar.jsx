@@ -12,6 +12,7 @@ import "../Navbar.css";
 
 function CustNavbar({
   account,
+  accBalance,
   loading,
   restProducts,
   restProdCount,
@@ -69,6 +70,7 @@ function CustNavbar({
         navLinks={navLinks}
         logo={logo}
         account={account}
+        accBalance={accBalance}
         // background="#fff"
         // hoverBackground="#ddd"
         // linkColor="#777"
