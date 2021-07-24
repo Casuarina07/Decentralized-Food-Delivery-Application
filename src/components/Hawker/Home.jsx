@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Rest.css";
 import logo from "../logo.svg";
 import blockchainlogo from "../blockchainlogo.png";
 
 function Home({ restProducts }) {
-  console.log("Passed: ", restProducts);
+  let overallSales = 0;
   return (
     <div style={{ margin: 60, marginTop: 20 }}>
       {/* <img
@@ -26,6 +26,7 @@ function Home({ restProducts }) {
             </tr>
           </thead>
           {restProducts.map((product, key) => {
+            overallSales += product.price * product.soldCount;
             return (
               <tbody id="productList">
                 <tr>
@@ -43,6 +44,10 @@ function Home({ restProducts }) {
             );
           })}
         </table>
+        <h4 style={{ display: "flex", justifyContent: "flex-end" }}>
+          Overall Sales:{" "}
+          {window.web3.utils.fromWei(overallSales.toString(), "Ether")} Eth
+        </h4>
       </div>
       <div style={{ marginTop: 30 }}>
         <h2 style={{ color: "#808080" }}>Transactions History</h2>

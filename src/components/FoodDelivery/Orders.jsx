@@ -68,7 +68,32 @@ class Orders extends Component {
                   );
               })}
 
+              {fdAcceptedOrder.state == 2 ? (
+                <button
+                  style={{
+                    display: "flex",
+                    marginBottom: 10,
+                  }}
+                  onClick={(event) => {
+                    this.props.fdCollectedOrder(fdAcceptedOrder.id);
+                  }}
+                >
+                  Collected Order
+                </button>
+              ) : null}
+
               {fdAcceptedOrder.state == 3 ? (
+                <button
+                  style={{ display: "flex", marginBottom: 10 }}
+                  onClick={(event) => {
+                    this.props.fdCompleteOrder(fdAcceptedOrder.id);
+                  }}
+                >
+                  Complete Order
+                </button>
+              ) : null}
+
+              {fdAcceptedOrder.state == 4 ? (
                 <button
                   style={{
                     display: "flex",
@@ -79,16 +104,7 @@ class Orders extends Component {
                 >
                   Completed
                 </button>
-              ) : (
-                <button
-                  style={{ display: "flex", marginBottom: 10 }}
-                  onClick={(event) => {
-                    this.props.fdCompleteOrder(fdAcceptedOrder.id);
-                  }}
-                >
-                  Complete Order
-                </button>
-              )}
+              ) : null}
 
               <table className="table">
                 <thead>
@@ -164,10 +180,12 @@ class Orders extends Component {
             this.orderState = "Finding Driver";
           } else if (fdDeliveryOrder.state == 2) {
             this.orderState = "Driver Confirmed";
+          } else if (fdDeliveryOrder.state == 3) {
+            this.orderState = "Order Collected";
           } else if (fdDeliveryOrder.state == 4) {
-            this.orderState = "In Transit";
-          } else {
             this.orderState = "Order Completed";
+          } else {
+            this.orderState = "Order Cancelled";
           }
           counter2 = 0;
           console.log(

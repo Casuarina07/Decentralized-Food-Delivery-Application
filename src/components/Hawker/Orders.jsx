@@ -18,15 +18,17 @@ class Orders extends Component {
         {this.props.hawkerOrders.map((hawkerOrder, key) => {
           this.orderNo = hawkerOrder.id;
           this.itemCount = hawkerOrder.purchasedItemCount;
+
           if (hawkerOrder.state == 0) {
-            console.log("entered");
             this.orderState = "Order Placed";
           } else if (hawkerOrder.state == 1) {
             this.orderState = "Finding Driver";
           } else if (hawkerOrder.state == 2) {
             this.orderState = "Driver Confirmed";
           } else if (hawkerOrder.state == 3) {
-            this.orderState = "Order Completed";
+            this.orderState = "Driver Collected Food";
+          } else if (hawkerOrder.state == 4) {
+            this.orderState = "Order Delivered";
           } else {
             this.orderState = "Order Cancelled";
           }

@@ -46,7 +46,6 @@ export default function HawkerInfo(props) {
         }
       })}
 
-      <h2>Feedbacks</h2>
       {props.hawkerFeedback.map((feedback, key) => {
         if (feedback.seller.toString() == chosenHawker.toString()) {
           console.log("Same seller account: ", feedback.seller);

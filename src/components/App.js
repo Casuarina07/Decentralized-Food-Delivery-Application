@@ -421,6 +421,18 @@ export default function App() {
       });
   };
 
+  const fdCollectedOrder = (orderId) => {
+    setLoading(true);
+    marketplace.methods
+      .fdCollectedOrder(orderId)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Order collected");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
   const fdCompleteOrder = (orderId) => {
     setLoading(true);
     marketplace.methods
@@ -639,6 +651,7 @@ export default function App() {
             fdAcceptOrder={fdAcceptOrder}
             fdAcceptedOrders={fdAcceptedOrders}
             fdAcceptedOrderItems={fdAcceptedOrderItems}
+            fdCollectedOrder={fdCollectedOrder}
             fdCompleteOrder={fdCompleteOrder}
           />
         ) : null}

@@ -40,7 +40,9 @@ class Orders extends Component {
           } else if (custOrder.state == 2) {
             this.orderState = "Driver Confirmed";
           } else if (custOrder.state == 3) {
-            this.orderState = "Order Completed";
+            this.orderState = "Driver Collected Food - Delivery in progress";
+          } else if (custOrder.state == 4) {
+            this.orderState = "Order Delivered";
           } else {
             this.orderState = "Order Cancelled";
           }
@@ -62,7 +64,6 @@ class Orders extends Component {
 
               {custOrder.state >= 2 && custOrder.state < 3 ? (
                 <div>
-                  <h5 style={{ display: "flex" }}>Delivery in Progress</h5>
                   <h5 style={{ display: "flex" }}>
                     Driver: {custOrder.driver}
                   </h5>
@@ -78,7 +79,7 @@ class Orders extends Component {
                   );
                 }
               })}
-              {custOrder.state == 3 ? (
+              {custOrder.state == 4 ? (
                 <div style={{ display: "flex", marginBottom: 10 }}>
                   {custOrder.rated == false ? (
                     <ButtonToolbar>
@@ -180,6 +181,14 @@ class Orders extends Component {
                   })}
                 </tbody>
               </table>
+              <h5 style={{ display: "flex", justifyContent: "flex-end" }}>
+                Subtotal:{" "}
+                {window.web3.utils.fromWei(
+                  custOrder.totalPrice.toString(),
+                  "Ether"
+                )}{" "}
+                Eth
+              </h5>
             </div>
           );
         })}

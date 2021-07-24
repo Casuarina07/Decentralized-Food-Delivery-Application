@@ -310,6 +310,7 @@ contract Marketplace {
         OrderPlaced,
         OrderConfirm,
         DriverConfirm,
+        OrderCollected,
         OrderCompleted,
         OrderCancelled
     }
@@ -667,6 +668,17 @@ contract Marketplace {
                     _state,
                     false
                 );
+            }
+        }
+    }
+
+    //food delivery collected order
+    function fdCollectedOrder(uint256 _orderId) public {
+        //set orderId state to OrderCompleted
+        uint256 i = 0;
+        for (i = 0; i <= ordersCount; i++) {
+            if (orders[i].id == _orderId) {
+                orders[i].state = Status.OrderCollected;
             }
         }
     }

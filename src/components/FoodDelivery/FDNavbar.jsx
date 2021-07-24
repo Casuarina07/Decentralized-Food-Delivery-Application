@@ -17,6 +17,7 @@ function FDNavbar({
   fdAcceptOrder,
   fdAcceptedOrders,
   fdAcceptedOrderItems,
+  fdCollectedOrder,
   fdCompleteOrder,
   customers,
   hawkers,
@@ -61,6 +62,7 @@ function FDNavbar({
           fdAcceptOrder={fdAcceptOrder}
           fdAcceptedOrders={fdAcceptedOrders}
           fdAcceptedOrderItems={fdAcceptedOrderItems}
+          fdCollectedOrder={fdCollectedOrder}
           fdCompleteOrder={fdCompleteOrder}
           customers={customers}
           hawkers={hawkers}
