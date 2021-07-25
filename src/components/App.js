@@ -177,10 +177,10 @@ export default function App() {
 
           //fetch cart products
           for (var k = 1; k <= cust.itemCount; k++) {
-            const prodId = await marketplace.methods
+            let product = await marketplace.methods
               .getCartProduct(cust.id, k)
               .call();
-            setCustCart((custCart) => [...custCart, prodId]);
+            setCustCart((custCart) => [...custCart, product]);
           }
         }
       }
@@ -385,10 +385,10 @@ export default function App() {
       });
   };
 
-  const addToCart = (id) => {
+  const addToCart = (id, qty) => {
     setLoading(true);
     marketplace.methods
-      .addToCart(id)
+      .addToCart(id, qty)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Added");

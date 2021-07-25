@@ -338,6 +338,7 @@ contract Marketplace {
     struct CartItem {
         uint256 id;
         uint256 productId;
+        uint256 productQty;
     }
 
     //CUSTOMER
@@ -361,7 +362,6 @@ contract Marketplace {
         string memory _phone
     ) public {
         customersCount++;
-        //CartItem[] memory cartItems;
         customers[customersCount] = Customer(
             customersCount,
             _owner,
@@ -402,14 +402,15 @@ contract Marketplace {
         }
     }
 
-    function addToCart(uint256 _id) public {
+    function addToCart(uint256 _id, uint256 _prodQty) public {
         uint256 i = 0;
         for (i = 0; i <= customersCount; i++) {
             if (customers[i].owner == msg.sender) {
                 (customers[i].itemCount)++;
                 customers[i].cartItems[customers[i].itemCount] = CartItem(
                     customers[i].itemCount,
-                    _id
+                    _id,
+                    _prodQty
                 );
             }
         }
@@ -438,10 +439,13 @@ contract Marketplace {
 
     function getCartProduct(uint256 custId, uint256 cartId)
         public
-        returns (uint256)
+        returns (uint256, uint256)
     {
         Customer storage cust = customers[custId];
-        return (cust.cartItems[cartId].productId);
+        return (
+            cust.cartItems[cartId].productId,
+            cust.cartItems[cartId].productQty
+        );
     }
 
     function getOrderProduct(uint256 orderId, uint256 cartId)
@@ -586,8 +590,8 @@ contract Marketplace {
 
         //add the items in cartItems(Customer structure) to purchasedItemId (Order structure)
         for (uint256 i = 1; i <= cust.itemCount; i++) {
-            uint256 item = getCartProduct(_custId, i);
-            orders[ordersCount].purchasedItemId[i] = CartItem(i, item);
+            (uint256 item, uint256 qty) = getCartProduct(_custId, i);
+            orders[ordersCount].purchasedItemId[i] = CartItem(i, item, qty);
 
             //increate soldCount in RestProduct
             for (uint256 k = 1; k <= restProdCount; k++) {

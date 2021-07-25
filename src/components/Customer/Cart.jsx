@@ -28,8 +28,9 @@ class Cart extends Component {
               <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Price</th>
-                <th scope="col">Owner</th>
+                {/* <th scope="col">Owner</th> */}
                 <th scope="col">Image</th>
+                <th scope="col">Qty</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -38,8 +39,8 @@ class Cart extends Component {
                 <>
                   <tbody id="productList">
                     {this.props.restProducts.map((product, key) => {
-                      if (product.id == cart) {
-                        totalCost += +product.price;
+                      if (product.id == cart[0]) {
+                        totalCost += +product.price * cart[1];
                         seller = product.owner;
                         return (
                           <tr>
@@ -51,7 +52,7 @@ class Cart extends Component {
                               )}{" "}
                               Eth
                             </td>
-                            <td>{product.owner}</td>
+                            {/* <td>{product.owner}</td> */}
                             <td>
                               {product.imageHash == "" ? (
                                 <label>-</label>
@@ -67,6 +68,7 @@ class Cart extends Component {
                                 />
                               )}
                             </td>
+                            <td>{cart[1]}</td>
                             <td>
                               <button
                                 onClick={(event) => {

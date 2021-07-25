@@ -14,9 +14,11 @@ class Purchase extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      itemQty: 0,
+      itemQty: 1,
     };
   }
+
+  qtyMinus = (event, key) => {};
   render() {
     return (
       <div style={{ margin: 70, marginTop: 20 }}>
@@ -38,6 +40,7 @@ class Purchase extends Component {
               </h6>
               <CardGroup>
                 {this.props.restProducts.map((product, key) => {
+                  let qty = 1;
                   if (
                     product.owner == hawker.owner &&
                     product.published == true
@@ -88,20 +91,28 @@ class Purchase extends Component {
                             <h5></h5>
                             <FaMinusSquare
                               size="25"
-                              onClick={() => {
-                                console.log("Clicked Minus");
-                                this.setState({
-                                  itemQty: Number(this.itemQty),
-                                });
+                              onClick={(event) => {
+                                qty = qty - 1;
+                                console.log("QTY? : ", qty);
+                                // console.log("Clicked Minus");
+                                // this.setState({
+                                //   itemQty: this.state.itemQty - 1,
+                                // });
+                                this.qtyMinus(event, key);
                               }}
                               style={{ cursor: "pointer", marginRight: 5 }}
                             />
-                            {this.state.itemQty}
+                            {/* {this.state.itemQty} */}
+                            {qty}
                             <FaPlusSquare
                               size="25"
-                              onClick={() => {
-                                console.log("Clicked Plus");
-                                this.setState({ itemQty: this.itemQty++ });
+                              onClick={(key) => {
+                                qty = qty + 1;
+                                // console.log("Clicked Plus");
+                                // this.setState({
+                                //   itemQty: this.state.itemQty + 1,
+                                // });
+                                // this.qtyMinus(product, key);
                               }}
                               style={{ cursor: "pointer", marginLeft: 5 }}
                             />
@@ -110,7 +121,7 @@ class Purchase extends Component {
                               style={{ marginLeft: 10 }}
                               variant="primary"
                               onClick={(event) => {
-                                this.props.addToCart(product.id);
+                                this.props.addToCart(product.id, 1);
                               }}
                             >
                               Add to Cart
