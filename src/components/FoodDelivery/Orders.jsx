@@ -53,18 +53,18 @@ class Orders extends Component {
               {this.props.hawkers.map((hawker, key) => {
                 if (hawker.owner.toString() == fdAcceptedOrder.seller)
                   return (
-                    <h4 style={{ display: "flex" }}>
+                    <h5 style={{ display: "flex" }}>
                       Hawker Address: {hawker.addressLocation}
-                    </h4>
+                    </h5>
                   );
               })}
 
               {this.props.customers.map((customer, key) => {
                 if (customer.owner.toString() == fdAcceptedOrder.owner)
                   return (
-                    <h4 style={{ display: "flex" }}>
+                    <h5 style={{ display: "flex" }}>
                       Customer Address: {customer.addressLocation}
-                    </h4>
+                    </h5>
                   );
               })}
 
@@ -133,16 +133,16 @@ class Orders extends Component {
                     arrayCounter++;
                     return (
                       <tr key={key}>
-                        <td>{product.name}</td>
+                        <td>{product[0].name}</td>
                         <td>
                           {window.web3.utils.fromWei(
-                            product.price.toString(),
+                            product[0].price.toString(),
                             "Ether"
                           )}{" "}
                           Eth
                         </td>
                         <td>
-                          {product.imageHash == "" ? (
+                          {product[0].imageHash == "" ? (
                             <label>-</label>
                           ) : (
                             <img
@@ -151,7 +151,7 @@ class Orders extends Component {
                               alt="logo"
                               src={
                                 "https://ipfs.infura.io/ipfs/" +
-                                product.imageHash
+                                product[0].imageHash
                               }
                             />
                           )}
@@ -208,18 +208,18 @@ class Orders extends Component {
               {this.props.hawkers.map((hawker, key) => {
                 if (hawker.owner.toString() == fdDeliveryOrder.seller)
                   return (
-                    <h4 style={{ display: "flex" }}>
+                    <h5 style={{ display: "flex" }}>
                       Hawker Address: {hawker.addressLocation}
-                    </h4>
+                    </h5>
                   );
               })}
 
               {this.props.customers.map((customer, key) => {
                 if (customer.owner.toString() == fdDeliveryOrder.owner)
                   return (
-                    <h4 style={{ display: "flex" }}>
+                    <h5 style={{ display: "flex" }}>
                       Customer Address: {customer.addressLocation}
-                    </h4>
+                    </h5>
                   );
               })}
               <div style={{ display: "flex", marginBottom: 10 }}>
@@ -268,16 +268,16 @@ class Orders extends Component {
                     arrayCounter2++;
                     return (
                       <tr key={key}>
-                        <td>{product.name}</td>
+                        <td>{product[0].name}</td>
                         <td>
                           {window.web3.utils.fromWei(
-                            product.price.toString(),
+                            product[0].price.toString(),
                             "Ether"
                           )}{" "}
                           Eth
                         </td>
                         <td>
-                          {product.imageHash == "" ? (
+                          {product[0].imageHash == "" ? (
                             <label>-</label>
                           ) : (
                             <img
@@ -286,7 +286,7 @@ class Orders extends Component {
                               alt="logo"
                               src={
                                 "https://ipfs.infura.io/ipfs/" +
-                                product.imageHash
+                                product[0].imageHash
                               }
                             />
                           )}

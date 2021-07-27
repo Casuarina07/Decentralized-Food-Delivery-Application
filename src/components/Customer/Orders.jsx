@@ -27,6 +27,8 @@ class Orders extends Component {
     let rateModalClose = () => this.setState({ rateModalShow: false });
     var counter = 1;
     var arrayCounter = 0;
+    console.log("What is this now: ", this.props.custOrderItems);
+
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
         <h2>Transaction History</h2>
@@ -79,6 +81,8 @@ class Orders extends Component {
                   );
                 }
               })}
+
+              {/* allow customer to rate the transaction after completion */}
               {custOrder.state == 4 ? (
                 <div style={{ display: "flex", marginBottom: 10 }}>
                   {custOrder.rated == false ? (
@@ -116,6 +120,7 @@ class Orders extends Component {
                 </div>
               ) : null}
 
+              {/* allow customer to cancel if hawker have not accepted the order yet */}
               {custOrder.state == 0 ? (
                 <Button
                   style={{ display: "flex", marginBottom: 10 }}
@@ -132,7 +137,8 @@ class Orders extends Component {
                 <thead>
                   <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Price</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Qty</th>
                     <th scope="col">Image</th>
                     <th scope="col"></th>
                   </tr>
@@ -153,16 +159,17 @@ class Orders extends Component {
                     arrayCounter++;
                     return (
                       <tr key={key}>
-                        <td>{product.name}</td>
+                        <td>{product[0].name}</td>
                         <td>
                           {window.web3.utils.fromWei(
-                            product.price.toString(),
+                            product[0].price.toString(),
                             "Ether"
                           )}{" "}
                           Eth
                         </td>
+                        <td>{product[1].productQty}</td>
                         <td>
-                          {product.imageHash == "" ? (
+                          {product[0].imageHash == "" ? (
                             <label>-</label>
                           ) : (
                             <img
@@ -171,7 +178,7 @@ class Orders extends Component {
                               alt="logo"
                               src={
                                 "https://ipfs.infura.io/ipfs/" +
-                                product.imageHash
+                                product[0].imageHash
                               }
                             />
                           )}

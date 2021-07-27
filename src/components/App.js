@@ -7,6 +7,7 @@ import SuppNav from "./Supplier/SuppNavbar";
 import RestNavbar from "./Hawker/RestNavbar";
 import CustNavbar from "./Customer/CustNavbar";
 import FDNavbar from "./FoodDelivery/FDNavbar";
+import Register from "./Register/Register";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,7 @@ export default function App() {
   const [hawkerAcc, setHawkerAcc] = useState(false);
   const [supplierAcc, setSupplierAcc] = useState(false);
   const [fdAcc, setFDAcc] = useState(false);
+  const [newAcc, setNewAcc] = useState(false);
   const [accBalance, setAccBalance] = useState(0);
 
   //hawker-details
@@ -104,9 +106,6 @@ export default function App() {
     const accounts = await web3.eth.getAccounts();
     setAccount(accounts[0]);
     console.log("Account: ", accounts);
-    // await web3.eth.getBalance(accounts, (err, balance) => {
-    //   console.log(accounts + " Balance: ", web3.utils.fromWei(balance));
-    // });
     let balance = await web3.eth.getBalance(accounts.toString());
     let accountBalance = web3.utils.fromWei(balance.toString());
     setAccBalance(accountBalance);
@@ -197,11 +196,12 @@ export default function App() {
           setCustOrders((custOrders) => [...custOrders, order]);
           //get the item that the order consists
           for (var k = 1; k <= order.purchasedItemCount; k++) {
-            const prodId = await marketplace.methods
+            const prod = await marketplace.methods
               .getOrderProduct(order.id, k)
               .call();
-            setCustOrderItems((custOrderItems) => [...custOrderItems, prodId]);
+            setCustOrderItems((custOrderItems) => [...custOrderItems, prod]);
           }
+          console.log("RESULT: ", custOrderItems);
         }
         // order inventory for each hawker
         if (order.seller.toString() === accounts.toString()) {
@@ -307,6 +307,14 @@ export default function App() {
           return;
         }
       }
+
+      if (
+        custAcc == false &&
+        hawkerAcc == false &&
+        fdAcc == false &&
+        supplierAcc == false
+      )
+        setNewAcc(true);
       setLoading(false);
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
@@ -655,6 +663,7 @@ export default function App() {
             fdCompleteOrder={fdCompleteOrder}
           />
         ) : null}
+        {newAcc ? <Register /> : null}
       </Router>
     </div>
   );

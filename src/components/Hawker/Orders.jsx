@@ -79,7 +79,8 @@ class Orders extends Component {
                 <thead>
                   <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Price</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Qty</th>
                     <th scope="col">Image</th>
                     <th scope="col"></th>
                   </tr>
@@ -100,16 +101,17 @@ class Orders extends Component {
                     arrayCounter++;
                     return (
                       <tr key={key}>
-                        <td>{product.name}</td>
+                        <td>{product[0].name}</td>
                         <td>
                           {window.web3.utils.fromWei(
-                            product.price.toString(),
+                            product[0].price.toString(),
                             "Ether"
                           )}{" "}
                           Eth
                         </td>
+                        <td>{product[1].productQty}</td>
                         <td>
-                          {product.imageHash == "" ? (
+                          {product[0].imageHash == "" ? (
                             <label>-</label>
                           ) : (
                             <img
@@ -118,7 +120,7 @@ class Orders extends Component {
                               alt="logo"
                               src={
                                 "https://ipfs.infura.io/ipfs/" +
-                                product.imageHash
+                                product[0].imageHash
                               }
                             />
                           )}

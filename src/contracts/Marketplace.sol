@@ -450,12 +450,14 @@ contract Marketplace {
 
     function getOrderProduct(uint256 orderId, uint256 cartId)
         public
-        returns (RestProduct memory)
+        returns (RestProduct memory, CartItem memory)
     {
         Order storage ord = orders[orderId];
         uint256 prodId = ord.purchasedItemId[cartId].productId;
+        // uint256 prodQty = ord.purchasedItemId[cartId].qty;
         RestProduct memory _product = restProducts[prodId];
-        return (_product);
+        CartItem memory _cart = ord.purchasedItemId[cartId];
+        return (_product, _cart);
     }
 
     function getHawkerFeedback(uint256 hawkerId, uint256 feedbackCount)
