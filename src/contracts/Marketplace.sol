@@ -11,30 +11,32 @@ contract Marketplace {
             0x73c005D4B234C63F416F6e1038C011D55edDBF1e,
             "Selera Rasa Nasi Lemak",
             "2 Adam Rd, #01-02 Food Centre, Singapore 289876",
-            "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm",
+            "seleraNasiLemak@gmail.com",
             "98434509",
-            false
+            "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm",
+            "-"
         );
-        addHawker(
-            0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5,
-            "Tian Tian Hainanese Chicken Rice",
-            "Maxwell Food Centre #01-10/11, 1 Kadayanallur Street, Singapore 069184",
-            "Tuesday – Sunday: 10am – 7:30pm",
-            "96914852",
-            false
-        );
+        // addHawker(
+        //     0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5,
+        //     "Tian Tian Hainanese Chicken Rice",
+        //     "Maxwell Food Centre #01-10/11, 1 Kadayanallur Street, Singapore 069184",
+        //     "tiantian@yahoo.com",
+        //     "96914852",
+        //     "Tuesday – Sunday: 10am – 7:30pm",
+        //     "-"
+        // );
         addCustomer(
             0xC9342f12d49ca9e40d600eBF17266DcCc88a0639,
             "Casuarina",
             "50 Nanyang Ave, Singapore 639798",
             "98765432"
         );
-        addCustomer(
-            0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba,
-            "Patrick",
-            "50 Ang Mo Kio Ave 2, Singapore 639798",
-            "91234567"
-        );
+        // addCustomer(
+        //     0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba,
+        //     "Patrick",
+        //     "50 Ang Mo Kio Ave 2, Singapore 639798",
+        //     "91234567"
+        // );
         addFoodDelivery(
             0x66f8f66996aaB36b041b1cAdA9f20864a0C42698,
             "Leo Tan",
@@ -88,9 +90,43 @@ contract Marketplace {
         );
     }
 
-    // struct OrderHistory {
-    //     address
-    // }
+    //SUPPLIER
+    struct Supplier {
+        uint256 id;
+        address owner;
+        string name;
+        string addressLocation;
+        string phone;
+        uint256 avgRating;
+        bool open;
+        mapping(uint256 => Feedback) feedbacks;
+        uint256 feedbackCount;
+    }
+
+    // Read/write Suppliers
+    mapping(uint256 => Supplier) public suppliers;
+    //Store Hawkers Count
+    uint256 public suppliersCount;
+
+    function addSupplier(
+        address _owner,
+        string memory _name,
+        string memory _addressLocation,
+        string memory _phone,
+        bool _open
+    ) public {
+        suppliersCount++;
+        suppliers[suppliersCount] = Supplier(
+            suppliersCount,
+            _owner,
+            _name,
+            _addressLocation,
+            _phone,
+            0,
+            _open,
+            0
+        );
+    }
 
     //HAWKER
     struct Hawker {
@@ -98,9 +134,11 @@ contract Marketplace {
         address owner;
         string name;
         string addressLocation;
-        string openingHours;
+        string emailAddress;
         string phone;
+        string openingHours;
         uint256 avgRating;
+        string licenseHash;
         bool open;
         mapping(uint256 => Feedback) feedbacks;
         uint256 feedbackCount;
@@ -124,9 +162,10 @@ contract Marketplace {
         address _owner,
         string memory _name,
         string memory _addressLocation,
-        string memory _openingHours,
+        string memory _emailAddress,
         string memory _phone,
-        bool _open
+        string memory _openingHours,
+        string memory _licenseHash
     ) public {
         hawkersCount++;
         hawkers[hawkersCount] = Hawker(
@@ -134,10 +173,12 @@ contract Marketplace {
             _owner,
             _name,
             _addressLocation,
-            _openingHours,
+            _emailAddress,
             _phone,
+            _openingHours,
             0,
-            _open,
+            _licenseHash,
+            false,
             0
         );
     }

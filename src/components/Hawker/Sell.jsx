@@ -123,6 +123,7 @@ class Sell extends Component {
             <input
               className="form-group mr-sm-1"
               type="file"
+              accept="image/*"
               onChange={this.captureFile}
             />
           </div>

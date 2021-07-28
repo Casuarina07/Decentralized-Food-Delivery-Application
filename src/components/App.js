@@ -20,15 +20,18 @@ export default function App() {
   const [suppProdCount, setSuppProdCount] = useState(0);
   const [hawkersPublicKey, setHawkersPublicKey] = useState([
     "0x73c005D4B234C63F416F6e1038C011D55edDBF1e",
-    "0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5",
+    // "0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5",
   ]);
+  // const [hawkersPublicKey, setHawkersPublicKey] = useState([]);
   const [custsPublicKey, setCustsPublicKey] = useState([
     "0xC9342f12d49ca9e40d600eBF17266DcCc88a0639",
-    "0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba",
+    // "0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba",
   ]);
+  // const [custsPublicKey, setCustsPublicKey] = useState([]);
   const [fdsPublicKey, setFDsPublicKey] = useState([
     "0x66f8f66996aaB36b041b1cAdA9f20864a0C42698",
   ]);
+  // const [fdsPublicKey, setFDsPublicKey] = useState([]);
   const [suppliersPublicKey, setSuppliersPublicKey] = useState([
     "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8",
   ]);
@@ -85,9 +88,11 @@ export default function App() {
   useEffect(() => {
     loadWeb3();
     loadBlockchainData();
+    accountType();
   }, []);
 
   async function loadWeb3() {
+    console.log("first");
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
@@ -101,6 +106,8 @@ export default function App() {
   }
 
   async function loadBlockchainData() {
+    console.log("second");
+
     const web3 = window.web3;
     //Load account
     const accounts = await web3.eth.getAccounts();
@@ -139,10 +146,16 @@ export default function App() {
 
       //FETCH HAWKERS
       const hawkersCount = await marketplace.methods.hawkersCount().call();
+      console.log("hawkers Count: ", hawkersCount);
       setHawkersCount(hawkersCount);
+      if (hawkersCount == 0) return;
       for (var j = 1; j <= hawkersCount; j++) {
         const hawker = await marketplace.methods.hawkers(j).call();
         setHawkers((hawkers) => [...hawkers, hawker]);
+        // setHawkersPublicKey((hawkersPublicKey) => [
+        //   ...hawkersPublicKey,
+        //   hawker.owner,
+        // ]);
         if (hawker.owner.toString() === accounts.toString()) {
           console.log("Hawker Account");
           setHawkerName(hawker.name);
@@ -163,9 +176,15 @@ export default function App() {
       //FETCH CUSTOMERS
       const customersCount = await marketplace.methods.customersCount().call();
       setCustCount(customersCount);
+      if (customersCount == 0) return;
+
       for (var l = 1; l <= customersCount; l++) {
         const cust = await marketplace.methods.customers(l).call();
         setCustomers((customers) => [...customers, cust]);
+        // setCustsPublicKey((custsPublicKey) => [
+        //   ...custsPublicKey,
+        //   cust.owner.toString(),
+        // ]);
         if (cust.owner.toString() === accounts.toString()) {
           console.log("Customer Account: ", cust.name);
           setCustId(cust.id);
@@ -258,9 +277,12 @@ export default function App() {
       //FETCH FOOD DELIVERY
       const fdCount = await marketplace.methods.foodDeliveriesCount().call();
       setFDCount(fdCount);
+      if (fdCount == 0) return;
+
       for (var j = 1; j <= fdCount; j++) {
         const foodDelivery = await marketplace.methods.foodDeliveries(j).call();
         setFoodDeliveries((foodDelivery) => [...foodDeliveries, foodDelivery]);
+        // setFDsPublicKey((fdsPublicKey)=> [...fdsPublicKey, foodDelivery.owner])
         if (foodDelivery.owner.toString() === accounts.toString()) {
           setFDDelivery(foodDelivery);
         }
@@ -281,44 +303,53 @@ export default function App() {
           }
         }
       );
-
-      // check if customer, hawkers, suppliers or fooddelivery (fd)
-      for (var i = 0; i < custsPublicKey.length; i++) {
-        if (accounts.toString() === custsPublicKey[i]) {
-          setCustAcc(true);
-          return;
-        }
-      }
-      for (var i = 0; i < hawkersPublicKey.length; i++) {
-        if (accounts.toString() === hawkersPublicKey[i]) {
-          setHawkerAcc(true);
-          return;
-        }
-      }
-      for (var i = 0; i < fdsPublicKey.length; i++) {
-        if (accounts.toString() === fdsPublicKey[i]) {
-          setFDAcc(true);
-          return;
-        }
-      }
-      for (var i = 0; i < suppliersPublicKey.length; i++) {
-        if (accounts.toString() === suppliersPublicKey[i]) {
-          setSupplierAcc(true);
-          return;
-        }
-      }
-
-      if (
-        custAcc == false &&
-        hawkerAcc == false &&
-        fdAcc == false &&
-        supplierAcc == false
-      )
-        setNewAcc(true);
-      setLoading(false);
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
     }
+  }
+
+  async function accountType() {
+    const web3 = window.web3;
+    //Load account
+    const accounts = await web3.eth.getAccounts();
+    console.log("WHAT IS THIS PLS: ", accounts.toString());
+    console.log("ALL THE HAWKER ACCOUNTS: ", hawkersPublicKey);
+    console.log("ALL THE CUSTOMER ACCOUNTS: ", custsPublicKey);
+
+    // check if customer, hawkers, suppliers or fooddelivery (fd)
+    for (var i = 0; i < hawkersPublicKey.length; i++) {
+      if (accounts.toString() === hawkersPublicKey[i]) {
+        setHawkerAcc(true);
+        return;
+      }
+    }
+    for (var i = 0; i < custsPublicKey.length; i++) {
+      if (accounts.toString() === custsPublicKey[i]) {
+        setCustAcc(true);
+        return;
+      }
+    }
+
+    for (var i = 0; i < fdsPublicKey.length; i++) {
+      if (accounts.toString() === fdsPublicKey[i]) {
+        setFDAcc(true);
+        return;
+      }
+    }
+    for (var i = 0; i < suppliersPublicKey.length; i++) {
+      if (accounts.toString() === suppliersPublicKey[i]) {
+        setSupplierAcc(true);
+        return;
+      }
+    }
+    if (
+      custAcc == true ||
+      hawkerAcc == true ||
+      fdAcc == true ||
+      supplierAcc == true
+    )
+      setNewAcc(true);
+    setLoading(false);
   }
 
   const removeProdCart = (custId, cartId) => {
@@ -574,6 +605,47 @@ export default function App() {
       });
   };
 
+  const addHawker = (
+    owner,
+    name,
+    addressLocation,
+    emailAddress,
+    phone,
+    openingHours,
+    licenseHash
+  ) => {
+    console.log("triggered addHawker");
+    setLoading(true);
+    marketplace.methods
+      .addHawker(
+        owner,
+        name,
+        addressLocation,
+        emailAddress,
+        phone,
+        openingHours,
+        licenseHash
+      )
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Hawker Added");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+  const addCustomer = (owner, name, addressLocation, phone) => {
+    console.log("triggered addHawker");
+    setLoading(true);
+    marketplace.methods
+      .addCustomer(owner, name, addressLocation, phone)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Customer Added");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
   return (
     <div>
       <Router>
@@ -663,7 +735,9 @@ export default function App() {
             fdCompleteOrder={fdCompleteOrder}
           />
         ) : null}
-        {newAcc ? <Register /> : null}
+        {newAcc ? (
+          <Register addHawker={addHawker} addCustomer={addCustomer} />
+        ) : null}
       </Router>
     </div>
   );
