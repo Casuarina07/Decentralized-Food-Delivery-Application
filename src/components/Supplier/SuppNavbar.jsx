@@ -10,6 +10,7 @@ import "../Navbar.css";
 
 function SuppNavbar({
   account,
+  supplier,
   accBalance,
   loading,
   suppProducts,
@@ -62,7 +63,7 @@ function SuppNavbar({
           createSuppProduct={createSuppProduct}
           marketplace={marketplace}
         />
-        <Profile path="/profile" account={account} />
+        <Profile path="/profile" account={account} supplier={supplier} />
       </Router>
     </div>
   );

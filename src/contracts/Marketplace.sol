@@ -7,15 +7,15 @@ pragma experimental ABIEncoderV2;
 contract Marketplace {
     //constructor
     constructor() public {
-        addHawker(
-            0x73c005D4B234C63F416F6e1038C011D55edDBF1e,
-            "Selera Rasa Nasi Lemak",
-            "2 Adam Rd, #01-02 Food Centre, Singapore 289876",
-            "seleraNasiLemak@gmail.com",
-            "98434509",
-            "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm",
-            "-"
-        );
+        // addHawker(
+        //     0x73c005D4B234C63F416F6e1038C011D55edDBF1e,
+        //     "Selera Rasa Nasi Lemak",
+        //     "2 Adam Rd, #01-02 Food Centre, Singapore 289876",
+        //     "seleraNasiLemak@gmail.com",
+        //     "98434509",
+        //     "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm",
+        //     "-"
+        // );
         // addHawker(
         //     0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5,
         //     "Tian Tian Hainanese Chicken Rice",
@@ -25,24 +25,24 @@ contract Marketplace {
         //     "Tuesday – Sunday: 10am – 7:30pm",
         //     "-"
         // );
-        addCustomer(
-            0xC9342f12d49ca9e40d600eBF17266DcCc88a0639,
-            "Casuarina",
-            "50 Nanyang Ave, Singapore 639798",
-            "98765432"
-        );
+        // addCustomer(
+        //     0xC9342f12d49ca9e40d600eBF17266DcCc88a0639,
+        //     "Casuarina",
+        //     "50 Nanyang Ave, Singapore 639798",
+        //     "98765432"
+        // );
         // addCustomer(
         //     0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba,
         //     "Patrick",
         //     "50 Ang Mo Kio Ave 2, Singapore 639798",
         //     "91234567"
         // );
-        addFoodDelivery(
-            0x66f8f66996aaB36b041b1cAdA9f20864a0C42698,
-            "Leo Tan",
-            "90123456",
-            false
-        );
+        // addFoodDelivery(
+        //     0x66f8f66996aaB36b041b1cAdA9f20864a0C42698,
+        //     "Leo Tan",
+        //     "leotan@gmail.com",
+        //     "90123456"
+        // );
     }
 
     event LogRefund(
@@ -56,6 +56,7 @@ contract Marketplace {
         uint256 id;
         address owner;
         string name;
+        string email;
         string phone;
         int256 rating;
         bool available;
@@ -74,17 +75,19 @@ contract Marketplace {
     function addFoodDelivery(
         address _owner,
         string memory _name,
-        string memory _phone,
-        bool _available
+        string memory _email,
+        string memory _phone
     ) public {
+        require(msg.sender == _owner);
         foodDeliveriesCount++;
         foodDeliveries[foodDeliveriesCount] = FoodDelivery(
             foodDeliveriesCount,
             _owner,
             _name,
+            _email,
             _phone,
             5,
-            _available,
+            false,
             0,
             0
         );
@@ -95,10 +98,13 @@ contract Marketplace {
         uint256 id;
         address owner;
         string name;
+        string email;
         string addressLocation;
         string phone;
+        // uint256 MOQ;
+        // string deliveryDays;
+        // string remarks;
         uint256 avgRating;
-        bool open;
         mapping(uint256 => Feedback) feedbacks;
         uint256 feedbackCount;
     }
@@ -111,19 +117,20 @@ contract Marketplace {
     function addSupplier(
         address _owner,
         string memory _name,
+        string memory _email,
         string memory _addressLocation,
-        string memory _phone,
-        bool _open
+        string memory _phone
     ) public {
+        require(msg.sender == _owner);
         suppliersCount++;
         suppliers[suppliersCount] = Supplier(
             suppliersCount,
             _owner,
             _name,
+            _email,
             _addressLocation,
             _phone,
             0,
-            _open,
             0
         );
     }
@@ -167,6 +174,7 @@ contract Marketplace {
         string memory _openingHours,
         string memory _licenseHash
     ) public {
+        require(msg.sender == _owner);
         hawkersCount++;
         hawkers[hawkersCount] = Hawker(
             hawkersCount,
@@ -402,6 +410,7 @@ contract Marketplace {
         string memory _addressLocation,
         string memory _phone
     ) public {
+        require(msg.sender == _owner);
         customersCount++;
         customers[customersCount] = Customer(
             customersCount,

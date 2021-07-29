@@ -9,7 +9,12 @@ import HawkerForm from "./HawkerForm";
 import SupplierForm from "./SupplierForm";
 import FdForm from "./FdForm";
 
-export default function Register({ addHawker, addCustomer }) {
+export default function Register({
+  addHawker,
+  addCustomer,
+  addFoodDelivery,
+  addSupplier,
+}) {
   const [accType, setAccType] = useState("customer");
   const handleChange = (event) => {
     setAccType(event.target.value);
@@ -59,8 +64,12 @@ export default function Register({ addHawker, addCustomer }) {
         </FormControl>
         {accType == "customer" ? <CustForm addCustomer={addCustomer} /> : null}
         {accType == "hawker" ? <HawkerForm addHawker={addHawker} /> : null}
-        {accType == "supplier" ? <SupplierForm /> : null}
-        {accType == "foodDelivery" ? <FdForm /> : null}
+        {accType == "supplier" ? (
+          <SupplierForm addSupplier={addSupplier} />
+        ) : null}
+        {accType == "foodDelivery" ? (
+          <FdForm addFoodDelivery={addFoodDelivery} />
+        ) : null}
       </form>
     </div>
   );

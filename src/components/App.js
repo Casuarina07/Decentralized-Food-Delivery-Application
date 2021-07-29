@@ -18,29 +18,35 @@ export default function App() {
   const [restProdCount, setRestProdCount] = useState(0);
   const [suppProducts, setSuppProducts] = useState([]);
   const [suppProdCount, setSuppProdCount] = useState(0);
-  const [hawkersPublicKey, setHawkersPublicKey] = useState([
-    "0x73c005D4B234C63F416F6e1038C011D55edDBF1e",
-    // "0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5",
-  ]);
-  // const [hawkersPublicKey, setHawkersPublicKey] = useState([]);
-  const [custsPublicKey, setCustsPublicKey] = useState([
-    "0xC9342f12d49ca9e40d600eBF17266DcCc88a0639",
-    // "0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba",
-  ]);
-  // const [custsPublicKey, setCustsPublicKey] = useState([]);
-  const [fdsPublicKey, setFDsPublicKey] = useState([
-    "0x66f8f66996aaB36b041b1cAdA9f20864a0C42698",
-  ]);
-  // const [fdsPublicKey, setFDsPublicKey] = useState([]);
-  const [suppliersPublicKey, setSuppliersPublicKey] = useState([
-    "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8",
-  ]);
+  // const [hawkersPublicKey, setHawkersPublicKey] = useState([
+  //   "0x73c005D4B234C63F416F6e1038C011D55edDBF1e",
+  //   // "0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5",
+  // ]);
+  const [hawkersPublicKey, setHawkersPublicKey] = useState([]);
+  // const [custsPublicKey, setCustsPublicKey] = useState([
+  //   "0xC9342f12d49ca9e40d600eBF17266DcCc88a0639",
+  //   // "0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba",
+  // ]);
+  const [custsPublicKey, setCustsPublicKey] = useState([]);
+  // const [fdsPublicKey, setFDsPublicKey] = useState([
+  //   "0x66f8f66996aaB36b041b1cAdA9f20864a0C42698",
+  // ]);
+  const [fdsPublicKey, setFDsPublicKey] = useState([]);
+  // const [suppliersPublicKey, setSuppliersPublicKey] = useState([
+  //   "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8",
+  // ]);
+  const [suppliersPublicKey, setSuppliersPublicKey] = useState([]);
   const [custAcc, setCustAcc] = useState(false);
   const [hawkerAcc, setHawkerAcc] = useState(false);
   const [supplierAcc, setSupplierAcc] = useState(false);
   const [fdAcc, setFDAcc] = useState(false);
   const [newAcc, setNewAcc] = useState(false);
   const [accBalance, setAccBalance] = useState(0);
+
+  //supplier-details
+  const [suppliersCount, setSuppliersCount] = useState(0);
+  const [suppliers, setSuppliers] = useState([]);
+  const [supplier, setSupplier] = useState([]);
 
   //hawker-details
   const [hawkerName, setHawkerName] = useState("");
@@ -88,8 +94,12 @@ export default function App() {
   useEffect(() => {
     loadWeb3();
     loadBlockchainData();
-    accountType();
+    // accountType();
   }, []);
+
+  useEffect(() => {
+    accountType();
+  }, [hawkersPublicKey, custsPublicKey, fdsPublicKey]);
 
   async function loadWeb3() {
     console.log("first");
@@ -129,7 +139,6 @@ export default function App() {
       //FETCH RESTAURANT PRODUCTS
       const restProdCount = await marketplace.methods.restProdCount().call();
       setRestProdCount(restProdCount);
-      console.log("Rest Products: " + restProdCount);
       for (var k = 1; k <= restProdCount; k++) {
         const restProduct = await marketplace.methods.restProducts(k).call();
         setRestProducts((restProducts) => [...restProducts, restProduct]);
@@ -138,24 +147,59 @@ export default function App() {
       //FETCH SUPPLIER PRODUCTS
       const suppProductCount = await marketplace.methods.suppProdCount().call();
       setSuppProdCount(suppProductCount);
-      console.log("Supplier Products: " + suppProductCount);
       for (var k = 1; k <= suppProductCount; k++) {
         const suppProduct = await marketplace.methods.suppProducts(k).call();
         setSuppProducts((suppProducts) => [...suppProducts, suppProduct]);
       }
 
+      //FETCH SUPPLIERS
+      const suppliersCount = await marketplace.methods.suppliersCount().call();
+      console.log("suppliers Count: ", suppliersCount);
+      setSuppliersCount(suppliersCount);
+      for (var j = 1; j <= suppliersCount; j++) {
+        const supplier = await marketplace.methods.suppliers(j).call();
+        setSuppliers((suppliers) => [...suppliers, supplier]);
+        setSuppliersPublicKey((suppliersPublicKey) => [
+          ...suppliersPublicKey,
+          supplier.owner,
+        ]);
+        if (supplier.owner.toString() === accounts.toString()) {
+          console.log("Supplier Account");
+          setSupplier(supplier);
+        }
+      }
+      // if (suppliersCount == 0) return;
+      // for (var j = 1; j <= suppliersCount; j++) {
+      //   const supplier = await marketplace.methods.suppliers(j).call();
+      //   setSuppliers((suppliers) => [...suppliers, supplier]);
+      //   setSuppliersPublicKey((suppliersPublicKey) => [
+      //     ...suppliersPublicKey,
+      //     supplier.owner,
+      //   ]);
+      //   if (supplier.owner.toString() === accounts.toString()) {
+      //     console.log("Supplier Account");
+      //     setSupplier(supplier);
+      //   }
+      //   // for (var k = 1; k <= supplier.feedbackCount; k++) {
+      //   //   const prodId = await marketplace.methods
+      //   //     .getHawkerFeedback(hawker.id, k)
+      //   //     .call();
+      //   //   setHawkerFeedback((hawkerFeedback) => [...hawkerFeedback, prodId]);
+      //   // }
+      // }
+
       //FETCH HAWKERS
       const hawkersCount = await marketplace.methods.hawkersCount().call();
-      console.log("hawkers Count: ", hawkersCount);
+      console.log("what is the hawkers Count: ", hawkersCount);
       setHawkersCount(hawkersCount);
-      if (hawkersCount == 0) return;
+      // if (hawkersCount == 0) return;
       for (var j = 1; j <= hawkersCount; j++) {
         const hawker = await marketplace.methods.hawkers(j).call();
         setHawkers((hawkers) => [...hawkers, hawker]);
-        // setHawkersPublicKey((hawkersPublicKey) => [
-        //   ...hawkersPublicKey,
-        //   hawker.owner,
-        // ]);
+        setHawkersPublicKey((hawkersPublicKey) => [
+          ...hawkersPublicKey,
+          hawker.owner,
+        ]);
         if (hawker.owner.toString() === accounts.toString()) {
           console.log("Hawker Account");
           setHawkerName(hawker.name);
@@ -181,10 +225,10 @@ export default function App() {
       for (var l = 1; l <= customersCount; l++) {
         const cust = await marketplace.methods.customers(l).call();
         setCustomers((customers) => [...customers, cust]);
-        // setCustsPublicKey((custsPublicKey) => [
-        //   ...custsPublicKey,
-        //   cust.owner.toString(),
-        // ]);
+        setCustsPublicKey((custsPublicKey) => [
+          ...custsPublicKey,
+          cust.owner.toString(),
+        ]);
         if (cust.owner.toString() === accounts.toString()) {
           console.log("Customer Account: ", cust.name);
           setCustId(cust.id);
@@ -282,27 +326,30 @@ export default function App() {
       for (var j = 1; j <= fdCount; j++) {
         const foodDelivery = await marketplace.methods.foodDeliveries(j).call();
         setFoodDeliveries((foodDelivery) => [...foodDeliveries, foodDelivery]);
-        // setFDsPublicKey((fdsPublicKey)=> [...fdsPublicKey, foodDelivery.owner])
+        setFDsPublicKey((fdsPublicKey) => [
+          ...fdsPublicKey,
+          foodDelivery.owner,
+        ]);
         if (foodDelivery.owner.toString() === accounts.toString()) {
           setFDDelivery(foodDelivery);
         }
       }
 
       //get all previous events
-      marketplace.getPastEvents(
-        "RestProdCreated",
-        {
-          // filter: { owner: accounts },
-          fromBlock: 0,
-          toBlock: "latest",
-        },
-        (errors, results) => {
-          if (!errors) {
-            console.log("Rest Prod Created results: ", results);
-            setPastEvents(results);
-          }
-        }
-      );
+      // marketplace.getPastEvents(
+      //   "RestProdCreated",
+      //   {
+      //     // filter: { owner: accounts },
+      //     fromBlock: 0,
+      //     toBlock: "latest",
+      //   },
+      //   (errors, results) => {
+      //     if (!errors) {
+      //       console.log("Rest Prod Created results: ", results);
+      //       setPastEvents(results);
+      //     }
+      //   }
+      // );
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
     }
@@ -315,17 +362,21 @@ export default function App() {
     console.log("WHAT IS THIS PLS: ", accounts.toString());
     console.log("ALL THE HAWKER ACCOUNTS: ", hawkersPublicKey);
     console.log("ALL THE CUSTOMER ACCOUNTS: ", custsPublicKey);
+    console.log("ALL THE FD ACCOUNTS: ", fdsPublicKey);
+    console.log("ALL THE SUPPLIER ACCOUNTS: ", suppliersPublicKey);
 
     // check if customer, hawkers, suppliers or fooddelivery (fd)
     for (var i = 0; i < hawkersPublicKey.length; i++) {
       if (accounts.toString() === hawkersPublicKey[i]) {
         setHawkerAcc(true);
+        setNewAcc(false);
         return;
       }
     }
     for (var i = 0; i < custsPublicKey.length; i++) {
       if (accounts.toString() === custsPublicKey[i]) {
         setCustAcc(true);
+        setNewAcc(false);
         return;
       }
     }
@@ -333,22 +384,36 @@ export default function App() {
     for (var i = 0; i < fdsPublicKey.length; i++) {
       if (accounts.toString() === fdsPublicKey[i]) {
         setFDAcc(true);
+        setNewAcc(false);
         return;
       }
     }
     for (var i = 0; i < suppliersPublicKey.length; i++) {
       if (accounts.toString() === suppliersPublicKey[i]) {
         setSupplierAcc(true);
+        setNewAcc(false);
         return;
       }
     }
-    if (
-      custAcc == true ||
-      hawkerAcc == true ||
-      fdAcc == true ||
-      supplierAcc == true
-    )
-      setNewAcc(true);
+    // if (
+    //   custAcc == true ||
+    //   hawkerAcc == true ||
+    //   fdAcc == true ||
+    //   supplierAcc == true
+    // ) {
+    //   setNewAcc(false);
+    // } else {
+    //   setNewAcc(true);
+    // }
+
+    // if (
+    //   custAcc == false &&
+    //   hawkerAcc == false &&
+    //   fdAcc == false &&
+    //   supplierAcc == false
+    // )
+    //   setNewAcc(true);
+    setNewAcc(true);
     setLoading(false);
   }
 
@@ -530,11 +595,6 @@ export default function App() {
       .createSuppProduct(name, price, published, imageHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
-        // console.log(
-        //   "TEST!!!!!! ",
-        //   createSuppProduct.events.SupplierProdCreated
-        // );
-        //console.log("TEST!!!!!! ", createSuppProduct.events);
         alert("Successfully created");
         window.location.reload();
         setLoading(false);
@@ -614,7 +674,6 @@ export default function App() {
     openingHours,
     licenseHash
   ) => {
-    console.log("triggered addHawker");
     setLoading(true);
     marketplace.methods
       .addHawker(
@@ -628,19 +687,43 @@ export default function App() {
       )
       .send({ from: account })
       .once("receipt", (receipt) => {
-        alert("Hawker Added");
+        alert("New Hawker Added");
         window.location.reload();
         setLoading(false);
       });
   };
   const addCustomer = (owner, name, addressLocation, phone) => {
-    console.log("triggered addHawker");
     setLoading(true);
     marketplace.methods
       .addCustomer(owner, name, addressLocation, phone)
       .send({ from: account })
       .once("receipt", (receipt) => {
-        alert("Customer Added");
+        console.log("Receipt?? ", receipt);
+        alert("New Customer Added");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const addFoodDelivery = (owner, name, email, phone) => {
+    setLoading(true);
+    marketplace.methods
+      .addFoodDelivery(owner, name, email, phone)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("New Food Delivery Rider Added");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const addSupplier = (owner, name, email, address, phone) => {
+    setLoading(true);
+    marketplace.methods
+      .addSupplier(owner, name, email, address, phone)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("New supplier Added");
         window.location.reload();
         setLoading(false);
       });
@@ -652,6 +735,7 @@ export default function App() {
         {supplierAcc ? (
           <SuppNav
             account={account}
+            supplier={supplier}
             accBalance={accBalance}
             loading={loading}
             productCount={productCount}
@@ -736,7 +820,12 @@ export default function App() {
           />
         ) : null}
         {newAcc ? (
-          <Register addHawker={addHawker} addCustomer={addCustomer} />
+          <Register
+            addHawker={addHawker}
+            addCustomer={addCustomer}
+            addFoodDelivery={addFoodDelivery}
+            addSupplier={addSupplier}
+          />
         ) : null}
       </Router>
     </div>
