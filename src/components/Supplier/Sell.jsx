@@ -107,6 +107,7 @@ class Sell extends Component {
           <div className="form-group mr-sm-2">
             <input
               id="productPrice"
+              min="0"
               type="number"
               step="any"
               ref={(input) => {

@@ -489,6 +489,18 @@ export default function App() {
       });
   };
 
+  const editSupplierProfile = (phone, moq, leadTime, deliveryDays, remarks) => {
+    setLoading(true);
+    marketplace.methods
+      .editSupplierProfile(phone, moq, leadTime, deliveryDays, remarks)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Successfully Changed");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
   const addToCart = (id, qty) => {
     setLoading(true);
     marketplace.methods
@@ -717,10 +729,30 @@ export default function App() {
       });
   };
 
-  const addSupplier = (owner, name, email, address, phone) => {
+  const addSupplier = (
+    owner,
+    name,
+    email,
+    address,
+    phone,
+    moq,
+    leadTime,
+    deliveryDays,
+    remarks
+  ) => {
     setLoading(true);
     marketplace.methods
-      .addSupplier(owner, name, email, address, phone)
+      .addSupplier(
+        owner,
+        name,
+        email,
+        address,
+        phone,
+        moq,
+        leadTime,
+        deliveryDays,
+        remarks
+      )
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("New supplier Added");
@@ -743,6 +775,7 @@ export default function App() {
             suppProducts={suppProducts}
             marketplace={marketplace}
             pastEvents={pastEvents}
+            editSupplierProfile={editSupplierProfile}
           />
         ) : null}
         {hawkerAcc ? (

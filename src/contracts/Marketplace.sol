@@ -6,44 +6,7 @@ pragma experimental ABIEncoderV2;
 
 contract Marketplace {
     //constructor
-    constructor() public {
-        // addHawker(
-        //     0x73c005D4B234C63F416F6e1038C011D55edDBF1e,
-        //     "Selera Rasa Nasi Lemak",
-        //     "2 Adam Rd, #01-02 Food Centre, Singapore 289876",
-        //     "seleraNasiLemak@gmail.com",
-        //     "98434509",
-        //     "Monday - Thursday: 7am-5pm; Saturday - Sunday 7am-3pm",
-        //     "-"
-        // );
-        // addHawker(
-        //     0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5,
-        //     "Tian Tian Hainanese Chicken Rice",
-        //     "Maxwell Food Centre #01-10/11, 1 Kadayanallur Street, Singapore 069184",
-        //     "tiantian@yahoo.com",
-        //     "96914852",
-        //     "Tuesday – Sunday: 10am – 7:30pm",
-        //     "-"
-        // );
-        // addCustomer(
-        //     0xC9342f12d49ca9e40d600eBF17266DcCc88a0639,
-        //     "Casuarina",
-        //     "50 Nanyang Ave, Singapore 639798",
-        //     "98765432"
-        // );
-        // addCustomer(
-        //     0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba,
-        //     "Patrick",
-        //     "50 Ang Mo Kio Ave 2, Singapore 639798",
-        //     "91234567"
-        // );
-        // addFoodDelivery(
-        //     0x66f8f66996aaB36b041b1cAdA9f20864a0C42698,
-        //     "Leo Tan",
-        //     "leotan@gmail.com",
-        //     "90123456"
-        // );
-    }
+    constructor() public {}
 
     event LogRefund(
         address indexed receiver,
@@ -79,10 +42,11 @@ contract Marketplace {
         string memory _phone
     ) public {
         require(msg.sender == _owner);
+        // require(msg.sender == address(_owner));
         foodDeliveriesCount++;
         foodDeliveries[foodDeliveriesCount] = FoodDelivery(
             foodDeliveriesCount,
-            _owner,
+            msg.sender,
             _name,
             _email,
             _phone,
@@ -101,9 +65,10 @@ contract Marketplace {
         string email;
         string addressLocation;
         string phone;
-        // uint256 MOQ;
-        // string deliveryDays;
-        // string remarks;
+        uint256 MOQ;
+        uint256 leadTime;
+        string deliveryDays;
+        string remarks;
         uint256 avgRating;
         mapping(uint256 => Feedback) feedbacks;
         uint256 feedbackCount;
@@ -119,17 +84,26 @@ contract Marketplace {
         string memory _name,
         string memory _email,
         string memory _addressLocation,
-        string memory _phone
+        string memory _phone,
+        uint256 _moq,
+        uint256 _leadTime,
+        string memory _deliveryDays,
+        string memory _remarks
     ) public {
         require(msg.sender == _owner);
+        // require(msg.sender == address(_owner));
         suppliersCount++;
         suppliers[suppliersCount] = Supplier(
             suppliersCount,
-            _owner,
+            msg.sender,
             _name,
             _email,
             _addressLocation,
             _phone,
+            _moq,
+            _leadTime,
+            _deliveryDays,
+            _remarks,
             0,
             0
         );
@@ -175,10 +149,11 @@ contract Marketplace {
         string memory _licenseHash
     ) public {
         require(msg.sender == _owner);
+        // require(msg.sender == address(_owner));
         hawkersCount++;
         hawkers[hawkersCount] = Hawker(
             hawkersCount,
-            _owner,
+            msg.sender,
             _name,
             _addressLocation,
             _emailAddress,
@@ -411,10 +386,11 @@ contract Marketplace {
         string memory _phone
     ) public {
         require(msg.sender == _owner);
+        // require(msg.sender == address(_owner));
         customersCount++;
         customers[customersCount] = Customer(
             customersCount,
-            _owner,
+            msg.sender,
             _name,
             _addressLocation,
             _phone,
@@ -430,6 +406,25 @@ contract Marketplace {
             if (customers[i].owner == msg.sender) {
                 customers[i].phone = _phone;
                 customers[i].addressLocation = _address;
+            }
+        }
+    }
+
+    function editSupplierProfile(
+        string memory _phone,
+        uint256 _moq,
+        uint256 _leadTime,
+        string memory _deliveryDays,
+        string memory _remarks
+    ) public {
+        uint256 i = 0;
+        for (i = 0; i <= suppliersCount; i++) {
+            if (suppliers[i].owner == msg.sender) {
+                suppliers[i].phone = _phone;
+                suppliers[i].MOQ = _moq;
+                suppliers[i].leadTime = _leadTime;
+                suppliers[i].deliveryDays = _deliveryDays;
+                suppliers[i].remarks = _remarks;
             }
         }
     }

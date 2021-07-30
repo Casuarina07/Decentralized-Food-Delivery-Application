@@ -110,6 +110,7 @@ class Sell extends Component {
             <input
               id="productPrice"
               type="number"
+              min="0"
               step="any"
               ref={(input) => {
                 this.productPrice = input;

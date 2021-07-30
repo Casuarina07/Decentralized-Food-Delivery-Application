@@ -17,6 +17,7 @@ function SuppNavbar({
   createSuppProduct,
   marketplace,
   pastEvents,
+  editSupplierProfile,
 }) {
   const navLinks = [
     {
@@ -63,7 +64,12 @@ function SuppNavbar({
           createSuppProduct={createSuppProduct}
           marketplace={marketplace}
         />
-        <Profile path="/profile" account={account} supplier={supplier} />
+        <Profile
+          path="/profile"
+          account={account}
+          supplier={supplier}
+          editSupplierProfile={editSupplierProfile}
+        />
       </Router>
     </div>
   );

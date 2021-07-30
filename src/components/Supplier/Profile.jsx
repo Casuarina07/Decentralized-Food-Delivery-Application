@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import { BsFillPersonCheckFill } from "react-icons/bs";
 
-export default function Profile({ account, supplier }) {
+export default function Profile({ account, supplier, editSupplierProfile }) {
   const [editClicked, setEditClicked] = useState(false);
   const [supplierPhoneNo, setSupplierPhoneNo] = useState(supplier.phone);
+  const [supplierMoq, setSupplierMoq] = useState(supplier.MOQ);
+  const [supplierLeadTime, setSupplierLeadTime] = useState(supplier.leadTime);
+  const [deliveryDays, setDeliveryDays] = useState(supplier.deliveryDays);
+  const [fromDeliveryDay, setFromDeliveryDay] = useState("Monday");
+  const [toDeliveryDay, setToDeliveryDay] = useState("Sunday");
+  const [supplierRemarks, setSupplierRemarks] = useState(supplier.remarks);
+
   // const [custAddress, setCustAddress] = useState(custAdd);
 
   function editProfile() {
@@ -12,7 +19,23 @@ export default function Profile({ account, supplier }) {
 
   const saveChanges = (evt) => {
     evt.preventDefault();
-    // editCustProfile(custPhoneNo, custAddress);
+    var deliveryDays = fromDeliveryDay + "-" + toDeliveryDay;
+    setDeliveryDays(deliveryDays);
+    editSupplierProfile(
+      supplierPhoneNo,
+      supplierMoq,
+      supplierLeadTime,
+      deliveryDays,
+      supplierRemarks
+    );
+  };
+
+  const handleChangeFrom = (event) => {
+    setFromDeliveryDay(event.target.value);
+  };
+
+  const handleChangeTo = (event) => {
+    setToDeliveryDay(event.target.value);
   };
 
   return (
@@ -41,6 +64,68 @@ export default function Profile({ account, supplier }) {
                 type="text"
                 value={supplierPhoneNo}
                 onChange={(e) => setSupplierPhoneNo(e.target.value)}
+              />
+            </div>
+
+            <b>MOQ: </b>
+            <div style={{ padding: 5 }}>
+              <input
+                type="text"
+                value={supplierMoq}
+                onChange={(e) => setSupplierMoq(e.target.value)}
+              />
+            </div>
+
+            <b>Lead Time: </b>
+            <div style={{ padding: 5 }}>
+              <input
+                type="text"
+                value={supplierLeadTime}
+                onChange={(e) => setSupplierLeadTime(e.target.value)}
+              />
+            </div>
+
+            <b>Delivery Days: </b>
+            <div style={{ padding: 5 }}>
+              <div>
+                <select
+                  style={{ marginRight: 5 }}
+                  value={fromDeliveryDay}
+                  onChange={handleChangeFrom}
+                >
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                  <option value="Sunday">Sunday</option>
+                </select>
+                -
+                <select
+                  id="dropdown"
+                  style={{ marginRight: 5, marginLeft: 5 }}
+                  value={toDeliveryDay}
+                  onChange={handleChangeTo}
+                >
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                  <option value="Sunday">Sunday</option>
+                </select>
+              </div>
+            </div>
+
+            <b>Additional Remarks: </b>
+            <div style={{ padding: 5 }}>
+              <textarea
+                type="text"
+                value={supplierRemarks}
+                style={{ width: 250, height: 150 }}
+                onChange={(e) => setSupplierRemarks(e.target.value)}
               />
             </div>
 
@@ -77,6 +162,22 @@ export default function Profile({ account, supplier }) {
           <b>Phone: </b>
           <div style={{ padding: 5 }}>
             <label>{supplier.phone}</label>
+          </div>
+          <b>MOQ: </b>
+          <div style={{ padding: 5 }}>
+            <label>{supplier.MOQ}</label>
+          </div>
+          <b>Lead Time: </b>
+          <div style={{ padding: 5 }}>
+            <label>{supplier.leadTime}</label>
+          </div>
+          <b>Delivery Days: </b>
+          <div style={{ padding: 5 }}>
+            <label>{supplier.deliveryDays}</label>
+          </div>
+          <b>Additional Remarks: </b>
+          <div style={{ padding: 5, marginLeft: 200, marginRight: 200 }}>
+            <label>{supplier.remarks}</label>
           </div>
           <button
             type="submit"
