@@ -8,6 +8,7 @@ import Profile from "./Profile";
 import ResponsiveNavigation from "../ResponsiveNavigation";
 import logo from "../logo.svg";
 import "../Navbar.css";
+import SupplierInfo from "./SupplierInfo";
 
 function RestNavbar({
   account,
@@ -35,6 +36,7 @@ function RestNavbar({
   editProduct,
   deleteProduct,
   cancelOrder,
+  suppliers,
 }) {
   const navLinks = [
     {
@@ -85,6 +87,13 @@ function RestNavbar({
           suppProducts={suppProducts}
           suppProdCount={suppProdCount}
           purchaseProduct={purchaseProduct}
+          suppliers={suppliers}
+        />
+        <SupplierInfo
+          path="/supplierInfo/:id"
+          suppliers={suppliers}
+          // supp={hawkersCount}
+          // hawkerFeedback={hawkerFeedback}
         />
         <Home path="/" restProducts={restProducts} />
         <Orders

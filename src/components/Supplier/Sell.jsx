@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
-import { Button, ButtonToolbar } from "react-bootstrap";
+import { Button, ButtonToolbar, Col } from "react-bootstrap";
+
 import { EditModal } from "./EditModal";
 import Modal from "@material-ui/core/Modal";
 import { GoPrimitiveDot } from "react-icons/go";
+import Card from "react-bootstrap/Card";
+import CardGroup from "react-bootstrap/CardGroup";
 
 const { create } = require("ipfs-http-client");
 const ipfs = create({
@@ -45,6 +48,8 @@ class Sell extends Component {
       this.productPrice.value.toString(),
       "Ether"
     );
+    const size = this.size.value;
+    const minOrder = this.minOrder.value;
     // Image file adding ipfs - Example hash - QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
     // Example URL - https://ipfs.infura.io/ipfs/QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
     if (this.imageChange === true) {
@@ -64,13 +69,22 @@ class Sell extends Component {
         this.props.createSuppProduct(
           name,
           price,
+          size,
+          minOrder,
           this.publish,
           this.state.imageHash
         );
       });
     } else {
       //create product without imageHash
-      this.props.createSuppProduct(name, price, this.publish, "");
+      this.props.createSuppProduct(
+        name,
+        price,
+        size,
+        minOrder,
+        this.publish,
+        ""
+      );
     }
   };
 
@@ -118,6 +132,32 @@ class Sell extends Component {
               required
             />
           </div>
+          <div className="form-group mr-sm-2">
+            <input
+              id="size"
+              min="0"
+              type="number"
+              step="any"
+              ref={(input) => {
+                this.size = input;
+              }}
+              className="form-control"
+              placeholder="Packaging Size (kg) "
+            />
+          </div>
+          <div className="form-group mr-sm-2">
+            <input
+              id="minOrder"
+              min="1"
+              type="number"
+              step="any"
+              ref={(input) => {
+                this.minOrder = input;
+              }}
+              className="form-control"
+              placeholder="Minimum order (units) "
+            />
+          </div>
           <div style={{ display: "flex" }}>
             <input
               className="form-group mr-sm-1"
@@ -145,61 +185,58 @@ class Sell extends Component {
         </form>
         <p> </p>
         <h2>Product List</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Image</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody id="productList">
-            {this.props.suppProducts.map((product, key) => {
-              if (product.owner === this.props.account)
-                return (
-                  <tr>
-                    <td>
-                      {product.published ? (
-                        <GoPrimitiveDot
-                          style={{ position: "relative", bottom: 2 }}
-                          size="20"
-                          color="green"
-                        />
-                      ) : (
-                        <GoPrimitiveDot
-                          style={{ position: "relative", bottom: 2 }}
-                          size="20"
-                          color="orange"
-                        />
-                      )}
-
-                      {product.name}
-                    </td>
-                    <td>
-                      {window.web3.utils.fromWei(
-                        product.price.toString(),
-                        "Ether"
-                      )}{" "}
-                      Eth
-                    </td>
-                    <td>
-                      {product.imageHash === "" ? (
-                        <label>-</label>
-                      ) : (
-                        <img
-                          height="50"
-                          width="120"
-                          alt="logo"
-                          src={
-                            "https://ipfs.infura.io/ipfs/" + product.imageHash
-                          }
-                        />
-                      )}
-                    </td>
-                    <td>
-                      {/* <button>Edit</button> */}
-                      <ButtonToolbar>
+        <CardGroup>
+          {this.props.suppProducts.map((product, key) => {
+            if (product.owner === this.props.account)
+              return (
+                <Col md={4}>
+                  <Card style={{ marginTop: 15 }}>
+                    <Card.Img
+                      style={{
+                        width: 150,
+                        height: 150,
+                        alignSelf: "center",
+                      }}
+                      variant="top"
+                      src={"https://ipfs.infura.io/ipfs/" + product.imageHash}
+                    />
+                    <Card.Body>
+                      <Card.Title>
+                        {product.published ? (
+                          <GoPrimitiveDot
+                            style={{ position: "relative", bottom: 2 }}
+                            size="20"
+                            color="green"
+                          />
+                        ) : (
+                          <GoPrimitiveDot
+                            style={{ position: "relative", bottom: 2 }}
+                            size="20"
+                            color="orange"
+                          />
+                        )}
+                        {product.name}
+                      </Card.Title>
+                      <Card.Text>
+                        <div>
+                          Price:{" "}
+                          {window.web3.utils.fromWei(
+                            product.price.toString(),
+                            "Ether"
+                          )}{" "}
+                          Eth
+                        </div>{" "}
+                      </Card.Text>
+                      <Card.Text>Packaging Size: {product.size}kg</Card.Text>
+                      <Card.Text>
+                        Minimum Order: {product.minOrder} unit(s)
+                      </Card.Text>
+                    </Card.Body>
+                    <Card.Footer>
+                      {/* <small className="text-muted">
+                      Owner: {this.props.account}
+                    </small> */}
+                      <ButtonToolbar style={{ justifyContent: "center" }}>
                         <Button
                           variant="primary"
                           onClick={() => {
@@ -232,12 +269,12 @@ class Sell extends Component {
                           deleteProduct={this.props.deleteProduct}
                         />
                       </ButtonToolbar>
-                    </td>
-                  </tr>
-                );
-            })}
-          </tbody>
-        </table>
+                    </Card.Footer>
+                  </Card>
+                </Col>
+              );
+          })}
+        </CardGroup>
       </div>
     );
   }

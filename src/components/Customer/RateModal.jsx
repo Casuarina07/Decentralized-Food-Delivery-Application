@@ -34,12 +34,22 @@ export class RateModal extends Component {
       foodDeliveryCommentValue = this.foodDeliveryComment.value;
     }
 
+    // this.props.setRating(
+    //   this.props.orderId,
+    //   this.props.seller,
+    //   this.state.hawkerRating,
+    //   hawkerCommentValue,
+    //   this.props.driver,
+    //   this.state.foodDeliveryRating,
+    //   foodDeliveryCommentValue
+    // );
+
     this.props.setRating(
       this.props.orderId,
-      this.props.seller,
+      this.props.hawkerId,
       this.state.hawkerRating,
       hawkerCommentValue,
-      this.props.driver,
+      this.props.fdId,
       this.state.foodDeliveryRating,
       foodDeliveryCommentValue
     );

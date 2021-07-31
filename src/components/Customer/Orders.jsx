@@ -14,7 +14,9 @@ class Orders extends Component {
       orderState: 0,
       rateModalShow: false,
       seller: "",
-      driver: "",
+      rider: "",
+      hawkerId: 0,
+      fdId: 0,
     };
   }
 
@@ -38,11 +40,11 @@ class Orders extends Component {
           if (custOrder.state == 0) {
             this.orderState = "Order Placed";
           } else if (custOrder.state == 1) {
-            this.orderState = "Finding Driver";
+            this.orderState = "Finding Rider";
           } else if (custOrder.state == 2) {
-            this.orderState = "Driver Confirmed";
+            this.orderState = "Rider Confirmed";
           } else if (custOrder.state == 3) {
-            this.orderState = "Driver Collected Food - Delivery in progress";
+            this.orderState = "Rider Collected Food - Delivery in progress";
           } else if (custOrder.state == 4) {
             this.orderState = "Order Delivered";
           } else {
@@ -64,21 +66,26 @@ class Orders extends Component {
               <h4 style={{ display: "flex" }}></h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
 
-              {custOrder.state >= 2 && custOrder.state < 3 ? (
+              {custOrder.state >= 2 && custOrder.state < 5 ? (
                 <div>
-                  <h5 style={{ display: "flex" }}>
-                    Driver: {custOrder.driver}
-                  </h5>
+                  <h5 style={{ display: "flex" }}>Rider: {custOrder.rider}</h5>
                 </div>
               ) : null}
 
               {this.props.hawkers.map((hawker, key) => {
                 if (hawker.owner == custOrder.seller) {
+                  this.hawkerId = hawker.id;
                   return (
                     <div style={{ display: "flex" }}>
                       <h5>Ordered from: {hawker.name}</h5>
                     </div>
                   );
+                }
+              })}
+
+              {this.props.foodDeliveries.map((fd, key) => {
+                if (fd.owner == custOrder.rider) {
+                  this.fdId = fd.id;
                 }
               })}
 
@@ -92,7 +99,7 @@ class Orders extends Component {
                         onClick={() => {
                           this.setState({ rateModalShow: true });
                           this.setState({ seller: custOrder.seller });
-                          this.setState({ driver: custOrder.driver });
+                          this.setState({ rider: custOrder.rider });
                         }}
                       >
                         Rate
@@ -104,8 +111,10 @@ class Orders extends Component {
                         orderId={custOrder.id}
                         hawkers={this.props.hawkers}
                         seller={this.state.seller}
-                        driver={this.state.driver}
+                        driver={this.state.rider}
                         setRating={this.props.setRating}
+                        hawkerId={this.hawkerId}
+                        fdId={this.fdId}
                       />
                     </ButtonToolbar>
                   ) : (

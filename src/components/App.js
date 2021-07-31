@@ -116,8 +116,6 @@ export default function App() {
   }
 
   async function loadBlockchainData() {
-    console.log("second");
-
     const web3 = window.web3;
     //Load account
     const accounts = await web3.eth.getAccounts();
@@ -296,10 +294,7 @@ export default function App() {
         }
 
         //fetch accepted orders
-        if (
-          order.state >= 2 &&
-          order.driver.toString() == accounts.toString()
-        ) {
+        if (order.state >= 2 && order.rider.toString() == accounts.toString()) {
           console.log("Hello");
           setFDAcceptedOrders((fdAcceptedOrders) => [
             ...fdAcceptedOrders,
@@ -325,7 +320,10 @@ export default function App() {
 
       for (var j = 1; j <= fdCount; j++) {
         const foodDelivery = await marketplace.methods.foodDeliveries(j).call();
-        setFoodDeliveries((foodDelivery) => [...foodDeliveries, foodDelivery]);
+        setFoodDeliveries((foodDeliveries) => [
+          ...foodDeliveries,
+          foodDelivery,
+        ]);
         setFDsPublicKey((fdsPublicKey) => [
           ...fdsPublicKey,
           foodDelivery.owner,
@@ -549,10 +547,10 @@ export default function App() {
       });
   };
 
-  const fdCompleteOrder = (orderId) => {
+  const fdCompleteOrder = (orderId, fdId) => {
     setLoading(true);
     marketplace.methods
-      .fdCompleteOrder(orderId)
+      .fdCompleteOrder(orderId, fdId)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Order completed");
@@ -563,10 +561,10 @@ export default function App() {
 
   const setRating = (
     orderId,
-    hawkerAdd,
+    hawkerId,
     hawkerRate,
     hawkerComment,
-    fdAdd,
+    fdId,
     fdRate,
     fdComment
   ) => {
@@ -574,10 +572,10 @@ export default function App() {
     marketplace.methods
       .setRating(
         orderId,
-        hawkerAdd,
+        hawkerId,
         hawkerRate,
         hawkerComment,
-        fdAdd,
+        fdId,
         fdRate,
         fdComment
       )
@@ -601,10 +599,17 @@ export default function App() {
       });
   };
 
-  const createSuppProduct = (name, price, published, imageHash) => {
+  const createSuppProduct = (
+    name,
+    price,
+    size,
+    minOrder,
+    published,
+    imageHash
+  ) => {
     setLoading(true);
     marketplace.methods
-      .createSuppProduct(name, price, published, imageHash)
+      .createSuppProduct(name, price, size, minOrder, published, imageHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully created");
@@ -804,6 +809,7 @@ export default function App() {
             editProduct={editProduct}
             deleteProduct={deleteProduct}
             cancelOrder={cancelOrder}
+            suppliers={suppliers}
           />
         ) : null}
         {custAcc ? (
@@ -832,6 +838,7 @@ export default function App() {
             setRating={setRating}
             hawkerFeedback={hawkerFeedback}
             cancelOrder={cancelOrder}
+            foodDeliveries={foodDeliveries}
           />
         ) : null}
         {fdAcc ? (

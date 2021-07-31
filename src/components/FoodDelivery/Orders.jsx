@@ -8,6 +8,7 @@ class Orders extends Component {
       itemCount: 0,
       orderState: 0,
       disable: false,
+      fdId: this.props.fdDelivery.id,
     };
   }
 
@@ -86,7 +87,10 @@ class Orders extends Component {
                 <button
                   style={{ display: "flex", marginBottom: 10 }}
                   onClick={(event) => {
-                    this.props.fdCompleteOrder(fdAcceptedOrder.id);
+                    this.props.fdCompleteOrder(
+                      fdAcceptedOrder.id,
+                      this.state.fdId
+                    );
                   }}
                 >
                   Complete Order
@@ -177,9 +181,9 @@ class Orders extends Component {
           if (fdDeliveryOrder.state == 0) {
             this.orderState = "Order Placed";
           } else if (fdDeliveryOrder.state == 1) {
-            this.orderState = "Finding Driver";
+            this.orderState = "Finding Rider";
           } else if (fdDeliveryOrder.state == 2) {
-            this.orderState = "Driver Confirmed";
+            this.orderState = "Rider Confirmed";
           } else if (fdDeliveryOrder.state == 3) {
             this.orderState = "Order Collected";
           } else if (fdDeliveryOrder.state == 4) {

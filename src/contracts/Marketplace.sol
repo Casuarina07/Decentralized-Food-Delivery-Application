@@ -6,13 +6,13 @@ pragma experimental ABIEncoderV2;
 
 contract Marketplace {
     //constructor
-    constructor() public {}
+    // constructor() public {}
 
-    event LogRefund(
-        address indexed receiver,
-        uint256 amount,
-        address indexed owner
-    );
+    // event LogRefund(
+    //     address indexed receiver,
+    //     uint256 amount,
+    //     address indexed owner
+    // );
 
     //FOOD DELIVERY
     struct FoodDelivery {
@@ -203,6 +203,8 @@ contract Marketplace {
         uint256 id;
         string name;
         uint256 price;
+        uint256 size;
+        uint256 minOrder;
         address payable owner;
         bool published;
         string imageHash;
@@ -242,29 +244,31 @@ contract Marketplace {
         uint256 rating;
     }
 
-    event RestProdCreated(
-        uint256 indexed id,
-        uint256 indexed date,
-        string name,
-        uint256 price,
-        address payable indexed owner,
-        bool purchased,
-        string imageHash
-    );
+    // event RestProdCreated(
+    //     uint256 indexed id,
+    //     uint256 indexed date,
+    //     string name,
+    //     uint256 price,
+    //     address payable indexed owner,
+    //     bool purchased,
+    //     string imageHash
+    // );
 
-    event SupplierProdCreated(
-        uint256 indexed id,
-        uint256 indexed date,
-        string name,
-        uint256 price,
-        address payable indexed owner,
-        bool purchased,
-        string imageHash
-    );
+    // event SupplierProdCreated(
+    //     uint256 indexed id,
+    //     uint256 indexed date,
+    //     string name,
+    //     uint256 price,
+    //     address payable indexed owner,
+    //     bool purchased,
+    //     string imageHash
+    // );
 
     function createSuppProduct(
         string memory _name,
         uint256 _price,
+        uint256 _size,
+        uint256 _minOrder,
         bool _published,
         string memory _imageHash
     ) public {
@@ -279,20 +283,22 @@ contract Marketplace {
             suppProdCount,
             _name,
             _price,
+            _size,
+            _minOrder,
             msg.sender,
             _published,
             _imageHash
         );
         //trigger an event
-        emit SupplierProdCreated(
-            suppProdCount,
-            now,
-            _name,
-            _price,
-            msg.sender,
-            _published,
-            _imageHash
-        );
+        // emit SupplierProdCreated(
+        //     suppProdCount,
+        //     now,
+        //     _name,
+        //     _price,
+        //     msg.sender,
+        //     _published,
+        //     _imageHash
+        // );
     }
 
     function createRestProduct(
@@ -318,22 +324,22 @@ contract Marketplace {
             0
         );
         // Trigger an event
-        emit RestProdCreated(
-            restProdCount,
-            now,
-            _name,
-            _price,
-            msg.sender,
-            _published,
-            _imageHash
-        );
+        // emit RestProdCreated(
+        //     restProdCount,
+        //     now,
+        //     _name,
+        //     _price,
+        //     msg.sender,
+        //     _published,
+        //     _imageHash
+        // );
     }
 
     //ORDERS
     enum Status {
         OrderPlaced,
         OrderConfirm,
-        DriverConfirm,
+        RiderConfirm,
         OrderCollected,
         OrderCompleted,
         OrderCancelled
@@ -344,7 +350,7 @@ contract Marketplace {
         uint256 id;
         address owner;
         address seller;
-        address driver;
+        address rider;
         uint256 hawkerPayment;
         uint256 riderPayment;
         uint256 totalPrice;
@@ -467,11 +473,10 @@ contract Marketplace {
         delete cust.cartItems[cartId];
     }
 
-    function deleteProduct(uint256 productId) public {
-        //RestProduct storage product = restProducts[productId];
-        restProdCount--;
-        delete restProducts[productId];
-    }
+    // function deleteProduct(uint256 productId) public {
+    //     restProdCount--;
+    //     delete restProducts[productId];
+    // }
 
     function removeAllProdCart(uint256 custId) public {
         Customer storage cust = customers[custId];
@@ -499,7 +504,6 @@ contract Marketplace {
     {
         Order storage ord = orders[orderId];
         uint256 prodId = ord.purchasedItemId[cartId].productId;
-        // uint256 prodQty = ord.purchasedItemId[cartId].qty;
         RestProduct memory _product = restProducts[prodId];
         CartItem memory _cart = ord.purchasedItemId[cartId];
         return (_product, _cart);
@@ -525,84 +529,58 @@ contract Marketplace {
 
     function setRating(
         uint256 _orderId,
-        address _hawker,
+        uint256 _hawkerId,
         uint256 _hawkerRate,
         string memory _hawkerComment,
-        address _foodDelivery,
+        uint256 _foodDeliveryId,
         uint256 _fdRate,
         string memory _fdComment
     ) public {
-        //set order rated boolean to true
-        uint256 j = 0;
-        for (j = 0; j <= ordersCount; j++) {
-            if (orders[j].id == _orderId) {
-                orders[j].rated = true;
-            }
-        }
+        orders[_orderId].rated = true;
 
         //set hawker feedback
-        uint256 i = 0;
-        for (i = 0; i <= hawkersCount; i++) {
-            if (hawkers[i].owner == _hawker) {
-                (hawkers[i].feedbackCount)++;
-                hawkers[i].feedbacks[hawkers[i].feedbackCount] = Feedback(
-                    hawkers[i].feedbackCount,
-                    _hawker,
-                    msg.sender,
-                    _hawkerRate,
-                    _hawkerComment
-                );
-                uint256 total = _hawkerRate + hawkers[i].avgRating;
-                uint256 avg = total / (hawkers[i].feedbackCount);
-                hawkers[i].avgRating = avg;
-            }
-        }
+        (hawkers[_hawkerId].feedbackCount)++;
+        hawkers[_hawkerId].feedbacks[
+            hawkers[_hawkerId].feedbackCount
+        ] = Feedback(
+            hawkers[_hawkerId].feedbackCount,
+            hawkers[_hawkerId].owner,
+            msg.sender,
+            _hawkerRate,
+            _hawkerComment
+        );
+        uint256 total = _hawkerRate + hawkers[_hawkerId].avgRating;
+        uint256 avg = total / (hawkers[_hawkerId].feedbackCount);
+        hawkers[_hawkerId].avgRating = avg;
 
         //set fd feedback
-        uint256 k = 0;
-        for (k = 0; k <= foodDeliveriesCount; k++) {
-            if (foodDeliveries[k].owner == _foodDelivery) {
-                (foodDeliveries[k].feedbackCount)++;
-                foodDeliveries[k].feedbacks[
-                    foodDeliveries[k].feedbackCount
-                ] = Feedback(
-                    foodDeliveries[k].feedbackCount,
-                    _foodDelivery,
-                    msg.sender,
-                    _fdRate,
-                    _fdComment
-                );
-            }
-        }
+        (foodDeliveries[_foodDeliveryId].feedbackCount)++;
+        foodDeliveries[_foodDeliveryId].feedbacks[
+            foodDeliveries[_foodDeliveryId].feedbackCount
+        ] = Feedback(
+            foodDeliveries[_foodDeliveryId].feedbackCount,
+            foodDeliveries[_foodDeliveryId].owner,
+            msg.sender,
+            _fdRate,
+            _fdComment
+        );
     }
 
     function cancelOrder(uint256 _orderId, address payable _customer)
         public
         payable
     {
-        uint256 i = 0;
-        for (i = 0; i <= ordersCount; i++) {
-            if (orders[i].id == _orderId) {
-                orders[i].state = Status.OrderCancelled;
-                //address payable customer = address(orders[i].owner);
-                emit LogRefund(
-                    orders[i].owner,
-                    orders[i].totalPrice,
-                    orders[i].owner
-                );
-                address(_customer).transfer(orders[i].totalPrice);
-                //msg.sender.transfer(orders[i].totalPrice);
-            }
-        }
+        orders[_orderId].state = Status.OrderCancelled;
+        address(_customer).transfer(orders[_orderId].totalPrice);
     }
 
-    event HawkerProdPurchased(
-        uint256 orderId,
-        address indexed buyer,
-        address indexed seller,
-        uint256 totalCost,
-        uint256 indexed date
-    );
+    // event HawkerProdPurchased(
+    //     uint256 orderId,
+    //     address indexed buyer,
+    //     address indexed seller,
+    //     uint256 totalCost,
+    //     uint256 indexed date
+    // );
 
     function purchaseProduct(
         uint256 _custId,
@@ -655,127 +633,41 @@ contract Marketplace {
         removeAllProdCart(_custId);
 
         // //Trigger an event
-        emit HawkerProdPurchased(
-            ordersCount,
-            cust.owner,
-            _seller,
-            _totalCost,
-            now
-        );
+        // emit HawkerProdPurchased(
+        //     ordersCount,
+        //     cust.owner,
+        //     _seller,
+        //     _totalCost,
+        //     now
+        // );
     }
 
     //hawker confirms order transaction made by customer
     function hawkerConfirmOrder(uint256 _orderId) public {
-        uint256 i = 0;
-        for (i = 0; i <= ordersCount; i++) {
-            if (orders[i].id == _orderId) {
-                orders[i].state = Status.OrderConfirm;
-                //Pay the hawker
-                address(msg.sender).transfer(orders[i].hawkerPayment);
-            }
-        }
+        orders[_orderId].state = Status.OrderConfirm;
+        //Pay the hawker
+        address(msg.sender).transfer(orders[_orderId].hawkerPayment);
     }
 
     //food delivery accepts order delivery
     function fdAcceptOrder(uint256 _orderId) public {
         //set orderId state to DriverConfirm
-        uint256 i = 0;
-        for (i = 0; i <= ordersCount; i++) {
-            if (orders[i].id == _orderId) {
-                orders[i].state = Status.DriverConfirm;
-                orders[i].driver = msg.sender;
-            }
-        }
-
-        Order memory _order = orders[_orderId];
-        address _owner = _order.owner;
-        address _seller = _order.seller;
-        uint256 _hawkerPayment = _order.hawkerPayment;
-        uint256 _riderPayment = _order.riderPayment;
-        uint256 _totalPrice = _order.totalPrice;
-        uint256 _purchasedItemCount = _order.purchasedItemCount;
-        string memory _date = _order.date;
-        string memory _time = _order.time;
-        Status _state = _order.state;
-
-        //add the order to the acceptedOrder mapping for the fd
-        uint256 k = 0;
-        for (k = 0; k <= foodDeliveriesCount; k++) {
-            if (foodDeliveries[k].owner == msg.sender) {
-                (foodDeliveries[k].ordersAcceptedCount)++;
-                foodDeliveries[k].ordersAccepted[
-                    foodDeliveries[k].ordersAcceptedCount
-                ] = Order(
-                    foodDeliveries[k].ordersAcceptedCount,
-                    _owner,
-                    _seller,
-                    msg.sender,
-                    _hawkerPayment,
-                    _riderPayment,
-                    _totalPrice,
-                    _purchasedItemCount,
-                    _date,
-                    _time,
-                    _state,
-                    false
-                );
-            }
-        }
+        orders[_orderId].state = Status.RiderConfirm;
+        orders[_orderId].rider = msg.sender;
     }
 
     //food delivery collected order
     function fdCollectedOrder(uint256 _orderId) public {
         //set orderId state to OrderCompleted
-        uint256 i = 0;
-        for (i = 0; i <= ordersCount; i++) {
-            if (orders[i].id == _orderId) {
-                orders[i].state = Status.OrderCollected;
-            }
-        }
+        orders[_orderId].state = Status.OrderCollected;
     }
 
     //food delivery completes order delivery
-    function fdCompleteOrder(uint256 _orderId) public payable {
+    function fdCompleteOrder(uint256 _orderId, uint256 _fdId) public payable {
         //set orderId state to OrderCompleted
-        uint256 i = 0;
-        for (i = 0; i <= ordersCount; i++) {
-            if (orders[i].id == _orderId) {
-                orders[i].state = Status.OrderCompleted;
-                //Pay the rider after completion
-                address(msg.sender).transfer(orders[i].riderPayment);
-            }
-        }
+        orders[_orderId].state = Status.OrderCompleted;
+        //Pay the rider after completion
+        address(msg.sender).transfer(orders[_orderId].riderPayment);
+        (foodDeliveries[_fdId].ordersAcceptedCount)++;
     }
-
-    // function purchaseProduct(uint256 _id) public payable {
-    //     //Fetch the product
-    //     Product memory _product = products[_id];
-    //     //Fetch the owner
-    //     address payable _seller = _product.owner;
-    //     //Make sure the product has a valid id
-    //     //require(_product.id > 0 && _product.id <= productCount); ---> need to change
-    //     //Require that there is enough Ether in the transaction
-    //     require(msg.value >= _product.price);
-    //     //Require that the product has not been purchased already
-    //     require(!_product.purchased);
-    //     //Require that the buyer is not the seller
-    //     require(_seller != msg.sender);
-    //     //Transfer ownership to the buyer
-    //     _product.owner = msg.sender;
-    //     //Mark as purchased
-    //     _product.purchased = true;
-    //     //Update the product
-    //     products[_id] = _product;
-    //     //Pay the seller by sending them Ether
-    //     address(_seller).transfer(msg.value);
-
-    //     //Trigger an event
-    //     emit ProductPurchased(
-    //         productCount,
-    //         _product.name,
-    //         _product.price,
-    //         msg.sender,
-    //         true
-    //     );
-    // }
 }

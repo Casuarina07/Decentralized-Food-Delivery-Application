@@ -1,51 +1,50 @@
 import React, { Component } from "react";
 import "./Rest.css";
+import Card from "react-bootstrap/Card";
+import CardGroup from "react-bootstrap/CardGroup";
+import { Row, Col, Button } from "react-bootstrap";
+import { Link } from "@reach/router";
+import SupplierProdCardItem from "./SupplierProdCardItem";
 
 class Purchase extends Component {
   render() {
     return (
-      <div style={{ margin: 60, marginTop: 30 }}>
-        <h2>Purchase Food Items</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Owner</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody id="productList">
-            {this.props.suppProducts.map((product, key) => {
-              return (
-                <tr key={key}>
-                  <th scope="row">{product.id.toString()}</th>
-                  <td>{product.name}</td>
-                  <td>
-                    {window.web3.utils.fromWei(
-                      product.price.toString(),
-                      "Ether"
-                    )}{" "}
-                    Eth
-                  </td>
-                  <td>{product.owner}</td>
-                  <td>
-                    <button
-                      name={product.id}
-                      value={product.price}
-                      onClick={(event) => {
-                        //purchaseProduct(event.target.name, event.target.value);
-                      }}
-                    >
-                      Buy
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div style={{ margin: 70, marginTop: 20 }}>
+        <h2>Purchase Food Ingredients</h2>
+        {this.props.suppliers.map((supplier, key) => {
+          return (
+            <>
+              <h4 style={{ display: "flex", marginTop: 20 }}>
+                <Link
+                  to={`/supplierInfo/${supplier.owner}`}
+                  state={{ chosenSupplierPk: supplier.owner }}
+                >
+                  {supplier.name}
+                </Link>
+              </h4>
+
+              <h6 style={{ display: "flex", color: "#808080" }}>
+                {supplier.owner}
+              </h6>
+              <CardGroup>
+                {this.props.suppProducts.map((product, key) => {
+                  if (
+                    product.owner == supplier.owner &&
+                    product.published == true
+                  )
+                    return (
+                      <Col md={4}>
+                        <SupplierProdCardItem
+                          product={product}
+                          addToCart={this.props.addToCart}
+                        />
+                      </Col>
+                    );
+                })}
+              </CardGroup>
+            </>
+          );
+        })}
       </div>
     );
   }

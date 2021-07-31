@@ -42,7 +42,7 @@ export default function Profile({
           <label>{fdDelivery.phone}</label>
         </div>
 
-        <b>Deliveries Accepted: </b>
+        <b>Deliveries Completed: </b>
         <div style={{ padding: 5 }}>
           <label>{fdDelivery.ordersAcceptedCount}</label>
         </div>

@@ -41,6 +41,7 @@ export default function SupplierForm({ addSupplier }) {
           type="text"
           className="form-control"
           placeholder="Enter Public Key"
+          required
           onChange={(e) => {
             setPublicKey(e.target.value);
           }}
@@ -53,6 +54,7 @@ export default function SupplierForm({ addSupplier }) {
           type="text"
           className="form-control"
           placeholder="Enter name"
+          required
           onChange={(e) => {
             setSupplierName(e.target.value);
           }}
@@ -65,6 +67,7 @@ export default function SupplierForm({ addSupplier }) {
           type="email"
           className="form-control"
           placeholder="Enter email"
+          required
           onChange={(e) => {
             setSupplierEmail(e.target.value);
           }}
@@ -77,6 +80,7 @@ export default function SupplierForm({ addSupplier }) {
           type="text"
           className="form-control"
           placeholder="Enter company address"
+          required
           onChange={(e) => {
             setSupplierAdd(e.target.value);
           }}
@@ -89,6 +93,7 @@ export default function SupplierForm({ addSupplier }) {
           type="text"
           className="form-control"
           placeholder="Enter phone number"
+          required
           onChange={(e) => {
             setPhoneNo(e.target.value);
           }}
@@ -104,6 +109,7 @@ export default function SupplierForm({ addSupplier }) {
           min="0"
           className="form-control"
           placeholder="Enter mininum order quantity"
+          required
           onChange={(e) => {
             setMoq(e.target.value);
           }}
@@ -117,6 +123,7 @@ export default function SupplierForm({ addSupplier }) {
           min="1"
           className="form-control"
           placeholder="Enter lead time"
+          required
           onChange={(e) => {
             setLeadTime(e.target.value);
           }}

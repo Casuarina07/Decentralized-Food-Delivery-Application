@@ -22,11 +22,11 @@ class Orders extends Component {
           if (hawkerOrder.state == 0) {
             this.orderState = "Order Placed";
           } else if (hawkerOrder.state == 1) {
-            this.orderState = "Finding Driver";
+            this.orderState = "Finding Rider";
           } else if (hawkerOrder.state == 2) {
-            this.orderState = "Driver Confirmed";
+            this.orderState = "Rider Confirmed";
           } else if (hawkerOrder.state == 3) {
-            this.orderState = "Driver Collected Food";
+            this.orderState = "Rider Collected Food";
           } else if (hawkerOrder.state == 4) {
             this.orderState = "Order Delivered";
           } else {
@@ -47,7 +47,16 @@ class Orders extends Component {
               <h4 style={{ display: "flex" }}>
                 {hawkerOrder.date} {hawkerOrder.time}
               </h4>
+
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
+
+              {hawkerOrder.state >= 2 && hawkerOrder.state < 5 ? (
+                <div>
+                  <h5 style={{ display: "flex" }}>
+                    Rider: {hawkerOrder.rider}
+                  </h5>
+                </div>
+              ) : null}
               <div style={{ display: "flex", marginBottom: 10 }}>
                 {hawkerOrder.state == 0 ? (
                   <div>
