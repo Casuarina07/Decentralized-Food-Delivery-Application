@@ -166,34 +166,44 @@ contract Marketplace {
         );
     }
 
-    function editHawkerProfile(string memory _phone, string memory _OH) public {
-        uint256 i = 0;
-        for (i = 0; i <= hawkersCount; i++) {
-            if (hawkers[i].owner == msg.sender) {
-                hawkers[i].phone = _phone;
-                hawkers[i].openingHours = _OH;
-            }
-        }
+    function editHawkerProfile(
+        uint256 _id,
+        string memory _phone,
+        string memory _OH
+    ) public {
+        hawkers[_id].phone = _phone;
+        hawkers[_id].openingHours = _OH;
+        // uint256 i = 0;
+        // for (i = 0; i <= hawkersCount; i++) {
+        //     if (hawkers[i].owner == msg.sender) {
+        //         hawkers[i].phone = _phone;
+        //         hawkers[i].openingHours = _OH;
+        //     }
+        // }
     }
 
     //change shop status
-    function boolOpen() public {
-        uint256 i = 0;
-        for (i = 0; i <= hawkersCount; i++) {
-            if (hawkers[i].owner == msg.sender) {
-                hawkers[i].open = !(hawkers[i].open);
-            }
-        }
+    function boolOpen(uint256 _id) public {
+        hawkers[_id].open = !(hawkers[_id].open);
+
+        // uint256 i = 0;
+        // for (i = 0; i <= hawkersCount; i++) {
+        //     if (hawkers[i].owner == msg.sender) {
+        //         hawkers[i].open = !(hawkers[i].open);
+        //     }
+        // }
     }
 
     //change food delivery status
-    function boolWork() public {
-        uint256 i = 0;
-        for (i = 0; i <= foodDeliveriesCount; i++) {
-            if (foodDeliveries[i].owner == msg.sender) {
-                foodDeliveries[i].available = !(foodDeliveries[i].available);
-            }
-        }
+    function boolWork(uint256 _id) public {
+        foodDeliveries[_id].available = !(foodDeliveries[_id].available);
+
+        // uint256 i = 0;
+        // for (i = 0; i <= foodDeliveriesCount; i++) {
+        //     if (foodDeliveries[i].owner == msg.sender) {
+        //         foodDeliveries[i].available = !(foodDeliveries[i].available);
+        //     }
+        // }
     }
 
     //SUPPLIER
@@ -404,35 +414,45 @@ contract Marketplace {
         );
     }
 
-    function editCustProfile(string memory _phone, string memory _address)
-        public
-    {
-        uint256 i = 0;
-        for (i = 0; i <= customersCount; i++) {
-            if (customers[i].owner == msg.sender) {
-                customers[i].phone = _phone;
-                customers[i].addressLocation = _address;
-            }
-        }
+    function editCustProfile(
+        uint256 _id,
+        string memory _phone,
+        string memory _address
+    ) public {
+        customers[_id].phone = _phone;
+        customers[_id].addressLocation = _address;
+        // uint256 i = 0;
+        // for (i = 0; i <= customersCount; i++) {
+        //     if (customers[i].owner == msg.sender) {
+        //         customers[i].phone = _phone;
+        //         customers[i].addressLocation = _address;
+        //     }
+        // }
     }
 
     function editSupplierProfile(
+        uint256 _id,
         string memory _phone,
         uint256 _moq,
         uint256 _leadTime,
         string memory _deliveryDays,
         string memory _remarks
     ) public {
-        uint256 i = 0;
-        for (i = 0; i <= suppliersCount; i++) {
-            if (suppliers[i].owner == msg.sender) {
-                suppliers[i].phone = _phone;
-                suppliers[i].MOQ = _moq;
-                suppliers[i].leadTime = _leadTime;
-                suppliers[i].deliveryDays = _deliveryDays;
-                suppliers[i].remarks = _remarks;
-            }
-        }
+        suppliers[_id].phone = _phone;
+        suppliers[_id].MOQ = _moq;
+        suppliers[_id].leadTime = _leadTime;
+        suppliers[_id].deliveryDays = _deliveryDays;
+        suppliers[_id].remarks = _remarks;
+        // uint256 i = 0;
+        // for (i = 0; i <= suppliersCount; i++) {
+        //     if (suppliers[i].owner == msg.sender) {
+        //         suppliers[i].phone = _phone;
+        //         suppliers[i].MOQ = _moq;
+        //         suppliers[i].leadTime = _leadTime;
+        //         suppliers[i].deliveryDays = _deliveryDays;
+        //         suppliers[i].remarks = _remarks;
+        //     }
+        // }
     }
 
     function editProduct(
@@ -442,29 +462,33 @@ contract Marketplace {
         string memory _imageHash,
         bool _published
     ) public {
-        uint256 i = 0;
-        for (i = 0; i <= restProdCount; i++) {
-            if (restProducts[i].id == _productId) {
-                restProducts[i].name = _name;
-                restProducts[i].price = _price;
-                restProducts[i].imageHash = _imageHash;
-                restProducts[i].published = _published;
-            }
-        }
+        restProducts[_productId].name = _name;
+        restProducts[_productId].price = _price;
+        restProducts[_productId].imageHash = _imageHash;
+        restProducts[_productId].published = _published;
+
+        // uint256 i = 0;
+        // for (i = 0; i <= restProdCount; i++) {
+        //     if (restProducts[i].id == _productId) {
+        //         restProducts[i].name = _name;
+        //         restProducts[i].price = _price;
+        //         restProducts[i].imageHash = _imageHash;
+        //         restProducts[i].published = _published;
+        //     }
+        // }
     }
 
-    function addToCart(uint256 _id, uint256 _prodQty) public {
-        uint256 i = 0;
-        for (i = 0; i <= customersCount; i++) {
-            if (customers[i].owner == msg.sender) {
-                (customers[i].itemCount)++;
-                customers[i].cartItems[customers[i].itemCount] = CartItem(
-                    customers[i].itemCount,
-                    _id,
-                    _prodQty
-                );
-            }
-        }
+    function addToCart(
+        uint256 _custId,
+        uint256 _prodId,
+        uint256 _prodQty
+    ) public {
+        (customers[_custId].itemCount)++;
+        customers[_custId].cartItems[customers[_custId].itemCount] = CartItem(
+            customers[_custId].itemCount,
+            _prodId,
+            _prodQty
+        );
     }
 
     function removeProdCart(uint256 custId, uint256 cartId) public {
@@ -619,11 +643,12 @@ contract Marketplace {
             orders[ordersCount].purchasedItemId[i] = CartItem(i, item, qty);
 
             //increate soldCount in RestProduct
-            for (uint256 k = 1; k <= restProdCount; k++) {
-                if (restProducts[k].id == item) {
-                    restProducts[k].soldCount++;
-                }
-            }
+            // for (uint256 k = 1; k <= restProdCount; k++) {
+            //     if (restProducts[k].id == item) {
+            //         restProducts[k].soldCount++;
+            //     }
+            // }
+            restProducts[item].soldCount++;
         }
 
         //Require that there is enough Ether in the transaction

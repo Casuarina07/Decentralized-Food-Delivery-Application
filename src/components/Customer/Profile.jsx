@@ -4,6 +4,7 @@ import { BsFillPersonCheckFill } from "react-icons/bs";
 
 export default function Profile({
   account,
+  custId,
   custName,
   custAdd,
   custPhone,
@@ -19,7 +20,7 @@ export default function Profile({
 
   const saveChanges = (evt) => {
     evt.preventDefault();
-    editCustProfile(custPhoneNo, custAddress);
+    editCustProfile(custId, custPhoneNo, custAddress);
   };
 
   return (

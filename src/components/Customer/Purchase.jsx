@@ -45,6 +45,7 @@ class Purchase extends Component {
                       <Col md={4}>
                         <ProductCardItem
                           product={product}
+                          custId={this.props.custId}
                           addToCart={this.props.addToCart}
                         />
                       </Col>
@@ -60,5 +61,3 @@ class Purchase extends Component {
 }
 
 export default Purchase;
-
-               

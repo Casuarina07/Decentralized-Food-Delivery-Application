@@ -49,6 +49,7 @@ export default function App() {
   const [supplier, setSupplier] = useState([]);
 
   //hawker-details
+  const [hawkerId, setHawkerId] = useState(0);
   const [hawkerName, setHawkerName] = useState("");
   const [hawkerAdd, setHawkerAdd] = useState("");
   const [hawkerOpeningHours, setHawkerOpeningHours] = useState("");
@@ -200,6 +201,7 @@ export default function App() {
         ]);
         if (hawker.owner.toString() === accounts.toString()) {
           console.log("Hawker Account");
+          setHawkerId(hawker.id);
           setHawkerName(hawker.name);
           setHawkerAdd(hawker.addressLocation);
           setHawkerOpeningHours(hawker.openingHours);
@@ -439,10 +441,10 @@ export default function App() {
       });
   };
 
-  const editHawkerProfile = (phone, openingHours) => {
+  const editHawkerProfile = (id, phone, openingHours) => {
     setLoading(true);
     marketplace.methods
-      .editHawkerProfile(phone, openingHours)
+      .editHawkerProfile(id, phone, openingHours)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Changed");
@@ -451,10 +453,10 @@ export default function App() {
       });
   };
 
-  const boolOpen = () => {
+  const boolOpen = (id) => {
     setLoading(true);
     marketplace.methods
-      .boolOpen()
+      .boolOpen(id)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Shop status changed");
@@ -463,10 +465,10 @@ export default function App() {
       });
   };
 
-  const boolWork = () => {
+  const boolWork = (id) => {
     setLoading(true);
     marketplace.methods
-      .boolWork()
+      .boolWork(id)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Status changed");
@@ -475,10 +477,10 @@ export default function App() {
       });
   };
 
-  const editCustProfile = (phone, address) => {
+  const editCustProfile = (id, phone, address) => {
     setLoading(true);
     marketplace.methods
-      .editCustProfile(phone, address)
+      .editCustProfile(id, phone, address)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Changed");
@@ -487,10 +489,17 @@ export default function App() {
       });
   };
 
-  const editSupplierProfile = (phone, moq, leadTime, deliveryDays, remarks) => {
+  const editSupplierProfile = (
+    id,
+    phone,
+    moq,
+    leadTime,
+    deliveryDays,
+    remarks
+  ) => {
     setLoading(true);
     marketplace.methods
-      .editSupplierProfile(phone, moq, leadTime, deliveryDays, remarks)
+      .editSupplierProfile(id, phone, moq, leadTime, deliveryDays, remarks)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Changed");
@@ -499,10 +508,10 @@ export default function App() {
       });
   };
 
-  const addToCart = (id, qty) => {
+  const addToCart = (cust_id, prod_id, qty) => {
     setLoading(true);
     marketplace.methods
-      .addToCart(id, qty)
+      .addToCart(cust_id, prod_id, qty)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Added");
@@ -796,6 +805,7 @@ export default function App() {
             purchaseProduct={purchaseProduct}
             editHawkerProfile={editHawkerProfile}
             boolOpen={boolOpen}
+            hawkerId={hawkerId}
             hawkerName={hawkerName}
             hawkerAdd={hawkerAdd}
             hawkerOpeningHours={hawkerOpeningHours}

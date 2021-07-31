@@ -4,6 +4,7 @@ import { FaUserCircle } from "react-icons/fa";
 
 export default function Profile({
   account,
+  hawkerId,
   hawkerName,
   hawkerAdd,
   hawkerOpeningHours,
@@ -23,11 +24,11 @@ export default function Profile({
   }
 
   function changeShopStatus() {
-    boolOpen();
+    boolOpen(hawkerId);
   }
   const saveChanges = (evt) => {
     evt.preventDefault();
-    editHawkerProfile(hawkerPhoneNo, hawkerOH);
+    editHawkerProfile(hawkerId, hawkerPhoneNo, hawkerOH);
   };
   return (
     <div style={{ marginTop: 20, marginBottom: 30 }}>

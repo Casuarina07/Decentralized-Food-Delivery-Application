@@ -87,6 +87,7 @@ function CustNavbar({
           hawkers={hawkers}
           hawkersCount={hawkersCount}
           addToCart={addToCart}
+          custId={custId}
         />
         <Home path="/" />
         <Orders
@@ -101,6 +102,7 @@ function CustNavbar({
         />
         <Profile
           path="/profile"
+          custId={custId}
           account={account}
           custName={custName}
           custAdd={custAdd}

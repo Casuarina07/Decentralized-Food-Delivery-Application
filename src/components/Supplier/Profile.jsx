@@ -22,6 +22,7 @@ export default function Profile({ account, supplier, editSupplierProfile }) {
     var deliveryDays = fromDeliveryDay + "-" + toDeliveryDay;
     setDeliveryDays(deliveryDays);
     editSupplierProfile(
+      supplier.id,
       supplierPhoneNo,
       supplierMoq,
       supplierLeadTime,

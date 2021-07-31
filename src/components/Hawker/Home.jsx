@@ -3,7 +3,7 @@ import "./Rest.css";
 import logo from "../logo.svg";
 import blockchainlogo from "../blockchainlogo.png";
 
-function Home({ restProducts }) {
+function Home({ restProducts, account }) {
   let overallSales = 0;
   return (
     <div style={{ margin: 60, marginTop: 20 }}>
@@ -26,22 +26,24 @@ function Home({ restProducts }) {
             </tr>
           </thead>
           {restProducts.map((product, key) => {
-            overallSales += product.price * product.soldCount;
-            return (
-              <tbody id="productList">
-                <tr>
-                  <td>{product.name}</td>
-                  <td>{product.soldCount}</td>
-                  <td>
-                    {window.web3.utils.fromWei(
-                      (product.price * product.soldCount).toString(),
-                      "Ether"
-                    )}{" "}
-                    Eth
-                  </td>
-                </tr>
-              </tbody>
-            );
+            if (product.owner == account) {
+              overallSales += product.price * product.soldCount;
+              return (
+                <tbody id="productList">
+                  <tr>
+                    <td>{product.name}</td>
+                    <td>{product.soldCount}</td>
+                    <td>
+                      {window.web3.utils.fromWei(
+                        (product.price * product.soldCount).toString(),
+                        "Ether"
+                      )}{" "}
+                      Eth
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            }
           })}
         </table>
         <h4 style={{ display: "flex", justifyContent: "flex-end" }}>

@@ -21,7 +21,7 @@ export default function Profile({
       //   setCompletedCount(count + 1);
       // }
     }
-    boolWork();
+    boolWork(fdDelivery.id);
   }
 
   return (

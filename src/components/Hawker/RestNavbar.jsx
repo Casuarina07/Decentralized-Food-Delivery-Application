@@ -22,6 +22,7 @@ function RestNavbar({
   purchaseProduct,
   editHawkerProfile,
   boolOpen,
+  hawkerId,
   hawkerName,
   hawkerAdd,
   hawkerOpeningHours,
@@ -95,7 +96,7 @@ function RestNavbar({
           // supp={hawkersCount}
           // hawkerFeedback={hawkerFeedback}
         />
-        <Home path="/" restProducts={restProducts} />
+        <Home path="/" restProducts={restProducts} account={account} />
         <Orders
           path="/orders"
           account={account}
@@ -121,6 +122,7 @@ function RestNavbar({
           path="/profile"
           account={account}
           hawkers={hawkers}
+          hawkerId={hawkerId}
           hawkerName={hawkerName}
           hawkerAdd={hawkerAdd}
           hawkerOpeningHours={hawkerOpeningHours}
