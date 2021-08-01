@@ -667,6 +667,18 @@ export default function App() {
       });
   };
 
+  const editSuppProduct = (productId, name, price, size, minOrder, imageHash, published) => {
+    setLoading(true);
+    marketplace.methods
+      .editSuppProduct(productId, name, price, size, minOrder, imageHash, published)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Successfully changed");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
   const deleteProduct = (productId) => {
     setLoading(true);
     marketplace.methods
@@ -790,6 +802,7 @@ export default function App() {
             marketplace={marketplace}
             pastEvents={pastEvents}
             editSupplierProfile={editSupplierProfile}
+            editSuppProduct={editSuppProduct}
           />
         ) : null}
         {hawkerAcc ? (

@@ -18,6 +18,7 @@ function SuppNavbar({
   marketplace,
   pastEvents,
   editSupplierProfile,
+  editSuppProduct,
 }) {
   const navLinks = [
     {
@@ -63,6 +64,7 @@ function SuppNavbar({
           suppProducts={suppProducts}
           createSuppProduct={createSuppProduct}
           marketplace={marketplace}
+          editSuppProduct={editSuppProduct}
         />
         <Profile
           path="/profile"

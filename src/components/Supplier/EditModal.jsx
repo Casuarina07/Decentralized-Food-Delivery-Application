@@ -33,10 +33,12 @@ export class EditModal extends Component {
 
   submit = (event) => {
     event.preventDefault();
-    let id, name, price, boolPublish;
+    let id, name, price, size, minOrder, boolPublish;
     id = this.props.product.id;
     name = this.name.value;
     price = window.web3.utils.toWei(this.price.value.toString(), "Ether");
+    size = this.size.value;
+    minOrder = this.minOrder.value;
     boolPublish = this.publish;
     if (this.imageChange === true) {
       const file = ipfs.add(this.state.buffer);
@@ -51,6 +53,8 @@ export class EditModal extends Component {
           id,
           name,
           price,
+          size,
+          minOrder,
           this.state.imageHash,
           boolPublish
         );
@@ -61,6 +65,8 @@ export class EditModal extends Component {
         id,
         name,
         price,
+        size,
+        minOrder,
         this.props.product.imageHash,
         boolPublish
       );
@@ -87,7 +93,7 @@ export class EditModal extends Component {
     return (
       <Modal
         show={this.props.show}
-        size="lg"
+        size="small"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -113,15 +119,44 @@ export class EditModal extends Component {
                 />
               </div>
 
-              <b>Price: </b>
+              <b>Price (Eth): </b>
               <div>
                 <input
                   id="price"
                   defaultValue={this.props.price}
                   type="number"
+                  min="0"
                   step="any"
                   ref={(input) => {
                     this.price = input;
+                  }}
+                />
+              </div>
+
+               <b>Packaging Size (kg): </b>
+              <div>
+                <input
+                  id="size"
+                  defaultValue={this.props.product.size}
+                  type="number"
+                  min="0"
+                  step="any"
+                  ref={(input) => {
+                    this.size = input;
+                  }}
+                />
+              </div>
+
+              <b>Min Order (units): </b>
+              <div>
+                <input
+                  id="minOrder"
+                  defaultValue={this.props.product.minOrder}
+                  type="number"
+                  min="1"
+                  step="any"
+                  ref={(input) => {
+                    this.minOrder = input;
                   }}
                 />
               </div>

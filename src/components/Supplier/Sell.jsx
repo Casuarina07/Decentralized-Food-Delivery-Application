@@ -265,7 +265,7 @@ class Sell extends Component {
                             product.price.toString(),
                             "Ether"
                           )}
-                          editProduct={this.props.editProduct}
+                          editProduct={this.props.editSuppProduct}
                           deleteProduct={this.props.deleteProduct}
                         />
                       </ButtonToolbar>

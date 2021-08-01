@@ -23,7 +23,7 @@ contract Marketplace {
         string phone;
         int256 rating;
         bool available;
-        mapping(uint256 => Order) ordersAccepted;
+        // mapping(uint256 => Order) ordersAccepted;
         uint256 ordersAcceptedCount;
         mapping(uint256 => Feedback) feedbacks;
         uint256 feedbackCount;
@@ -173,37 +173,16 @@ contract Marketplace {
     ) public {
         hawkers[_id].phone = _phone;
         hawkers[_id].openingHours = _OH;
-        // uint256 i = 0;
-        // for (i = 0; i <= hawkersCount; i++) {
-        //     if (hawkers[i].owner == msg.sender) {
-        //         hawkers[i].phone = _phone;
-        //         hawkers[i].openingHours = _OH;
-        //     }
-        // }
     }
 
     //change shop status
     function boolOpen(uint256 _id) public {
         hawkers[_id].open = !(hawkers[_id].open);
-
-        // uint256 i = 0;
-        // for (i = 0; i <= hawkersCount; i++) {
-        //     if (hawkers[i].owner == msg.sender) {
-        //         hawkers[i].open = !(hawkers[i].open);
-        //     }
-        // }
     }
 
     //change food delivery status
     function boolWork(uint256 _id) public {
         foodDeliveries[_id].available = !(foodDeliveries[_id].available);
-
-        // uint256 i = 0;
-        // for (i = 0; i <= foodDeliveriesCount; i++) {
-        //     if (foodDeliveries[i].owner == msg.sender) {
-        //         foodDeliveries[i].available = !(foodDeliveries[i].available);
-        //     }
-        // }
     }
 
     //SUPPLIER
@@ -421,13 +400,6 @@ contract Marketplace {
     ) public {
         customers[_id].phone = _phone;
         customers[_id].addressLocation = _address;
-        // uint256 i = 0;
-        // for (i = 0; i <= customersCount; i++) {
-        //     if (customers[i].owner == msg.sender) {
-        //         customers[i].phone = _phone;
-        //         customers[i].addressLocation = _address;
-        //     }
-        // }
     }
 
     function editSupplierProfile(
@@ -443,16 +415,6 @@ contract Marketplace {
         suppliers[_id].leadTime = _leadTime;
         suppliers[_id].deliveryDays = _deliveryDays;
         suppliers[_id].remarks = _remarks;
-        // uint256 i = 0;
-        // for (i = 0; i <= suppliersCount; i++) {
-        //     if (suppliers[i].owner == msg.sender) {
-        //         suppliers[i].phone = _phone;
-        //         suppliers[i].MOQ = _moq;
-        //         suppliers[i].leadTime = _leadTime;
-        //         suppliers[i].deliveryDays = _deliveryDays;
-        //         suppliers[i].remarks = _remarks;
-        //     }
-        // }
     }
 
     function editProduct(
@@ -466,16 +428,23 @@ contract Marketplace {
         restProducts[_productId].price = _price;
         restProducts[_productId].imageHash = _imageHash;
         restProducts[_productId].published = _published;
+    }
 
-        // uint256 i = 0;
-        // for (i = 0; i <= restProdCount; i++) {
-        //     if (restProducts[i].id == _productId) {
-        //         restProducts[i].name = _name;
-        //         restProducts[i].price = _price;
-        //         restProducts[i].imageHash = _imageHash;
-        //         restProducts[i].published = _published;
-        //     }
-        // }
+    function editSuppProduct(
+        uint256 _productId,
+        string memory _name,
+        uint256 _price,
+        uint256 _size,
+        uint256 _minOrder,
+        string memory _imageHash,
+        bool _published
+    ) public {
+        suppProducts[_productId].name = _name;
+        suppProducts[_productId].price = _price;
+        suppProducts[_productId].size = _size;
+        suppProducts[_productId].minOrder = _minOrder;
+        suppProducts[_productId].imageHash = _imageHash;
+        suppProducts[_productId].published = _published;
     }
 
     function addToCart(
@@ -642,12 +611,6 @@ contract Marketplace {
             (uint256 item, uint256 qty) = getCartProduct(_custId, i);
             orders[ordersCount].purchasedItemId[i] = CartItem(i, item, qty);
 
-            //increate soldCount in RestProduct
-            // for (uint256 k = 1; k <= restProdCount; k++) {
-            //     if (restProducts[k].id == item) {
-            //         restProducts[k].soldCount++;
-            //     }
-            // }
             restProducts[item].soldCount++;
         }
 
