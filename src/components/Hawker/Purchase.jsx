@@ -36,7 +36,8 @@ class Purchase extends Component {
                       <Col md={4}>
                         <SupplierProdCardItem
                           product={product}
-                          addToCart={this.props.addToCart}
+                          hawkerId={this.props.hawkerId}
+                          addToCartHawker={this.props.addToCartHawker}
                         />
                       </Col>
                     );

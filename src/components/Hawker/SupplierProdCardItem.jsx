@@ -79,7 +79,11 @@ export default class SupplierProdCardItem extends Component {
               style={{ marginLeft: 10, marginTop: 10 }}
               variant="primary"
               onClick={(event) => {
-                this.props.addToCart(product.id, this.state.itemQty);
+                this.props.addToCartHawker(
+                  this.props.hawkerId,
+                  product.id,
+                  this.state.itemQty
+                );
               }}
             >
               Add to Cart

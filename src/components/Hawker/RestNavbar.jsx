@@ -9,6 +9,7 @@ import ResponsiveNavigation from "../ResponsiveNavigation";
 import logo from "../logo.svg";
 import "../Navbar.css";
 import SupplierInfo from "./SupplierInfo";
+import Cart from "./Cart";
 
 function RestNavbar({
   account,
@@ -38,6 +39,10 @@ function RestNavbar({
   deleteProduct,
   cancelOrder,
   suppliers,
+  addToCartHawker,
+  hawkerCart,
+  custOrders,
+  custOrderItems,
 }) {
   const navLinks = [
     {
@@ -65,6 +70,12 @@ function RestNavbar({
       path: "/profile",
       icon: "ion-ios-person",
     },
+    {
+      text: "Cart",
+      path: "/cart",
+      icon: "ion-ios-cart",
+      cartCount: "[" + 0 + "]",
+    },
   ];
 
   return (
@@ -82,6 +93,7 @@ function RestNavbar({
         <Purchase
           path="/purchase"
           account={account}
+          hawkerId={hawkerId}
           loading={loading}
           restProducts={restProducts}
           restProdCount={restProdCount}
@@ -89,6 +101,7 @@ function RestNavbar({
           suppProdCount={suppProdCount}
           purchaseProduct={purchaseProduct}
           suppliers={suppliers}
+          addToCartHawker={addToCartHawker}
         />
         <SupplierInfo
           path="/supplierInfo/:id"
@@ -96,7 +109,14 @@ function RestNavbar({
           // supp={hawkersCount}
           // hawkerFeedback={hawkerFeedback}
         />
-        <Home path="/" restProducts={restProducts} account={account} />
+        <Home
+          path="/"
+          restProducts={restProducts}
+          account={account}
+          custOrders={custOrders}
+          custOrderItems={custOrderItems}
+          suppliers={suppliers}
+        />
         <Orders
           path="/orders"
           account={account}
@@ -132,6 +152,13 @@ function RestNavbar({
           boolOpen={boolOpen}
           editHawkerProfile={editHawkerProfile}
           hawkerFeedback={hawkerFeedback}
+        />
+        <Cart
+          path="/cart"
+          hawkerId={hawkerId}
+          hawkerCart={hawkerCart}
+          suppProducts={suppProducts}
+          purchaseProduct={purchaseProduct}
         />
       </Router>
     </div>

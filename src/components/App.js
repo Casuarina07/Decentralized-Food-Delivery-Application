@@ -61,6 +61,7 @@ export default function App() {
   const [hawkerOrders, setHawkerOrders] = useState([]);
   const [hawkerOrderItems, setHawkerOrderItems] = useState([]);
   const [hawkerFeedback, setHawkerFeedback] = useState([]);
+  const [hawkerCart, setHawkerCart] = useState([]);
 
   //customer-details
   const [custId, setCustId] = useState(0);
@@ -208,6 +209,14 @@ export default function App() {
           setHawkerPhone(hawker.phone);
           setHawkerBoolOpen(hawker.open);
           setHawkerRating(hawker.avgRating);
+
+          //fetch cart products
+          for (var k = 1; k <= hawker.itemCount; k++) {
+            let product = await marketplace.methods
+              .getCartProduct(hawker.id, k, 2)
+              .call();
+            setHawkerCart((hawkerCart) => [...hawkerCart, product]);
+          }
         }
         for (var k = 1; k <= hawker.feedbackCount; k++) {
           const prodId = await marketplace.methods
@@ -240,7 +249,7 @@ export default function App() {
           //fetch cart products
           for (var k = 1; k <= cust.itemCount; k++) {
             let product = await marketplace.methods
-              .getCartProduct(cust.id, k)
+              .getCartProduct(cust.id, k, 1)
               .call();
             setCustCart((custCart) => [...custCart, product]);
           }
@@ -429,10 +438,10 @@ export default function App() {
       });
   };
 
-  const removeAllProdCart = (custId) => {
+  const removeAllProdCart = (id, indicator) => {
     setLoading(true);
     marketplace.methods
-      .removeAllProdCart(custId)
+      .removeAllProdCart(id, indicator)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Removed All Products");
@@ -512,6 +521,18 @@ export default function App() {
     setLoading(true);
     marketplace.methods
       .addToCart(cust_id, prod_id, qty)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Successfully Added");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const addToCartHawker = (hawker_id, prod_id, qty) => {
+    setLoading(true);
+    marketplace.methods
+      .addToCartHawker(hawker_id, prod_id, qty)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Added");
@@ -628,6 +649,7 @@ export default function App() {
   };
 
   const purchaseProduct = (
+    indicator,
     custId,
     seller,
     hawkerPayment,
@@ -639,6 +661,7 @@ export default function App() {
     setLoading(true);
     marketplace.methods
       .purchaseProduct(
+        indicator,
         custId,
         seller,
         hawkerPayment,
@@ -667,10 +690,26 @@ export default function App() {
       });
   };
 
-  const editSuppProduct = (productId, name, price, size, minOrder, imageHash, published) => {
+  const editSuppProduct = (
+    productId,
+    name,
+    price,
+    size,
+    minOrder,
+    imageHash,
+    published
+  ) => {
     setLoading(true);
     marketplace.methods
-      .editSuppProduct(productId, name, price, size, minOrder, imageHash, published)
+      .editSuppProduct(
+        productId,
+        name,
+        price,
+        size,
+        minOrder,
+        imageHash,
+        published
+      )
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully changed");
@@ -833,6 +872,10 @@ export default function App() {
             deleteProduct={deleteProduct}
             cancelOrder={cancelOrder}
             suppliers={suppliers}
+            addToCartHawker={addToCartHawker}
+            hawkerCart={hawkerCart}
+            custOrders={custOrders}
+            custOrderItems={custOrderItems}
           />
         ) : null}
         {custAcc ? (
@@ -842,7 +885,6 @@ export default function App() {
             loading={loading}
             restProducts={restProducts}
             restProdCount={restProdCount}
-            purchaseProduct={purchaseProduct}
             hawkers={hawkers}
             hawkersCount={hawkersCount}
             custId={custId}
