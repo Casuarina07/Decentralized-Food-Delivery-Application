@@ -26,7 +26,8 @@ class Purchase extends Component {
               <h4 style={{ display: "flex", marginTop: 20 }}>
                 <Link
                   to={`/hawkerInfo/${hawker.owner}`}
-                  state={{ chosenHawkerPk: hawker.owner }}
+                  // state={{ chosenHawkerPk: hawker.owner }}
+                  state={{ chosenHawkerPk: hawker }}
                 >
                   {hawker.name}
                 </Link>

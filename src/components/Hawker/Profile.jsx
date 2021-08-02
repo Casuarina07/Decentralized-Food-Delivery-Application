@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Rest.css";
 import { FaUserCircle } from "react-icons/fa";
+import { BsStarFill, BsStar } from "react-icons/bs";
 
 export default function Profile({
   account,
@@ -10,7 +11,7 @@ export default function Profile({
   hawkerOpeningHours,
   hawkerPhone,
   editHawkerProfile,
-  hawkers,
+  hawker,
   hawkerBoolOpen,
   boolOpen,
   hawkerRating,
@@ -19,6 +20,9 @@ export default function Profile({
   const [editClicked, setEditClicked] = useState(false);
   const [hawkerPhoneNo, setHawkerPhoneNo] = useState(hawkerPhone);
   const [hawkerOH, setHawkerOH] = useState(hawkerOpeningHours);
+  const [fullStarsCount, setFullStars] = useState(hawkerRating);
+  const [emptyStarsCount, setEmptyStars] = useState(5 - fullStarsCount);
+
   function editProfile() {
     setEditClicked(!editClicked);
   }
@@ -30,13 +34,33 @@ export default function Profile({
     evt.preventDefault();
     editHawkerProfile(hawkerId, hawkerPhoneNo, hawkerOH);
   };
+  var stars = [];
+  for (var i = 1; i <= fullStarsCount; i++) {
+    stars.push(
+      <BsStarFill
+        color="#eba834"
+        size="20"
+        style={{ marginRight: 5, marginBottom: 5 }}
+      />
+    );
+  }
+  for (var i = 1; i <= emptyStarsCount; i++) {
+    stars.push(
+      <BsStar
+        color="#eba834"
+        size="20"
+        style={{ marginRight: 5, marginBottom: 5 }}
+      />
+    );
+  }
   return (
     <div style={{ marginTop: 20, marginBottom: 30 }}>
       <FaUserCircle size={60} color="#016094" />
       <h3 className="header">{account}</h3>
-      <h4>Average Rating: {hawkerRating}</h4>
-      <h4 style={{ color: "#016094", marginTop: 30 }}>Hawker Details</h4>
+      {stars}
+      <h5>AVERAGE RATING OF: {hawker.feedbackCount} CUSTOMER(S)</h5>
 
+      <h4 style={{ color: "#016094", marginTop: 30 }}>Hawker Details</h4>
       {editClicked ? (
         <div>
           <b>Name: </b>
@@ -139,7 +163,6 @@ export default function Profile({
       {hawkerFeedback.length > 0 ? (
         <h3 style={{ marginTop: 20 }}>Feedbacks</h3>
       ) : null}
-
       {hawkerFeedback.map((feedback, key) => {
         if (feedback.seller.toString() == account.toString()) {
           return (

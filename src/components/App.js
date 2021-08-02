@@ -49,6 +49,7 @@ export default function App() {
   const [supplier, setSupplier] = useState([]);
 
   //hawker-details
+  const [hawker, setHawker] = useState([]);
   const [hawkerId, setHawkerId] = useState(0);
   const [hawkerName, setHawkerName] = useState("");
   const [hawkerAdd, setHawkerAdd] = useState("");
@@ -203,6 +204,7 @@ export default function App() {
         ]);
         if (hawker.owner.toString() === accounts.toString()) {
           console.log("Hawker Account");
+          setHawker(hawker);
           setHawkerId(hawker.id);
           setHawkerName(hawker.name);
           setHawkerAdd(hawker.addressLocation);
@@ -862,6 +864,7 @@ export default function App() {
             purchaseProduct={purchaseProduct}
             editHawkerProfile={editHawkerProfile}
             boolOpen={boolOpen}
+            hawker={hawker}
             hawkerId={hawkerId}
             hawkerName={hawkerName}
             hawkerAdd={hawkerAdd}

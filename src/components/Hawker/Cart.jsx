@@ -2,10 +2,16 @@ import React, { Component } from "react";
 import { getCurrentDate } from "../utils/utils-date";
 import { getCurrentTime } from "../utils/utils-time";
 import Card from "react-bootstrap/Card";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 class Cart extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      startDate: new Date(),
+    };
   }
 
   checkOut = (event) => {
@@ -20,6 +26,8 @@ class Cart extends Component {
     let smallOrderFee;
     var hawkerPayment = 0;
     var riderPayment = 0;
+    let currentDate = new Date();
+    console.log("current date: ", currentDate);
     if (this.props.hawkerCart.length > 0) {
       return (
         <div style={{ margin: 60, marginTop: 20 }}>
@@ -104,7 +112,6 @@ class Cart extends Component {
                 variant="top"
                 // src={"https://ipfs.infura.io/ipfs/" + product.imageHash}
               />
-
               <div
                 style={{
                   float: "left",
@@ -125,6 +132,7 @@ class Cart extends Component {
                 <Card.Text>Packaging Size:</Card.Text>
                 <Card.Text>Minimum Order (unit): </Card.Text>
               </div>
+              <label style={{ float: "left" }}>Hi</label>
             </Card>
           </div>
           <div
@@ -138,6 +146,17 @@ class Cart extends Component {
             Total Cost:{" "}
             {window.web3.utils.fromWei(totalCost.toString(), "Ether")} Eth
           </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            {" "}
+            <label style={{ marginRight: 10, size: 20 }}>Delivery Date:</label>
+            <DatePicker
+              dateFormat="dd/MM/yyyy"
+              minDate={new Date()}
+              selected={this.state.startDate}
+              onChange={(date) => this.setState({ startDate: date })}
+            />
+          </div>
+
           <div
             style={{
               marginBottom: 20,

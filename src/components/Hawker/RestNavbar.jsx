@@ -45,6 +45,7 @@ function RestNavbar({
   custOrders,
   custOrderItems,
   orders,
+  hawker,
 }) {
   const navLinks = [
     {
@@ -157,6 +158,7 @@ function RestNavbar({
           boolOpen={boolOpen}
           editHawkerProfile={editHawkerProfile}
           hawkerFeedback={hawkerFeedback}
+          hawker={hawker}
         />
         <Cart
           path="/cart"

@@ -2,52 +2,70 @@
 import Card from "react-bootstrap/Card";
 // import CardBody from "react-bootstrap/CardBody";
 
-import React, { Component, useLocation } from "react";
+import React, { Component, useLocation, useState } from "react";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { BsStarFill, BsStar } from "react-icons/bs";
 
 export default function HawkerInfo(props) {
   const hawkers = props.hawkers;
-  const chosenHawker = props.location.state.chosenHawkerPk;
-
+  const hawker = props.location.state.chosenHawkerPk;
+  const [fullStarsCount, setFullStars] = useState(hawker.avgRating);
+  const [emptyStarsCount, setEmptyStars] = useState(5 - fullStarsCount);
+  var stars = [];
+  for (var i = 1; i <= fullStarsCount; i++) {
+    stars.push(
+      <BsStarFill
+        color="#eba834"
+        size="20"
+        style={{ marginRight: 5, marginBottom: 5 }}
+      />
+    );
+  }
+  for (var i = 1; i <= emptyStarsCount; i++) {
+    stars.push(
+      <BsStar
+        color="#eba834"
+        size="20"
+        style={{ marginRight: 5, marginBottom: 5 }}
+      />
+    );
+  }
   console.log("Passed: ", props.hawkerFeedback);
   return (
     <div style={{ marginTop: 20 }}>
-      {hawkers.map((hawker, key) => {
-        if (hawker.owner === chosenHawker) {
-          return (
-            <div>
-              <div style={{ flexDirection: "row" }}>
-                <h2>{hawker.name}</h2>
-                <h3>Rating: {hawker.avgRating}/5</h3>
-              </div>
-              <div style={{ marginTop: 30 }}>
-                <b>Public Key: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>{hawker.owner}</h5>
-                </div>
+      <div>
+        <div style={{ flexDirection: "row" }}>
+          <h2>{hawker.name}</h2>
+        </div>
+        {stars}
+        <h5 style={{ color: "#838383" }}>
+          AVERAGE RATING OF: {hawker.feedbackCount} CUSTOMER(S)
+        </h5>
+        <div style={{ marginTop: 30 }}>
+          <b>Public Key: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>{hawker.owner}</h5>
+          </div>
 
-                <b>Address: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>{hawker.addressLocation}</h5>
-                </div>
+          <b>Address: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>{hawker.addressLocation}</h5>
+          </div>
 
-                <b>Opening Hours: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>{hawker.openingHours}</h5>
-                </div>
+          <b>Opening Hours: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>{hawker.openingHours}</h5>
+          </div>
 
-                <b>Contact: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>{hawker.phone}</h5>
-                </div>
-              </div>
-            </div>
-          );
-        }
-      })}
-
+          <b>Contact: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>{hawker.phone}</h5>
+          </div>
+        </div>
+        <hr style={{ width: "60%", display: "flex" }} />
+      </div>
       {props.hawkerFeedback.map((feedback, key) => {
-        if (feedback.seller.toString() == chosenHawker.toString()) {
+        if (feedback.seller.toString() == hawker.owner.toString()) {
           console.log("Same seller account: ", feedback.seller);
           console.log("entered");
           return (
