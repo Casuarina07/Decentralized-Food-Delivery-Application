@@ -41,8 +41,10 @@ function RestNavbar({
   suppliers,
   addToCartHawker,
   hawkerCart,
+  hawkerCartCount,
   custOrders,
   custOrderItems,
+  orders,
 }) {
   const navLinks = [
     {
@@ -74,7 +76,7 @@ function RestNavbar({
       text: "Cart",
       path: "/cart",
       icon: "ion-ios-cart",
-      cartCount: "[" + 0 + "]",
+      cartCount: "[" + hawkerCartCount + "]",
     },
   ];
 
@@ -115,11 +117,14 @@ function RestNavbar({
           account={account}
           custOrders={custOrders}
           custOrderItems={custOrderItems}
+          suppProducts={suppProducts}
           suppliers={suppliers}
+          orders={orders}
         />
         <Orders
           path="/orders"
           account={account}
+          restProducts={restProducts}
           hawkerOrders={hawkerOrders}
           hawkerOrderItems={hawkerOrderItems}
           hawkerConfirmOrder={hawkerConfirmOrder}

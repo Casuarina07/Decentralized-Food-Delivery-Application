@@ -19,6 +19,8 @@ function SuppNavbar({
   pastEvents,
   editSupplierProfile,
   editSuppProduct,
+  supplierOrders,
+  supplierOrderItems,
 }) {
   const navLinks = [
     {
@@ -56,7 +58,13 @@ function SuppNavbar({
       />
       <Router>
         <Home path="/" marketplace={marketplace} pastEvents={pastEvents} />
-        <Orders path="/orders" />
+
+        <Orders
+          path="/orders"
+          supplierOrders={supplierOrders}
+          suppProducts={suppProducts}
+          supplierOrderItems={supplierOrderItems}
+        />
         <Sell
           path="/sell"
           account={account}

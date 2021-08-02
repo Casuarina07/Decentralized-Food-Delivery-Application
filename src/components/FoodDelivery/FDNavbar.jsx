@@ -21,6 +21,7 @@ function FDNavbar({
   fdCompleteOrder,
   customers,
   hawkers,
+  restProducts,
 }) {
   const navLinks = [
     {
@@ -56,6 +57,7 @@ function FDNavbar({
         <Orders
           path="/orders"
           account={account}
+          restProducts={restProducts}
           fdDelivery={fdDelivery}
           fdDeliveryOrders={fdDeliveryOrders}
           fdOrderItems={fdOrderItems}

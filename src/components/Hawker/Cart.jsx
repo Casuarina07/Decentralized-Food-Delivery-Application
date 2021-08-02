@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { getCurrentDate } from "../utils/utils-date";
 import { getCurrentTime } from "../utils/utils-time";
+import Card from "react-bootstrap/Card";
 
 class Cart extends Component {
   constructor(props) {
@@ -90,7 +91,42 @@ class Cart extends Component {
               );
             })}
           </table>
+          <div style={{ display: "flex" }}>
+            <Card
+              style={{ marginTop: 15, flexDirection: "row", width: "100%" }}
+            >
+              <Card.Img
+                style={{
+                  width: 150,
+                  height: 150,
+                  margin: 20,
+                }}
+                variant="top"
+                // src={"https://ipfs.infura.io/ipfs/" + product.imageHash}
+              />
 
+              <div
+                style={{
+                  float: "left",
+                  flexDirection: "column",
+                  marginTop: 20,
+                }}
+              >
+                <Card.Title>YOO</Card.Title>
+                <Card.Text>
+                  {/* {" "}
+                {window.web3.utils.fromWei(
+                  product.price.toString(),
+                  "Ether"
+                )}{" "} */}
+                  Eth
+                </Card.Text>
+                <label>Hi</label>
+                <Card.Text>Packaging Size:</Card.Text>
+                <Card.Text>Minimum Order (unit): </Card.Text>
+              </div>
+            </Card>
+          </div>
           <div
             style={{
               display: "flex",

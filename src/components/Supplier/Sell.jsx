@@ -101,7 +101,7 @@ class Sell extends Component {
   render() {
     let editModalClose = () => this.setState({ editModalShow: false });
     console.log("CURRENT SUPPLIER PRODUCTS: ", this.props.suppProducts);
-
+    
     return (
       <div style={{ margin: 60, marginTop: 30 }}>
         <h1>Add Product</h1>

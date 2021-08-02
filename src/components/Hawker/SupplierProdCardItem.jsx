@@ -42,6 +42,8 @@ export default class SupplierProdCardItem extends Component {
             {" "}
             {window.web3.utils.fromWei(product.price.toString(), "Ether")} Eth
           </Card.Text>
+          <Card.Text>Packaging Size: {product.size}kg</Card.Text>
+          <Card.Text>Minimum Order (unit): {product.minOrder}</Card.Text>
         </Card.Body>
         <Card.Footer>
           <h5></h5>

@@ -527,28 +527,51 @@ contract Marketplace {
         }
     }
 
+    // function getOrderProduct2(uint256 orderId, uint256 cartId)
+    //     public
+    //     returns (uint256 productId, uint256 prodQty)
+    // {
+    //     Order storage ord = orders[orderId];
+    //     // uint256 prodId = ord.purchasedItemId[cartId].productId;
+    //     // RestProduct memory _product = restProducts[prodId];
+    //     // CartItem memory _cart = ord.purchasedItemId[cartId];
+    //     return (
+    //         ord.purchasedItemId[cartId].productId,
+    //         ord.purchasedItemId[cartId].productQty
+    //     );
+    // }
+
+    // function getOrderProduct(uint256 orderId, uint256 cartId)
+    //     public
+    //     returns (RestProduct memory, CartItem memory)
+    // {
+    //     Order storage ord = orders[orderId];
+    //     uint256 prodId = ord.purchasedItemId[cartId].productId;
+    //     RestProduct memory _product = restProducts[prodId];
+    //     CartItem memory _cart = ord.purchasedItemId[cartId];
+    //     return (_product, _cart);
+    // }
+
     function getOrderProduct(uint256 orderId, uint256 cartId)
         public
-        returns (RestProduct memory, CartItem memory)
+        returns (CartItem memory)
     {
-        // Order storage ord = orders[orderId];
-        uint256 prodId = orders[orderId].purchasedItemId[cartId].productId;
-        RestProduct memory _product = restProducts[prodId];
-        CartItem memory _cart = orders[orderId].purchasedItemId[cartId];
-        return (_product, _cart);
+        Order storage ord = orders[orderId];
+        uint256 prodId = ord.purchasedItemId[cartId].productId;
+        CartItem memory _cart = ord.purchasedItemId[cartId];
+        return (_cart);
     }
 
-    function getOrderProductHawker(uint256 orderId, uint256 cartId)
-        public
-        returns (SuppProduct memory, CartItem memory)
-    {
-        // Order storage ord = orders[orderId];
-
-        uint256 prodId = orders[orderId].purchasedItemId[cartId].productId;
-        SuppProduct memory _product = suppProducts[prodId];
-        CartItem memory _cart = orders[orderId].purchasedItemId[cartId];
-        return (_product, _cart);
-    }
+    // function getOrderProductHawker(uint256 orderId, uint256 cartId)
+    //     public
+    //     returns (SuppProduct memory, CartItem memory)
+    // {
+    //     // Order storage ord = orders[orderId];
+    //     uint256 prodId = orders[orderId].purchasedItemId[cartId].productId;
+    //     SuppProduct memory _product = suppProducts[prodId];
+    //     CartItem memory _cart = orders[orderId].purchasedItemId[cartId];
+    //     return (_product, _cart);
+    // }
 
     function getHawkerFeedback(uint256 hawkerId, uint256 feedbackCount)
         public
@@ -559,14 +582,14 @@ contract Marketplace {
         return (_feedback);
     }
 
-    function getFdFeedback(uint256 fdId, uint256 feedbackCount)
-        public
-        returns (Feedback memory)
-    {
-        FoodDelivery storage fd = foodDeliveries[fdId];
-        Feedback memory _feedback = fd.feedbacks[feedbackCount];
-        return (_feedback);
-    }
+    // function getFdFeedback(uint256 fdId, uint256 feedbackCount)
+    //     public
+    //     returns (Feedback memory)
+    // {
+    //     FoodDelivery storage fd = foodDeliveries[fdId];
+    //     Feedback memory _feedback = fd.feedbacks[feedbackCount];
+    //     return (_feedback);
+    // }
 
     function setRating(
         uint256 _orderId,
@@ -750,7 +773,7 @@ contract Marketplace {
 
             //add the items in cartItems(Customer structure) to purchasedItemId (Order structure)
             for (uint256 i = 1; i <= hawker.itemCount; i++) {
-                (uint256 item, uint256 qty) = getCartProduct(_id, i, 1);
+                (uint256 item, uint256 qty) = getCartProduct(_id, i, 2);
                 orders[ordersCount].purchasedItemId[i] = CartItem(i, item, qty);
 
                 //restProducts[item].soldCount++;

@@ -108,7 +108,7 @@ export default function SupplierForm({ addSupplier }) {
           type="number"
           min="0"
           className="form-control"
-          placeholder="Enter mininum order quantity"
+          placeholder="Enter minimum order quantity"
           required
           onChange={(e) => {
             setMoq(e.target.value);

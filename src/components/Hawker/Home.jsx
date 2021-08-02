@@ -29,6 +29,7 @@ class Home extends Component {
     var counter = 1;
     var arrayCounter = 0;
     console.log("What is this now: ", this.props.custOrderItems);
+    console.log("What is this: ", this.props.orders);
 
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
@@ -161,17 +162,22 @@ class Home extends Component {
                     arrayCounter++;
                     return (
                       <tr key={key}>
-                        <td>{product[0].name}</td>
+                        <td>
+                          {this.props.suppProducts[product.productId - 1].name}
+                        </td>
                         <td>
                           {window.web3.utils.fromWei(
-                            product[0].price.toString(),
+                            this.props.suppProducts[
+                              product.productId - 1
+                            ].price.toString(),
                             "Ether"
                           )}{" "}
                           Eth
                         </td>
-                        <td>{product[1].productQty}</td>
+                        <td>{product.productQty}</td>
                         <td>
-                          {product[0].imageHash == "" ? (
+                          {this.props.suppProducts[product.productId - 1]
+                            .imageHash == "" ? (
                             <label>-</label>
                           ) : (
                             <img
@@ -180,7 +186,8 @@ class Home extends Component {
                               alt="logo"
                               src={
                                 "https://ipfs.infura.io/ipfs/" +
-                                product[0].imageHash
+                                this.props.suppProducts[product.productId - 1]
+                                  .imageHash
                               }
                             />
                           )}

@@ -252,6 +252,7 @@ class Orders extends Component {
                   <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Qty</th>
                     <th scope="col">Image</th>
                     <th scope="col"></th>
                   </tr>
@@ -272,16 +273,22 @@ class Orders extends Component {
                     arrayCounter2++;
                     return (
                       <tr key={key}>
-                        <td>{product[0].name}</td>
+                        <td>
+                          {this.props.restProducts[product.productId - 1].name}
+                        </td>
                         <td>
                           {window.web3.utils.fromWei(
-                            product[0].price.toString(),
+                            this.props.restProducts[
+                              product.productId - 1
+                            ].price.toString(),
                             "Ether"
                           )}{" "}
                           Eth
                         </td>
+                        <td>{product.productQty}</td>
                         <td>
-                          {product[0].imageHash == "" ? (
+                          {this.props.restProducts[product.productId - 1]
+                            .imageHash == "" ? (
                             <label>-</label>
                           ) : (
                             <img
@@ -290,7 +297,8 @@ class Orders extends Component {
                               alt="logo"
                               src={
                                 "https://ipfs.infura.io/ipfs/" +
-                                product[0].imageHash
+                                this.props.restProducts[product.productId - 1]
+                                  .imageHash
                               }
                             />
                           )}

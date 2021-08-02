@@ -62,6 +62,7 @@ export default function App() {
   const [hawkerOrderItems, setHawkerOrderItems] = useState([]);
   const [hawkerFeedback, setHawkerFeedback] = useState([]);
   const [hawkerCart, setHawkerCart] = useState([]);
+  const [hawkerCartCount, setHawkerCartCount] = useState(0);
 
   //customer-details
   const [custId, setCustId] = useState(0);
@@ -209,6 +210,7 @@ export default function App() {
           setHawkerPhone(hawker.phone);
           setHawkerBoolOpen(hawker.open);
           setHawkerRating(hawker.avgRating);
+          setHawkerCartCount(hawker.itemCount);
 
           //fetch cart products
           for (var k = 1; k <= hawker.itemCount; k++) {
@@ -266,6 +268,7 @@ export default function App() {
         setOrders((orders) => [...orders, order]);
         if (order.owner.toString() === accounts.toString()) {
           setCustOrders((custOrders) => [...custOrders, order]);
+
           //get the item that the order consists
           for (var k = 1; k <= order.purchasedItemCount; k++) {
             const prod = await marketplace.methods
@@ -833,6 +836,8 @@ export default function App() {
           <SuppNav
             account={account}
             supplier={supplier}
+            supplierOrders={hawkerOrders}
+            supplierOrderItems={hawkerOrderItems}
             accBalance={accBalance}
             loading={loading}
             productCount={productCount}
@@ -874,8 +879,10 @@ export default function App() {
             suppliers={suppliers}
             addToCartHawker={addToCartHawker}
             hawkerCart={hawkerCart}
+            hawkerCartCount={hawkerCartCount}
             custOrders={custOrders}
             custOrderItems={custOrderItems}
+            orders={orders}
           />
         ) : null}
         {custAcc ? (
@@ -913,6 +920,7 @@ export default function App() {
             customers={customers}
             hawkers={hawkers}
             custOrders={custOrders}
+            restProducts={restProducts}
             fdDelivery={fdDelivery}
             boolWork={boolWork}
             fdDeliveryOrders={fdDeliveryOrders}
