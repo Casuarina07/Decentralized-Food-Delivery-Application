@@ -44,8 +44,12 @@ class Orders extends Component {
             <>
               <h4 style={{ display: "flex" }}>{supplierOrder.owner}</h4>
 
+              {/* <h4 style={{ display: "flex" }}>
+                Ordered on: {supplierOrder.dateTime}
+              </h4> */}
+
               <h4 style={{ display: "flex" }}>
-                {supplierOrder.date} {supplierOrder.time}
+                Delivery on: {supplierOrder.deliveryDateTime}
               </h4>
 
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>

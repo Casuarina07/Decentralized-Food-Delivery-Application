@@ -115,9 +115,9 @@ contract Marketplace {
         address owner;
         string name;
         string addressLocation;
-        string emailAddress;
         string phone;
         string openingHours;
+        uint256 leadTime;
         uint256 avgRating;
         string licenseHash;
         bool open;
@@ -145,9 +145,9 @@ contract Marketplace {
         address _owner,
         string memory _name,
         string memory _addressLocation,
-        string memory _emailAddress,
         string memory _phone,
         string memory _openingHours,
+        uint256 _leadTime,
         string memory _licenseHash
     ) public {
         require(msg.sender == _owner);
@@ -158,9 +158,9 @@ contract Marketplace {
             msg.sender,
             _name,
             _addressLocation,
-            _emailAddress,
             _phone,
             _openingHours,
+            _leadTime,
             0,
             _licenseHash,
             false,
@@ -172,10 +172,12 @@ contract Marketplace {
     function editHawkerProfile(
         uint256 _id,
         string memory _phone,
-        string memory _OH
+        string memory _OH,
+        uint256 _leadTime
     ) public {
         hawkers[_id].phone = _phone;
         hawkers[_id].openingHours = _OH;
+        hawkers[_id].leadTime = _leadTime;
     }
 
     //change shop status
@@ -348,8 +350,8 @@ contract Marketplace {
         uint256 totalPrice;
         mapping(uint256 => CartItem) purchasedItemId;
         uint256 purchasedItemCount;
-        string date;
-        string time;
+        string dateTime;
+        string deliveryDateTime;
         Status state;
         bool rated;
     }
@@ -709,8 +711,8 @@ contract Marketplace {
         uint256 _hawkerPayment,
         uint256 _riderPayment,
         uint256 _totalCost,
-        string memory _date,
-        string memory _time
+        string memory _dateTime,
+        string memory _deliveryDateTime
     ) public payable {
         if (_indicator == 1) {
             Customer memory cust = customers[_id];
@@ -729,8 +731,8 @@ contract Marketplace {
                 _riderPayment,
                 _totalCost,
                 cust.itemCount,
-                _date,
-                _time,
+                _dateTime,
+                _deliveryDateTime,
                 state,
                 false
             );
@@ -765,8 +767,8 @@ contract Marketplace {
                 _riderPayment,
                 _totalCost,
                 hawker.itemCount,
-                _date,
-                _time,
+                _dateTime,
+                _deliveryDateTime,
                 state,
                 false
             );
@@ -786,8 +788,12 @@ contract Marketplace {
     }
 
     //hawker confirms order transaction made by customer
-    function hawkerConfirmOrder(uint256 _orderId) public {
+    function hawkerConfirmOrder(uint256 _orderId, string memory _estTime)
+        public
+    {
         orders[_orderId].state = Status.OrderConfirm;
+        orders[_orderId].deliveryDateTime = _estTime;
+        // setOrderDeliveryTime(_orderId, _estTime);
         //Pay the hawker
         address(msg.sender).transfer(orders[_orderId].hawkerPayment);
     }

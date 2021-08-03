@@ -6,9 +6,9 @@ export default function HawkerForm({ addHawker }) {
   const [publicKey, setPublicKey] = useState("");
   const [hawkerName, setHawkerName] = useState("");
   const [hawkerAddress, setHawkerAddress] = useState("");
-  const [emailAddress, setEmailAddress] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [openingHours, setOpeningHours] = useState("");
+  const [leadTime, setLeadTime] = useState(10);
   const [licenseHash, setLicenseHash] = useState("");
 
   const register = (event) => {
@@ -20,9 +20,9 @@ export default function HawkerForm({ addHawker }) {
         publicKey,
         hawkerName,
         hawkerAddress,
-        emailAddress,
         phoneNo,
         openingHours,
+        leadTime,
         licenseHash
       );
     }
@@ -83,18 +83,6 @@ export default function HawkerForm({ addHawker }) {
       </div>
 
       <div className="form-group">
-        <label>Email address</label>
-        <input
-          type="email"
-          className="form-control"
-          placeholder="Enter email address"
-          onChange={(e) => {
-            setEmailAddress(e.target.value);
-          }}
-        />
-      </div>
-
-      <div className="form-group">
         <label>Phone Number</label>
         <input
           type="text"
@@ -114,6 +102,20 @@ export default function HawkerForm({ addHawker }) {
           placeholder="Enter opening hours"
           onChange={(e) => {
             setOpeningHours(e.target.value);
+          }}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Lead Time (mins)</label>
+        <input
+          type="number"
+          className="form-control"
+          placeholder="Enter lead time"
+          min="1"
+          max="40"
+          onChange={(e) => {
+            setLeadTime(e.target.value);
           }}
         />
       </div>

@@ -9,11 +9,19 @@ import "react-datepicker/dist/react-datepicker.css";
 class Cart extends Component {
   constructor(props) {
     super(props);
+    let currentDate = new Date();
+    let minDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
     this.state = {
-      startDate: new Date(),
+      deliveryDate: minDate,
+      minDate: minDate,
+      deliveryTime: "6:00-6:30",
     };
   }
 
+  handleChangeTime = (event) => {
+    // setFromDeliveryTime(event.target.value);
+    this.setState({ deliveryTime: event.target.value });
+  };
   checkOut = (event) => {
     event.preventDefault();
   };
@@ -26,8 +34,25 @@ class Cart extends Component {
     let smallOrderFee;
     var hawkerPayment = 0;
     var riderPayment = 0;
-    let currentDate = new Date();
-    console.log("current date: ", currentDate);
+
+    var hrs = [];
+    for (var i = 0; i <= 48; i++) {
+      var n = i % 2 == 0 ? i / 2 + ":00" : (i + 1) / 2 - 1 + ":30";
+      if (n < 10) {
+        n = "0" + n;
+      }
+      hrs.push(n);
+    }
+    //timeslots from 7am-830pm
+    var timeSlots = [];
+    for (var i = 12; i < hrs.length - 7; i = i + 2) {
+      timeSlots.push(
+        <option value={hrs[i] + "-" + hrs[i + 1]}>
+          {hrs[i] + "-" + hrs[i + 1]}
+        </option>
+      );
+    }
+
     if (this.props.hawkerCart.length > 0) {
       return (
         <div style={{ margin: 60, marginTop: 20 }}>
@@ -139,22 +164,36 @@ class Cart extends Component {
             style={{
               display: "flex",
               justifyContent: "flex-end",
+              marginTop: 20,
+            }}
+          >
+            {" "}
+            <label style={{ marginRight: 10, size: 20 }}>Delivery Date:</label>
+            <DatePicker
+              dateFormat="dd/MM/yyyy"
+              minDate={this.state.minDate}
+              selected={this.state.deliveryDate}
+              onChange={(date) => this.setState({ deliveryDate: date })}
+            />
+            <label style={{ marginLeft: 10, size: 20 }}>Delivery Time:</label>
+            <select
+              style={{ marginLeft: 5 }}
+              value={this.state.deliveryTime}
+              onChange={this.handleChangeTime}
+            >
+              {timeSlots}
+            </select>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
               marginTop: 5,
               fontSize: 20,
             }}
           >
             Total Cost:{" "}
             {window.web3.utils.fromWei(totalCost.toString(), "Ether")} Eth
-          </div>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            {" "}
-            <label style={{ marginRight: 10, size: 20 }}>Delivery Date:</label>
-            <DatePicker
-              dateFormat="dd/MM/yyyy"
-              minDate={new Date()}
-              selected={this.state.startDate}
-              onChange={(date) => this.setState({ startDate: date })}
-            />
           </div>
 
           <div
@@ -167,15 +206,13 @@ class Cart extends Component {
           >
             <button
               onClick={(event) => {
-                var date = getCurrentDate();
-                var time = getCurrentTime();
-                console.log("Hawker ID: ", this.props.hawkerId);
-                console.log("Seller Supplier ID: ", seller);
-                console.log("hawkerPayment: ", hawkerPayment);
-                console.log("riderPayment: ", riderPayment);
-                console.log("TotalCost: ", totalCost);
-                console.log("Date: ", date);
-                console.log("Time: ", time);
+                var dateTime = getCurrentDate() + " " + getCurrentTime();
+                var deliveryDateTime =
+                  this.state.deliveryDate.toLocaleDateString("en-GB") +
+                  ", " +
+                  this.state.deliveryTime;
+                console.log("Ordered at: ", dateTime);
+                console.log("Delivery DateTime: ", deliveryDateTime);
 
                 this.props.purchaseProduct(
                   2,
@@ -184,8 +221,8 @@ class Cart extends Component {
                   hawkerPayment,
                   riderPayment,
                   totalCost,
-                  date,
-                  time
+                  dateTime,
+                  deliveryDateTime
                 );
               }}
             >

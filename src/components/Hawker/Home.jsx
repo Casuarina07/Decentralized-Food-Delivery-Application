@@ -61,7 +61,7 @@ class Home extends Component {
           return (
             <div>
               <h4 style={{ display: "flex" }}>
-                {custOrder.date} {custOrder.time}
+                Delivery on: {custOrder.deliveryDateTime}
               </h4>
               <h4 style={{ display: "flex" }}></h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>

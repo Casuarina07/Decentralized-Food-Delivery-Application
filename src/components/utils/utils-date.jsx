@@ -5,7 +5,7 @@ export function getCurrentDate() {
   let year = newDate.getFullYear();
 
   // return `${date}-${month < 10 ? `0${month}` : `${month}`}-${year}`;
-  return `${date < 10 ? `0${date}` : `${date}`}-${
+  return `${date < 10 ? `0${date}` : `${date}`}/${
     month < 10 ? `0${month}` : `${month}`
-  }-${year}`;
+  }/${year}`;
 }

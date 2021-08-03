@@ -125,6 +125,7 @@ function RestNavbar({
         <Orders
           path="/orders"
           account={account}
+          hawker={hawker}
           restProducts={restProducts}
           hawkerOrders={hawkerOrders}
           hawkerOrderItems={hawkerOrderItems}

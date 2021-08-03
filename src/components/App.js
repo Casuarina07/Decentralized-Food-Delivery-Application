@@ -455,10 +455,10 @@ export default function App() {
       });
   };
 
-  const editHawkerProfile = (id, phone, openingHours) => {
+  const editHawkerProfile = (id, phone, openingHours, leadTime) => {
     setLoading(true);
     marketplace.methods
-      .editHawkerProfile(id, phone, openingHours)
+      .editHawkerProfile(id, phone, openingHours, leadTime)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Changed");
@@ -546,10 +546,10 @@ export default function App() {
       });
   };
 
-  const hawkerConfirmOrder = (orderId) => {
+  const hawkerConfirmOrder = (orderId, estTime) => {
     setLoading(true);
     marketplace.methods
-      .hawkerConfirmOrder(orderId)
+      .hawkerConfirmOrder(orderId, estTime)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Transaction confirmed");
@@ -660,8 +660,8 @@ export default function App() {
     hawkerPayment,
     riderPayment,
     totalCost,
-    date,
-    time
+    dateTime,
+    deliveryDateTime
   ) => {
     setLoading(true);
     marketplace.methods
@@ -672,8 +672,8 @@ export default function App() {
         hawkerPayment,
         riderPayment,
         totalCost,
-        date,
-        time
+        dateTime,
+        deliveryDateTime
       )
       .send({ from: account, value: totalCost })
       .once("receipt", (receipt) => {
@@ -751,9 +751,9 @@ export default function App() {
     owner,
     name,
     addressLocation,
-    emailAddress,
     phone,
     openingHours,
+    leadTime,
     licenseHash
   ) => {
     setLoading(true);
@@ -762,9 +762,9 @@ export default function App() {
         owner,
         name,
         addressLocation,
-        emailAddress,
         phone,
         openingHours,
+        leadTime,
         licenseHash
       )
       .send({ from: account })

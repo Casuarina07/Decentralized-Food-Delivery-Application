@@ -3,10 +3,6 @@ import { getCurrentDate } from "../utils/utils-date";
 import { getCurrentTime } from "../utils/utils-time";
 
 class Cart extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   checkOut = (event) => {
     event.preventDefault();
   };
@@ -167,8 +163,8 @@ class Cart extends Component {
           >
             <button
               onClick={(event) => {
-                var date = getCurrentDate();
-                var time = getCurrentTime();
+                var dateTime = getCurrentDate() + " " + getCurrentTime();
+
                 console.log(seller);
                 this.props.purchaseProduct(
                   1,
@@ -177,8 +173,8 @@ class Cart extends Component {
                   hawkerPayment,
                   riderPayment,
                   totalCost,
-                  date,
-                  time
+                  dateTime,
+                  "-"
                 );
               }}
             >

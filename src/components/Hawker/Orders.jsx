@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import { Button } from "react-bootstrap";
+import {
+  getCurrentTime,
+  getCurrentTimePlusLeadTime,
+} from "../utils/utils-time";
 
 class Orders extends Component {
   constructor(props) {
@@ -45,7 +49,7 @@ class Orders extends Component {
               <h4 style={{ display: "flex" }}>{hawkerOrder.owner}</h4>
 
               <h4 style={{ display: "flex" }}>
-                {hawkerOrder.date} {hawkerOrder.time}
+                Ordered on: {hawkerOrder.dateTime}
               </h4>
 
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
@@ -63,7 +67,16 @@ class Orders extends Component {
                     <Button
                       variant="primary"
                       onClick={(event) => {
-                        this.props.hawkerConfirmOrder(hawkerOrder.id);
+                        var leadtime = this.props.hawker.leadTime;
+                        console.log("hawker: ", leadtime);
+                        console.log(
+                          "what is this: ",
+                          getCurrentTimePlusLeadTime(Number(leadtime))
+                        );
+                        var estTime = getCurrentTimePlusLeadTime(
+                          Number(leadtime)
+                        );
+                        this.props.hawkerConfirmOrder(hawkerOrder.id, estTime);
                       }}
                     >
                       Accept

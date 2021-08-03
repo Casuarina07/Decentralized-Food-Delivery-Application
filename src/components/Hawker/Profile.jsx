@@ -20,6 +20,7 @@ export default function Profile({
   const [editClicked, setEditClicked] = useState(false);
   const [hawkerPhoneNo, setHawkerPhoneNo] = useState(hawkerPhone);
   const [hawkerOH, setHawkerOH] = useState(hawkerOpeningHours);
+  const [hawkerLeadTime, setHawkerLeadTime] = useState(hawker.leadTime);
   const [fullStarsCount, setFullStars] = useState(hawkerRating);
   const [emptyStarsCount, setEmptyStars] = useState(5 - fullStarsCount);
 
@@ -32,7 +33,7 @@ export default function Profile({
   }
   const saveChanges = (evt) => {
     evt.preventDefault();
-    editHawkerProfile(hawkerId, hawkerPhoneNo, hawkerOH);
+    editHawkerProfile(hawkerId, hawkerPhoneNo, hawkerOH, hawkerLeadTime);
   };
   var stars = [];
   for (var i = 1; i <= fullStarsCount; i++) {
@@ -92,6 +93,18 @@ export default function Profile({
                 onChange={(e) => setHawkerOH(e.target.value)}
               />
             </div>
+
+            <b>Lead Time: (mins) </b>
+            <div>
+              <input
+                style={{ width: 500, marginTop: 7 }}
+                type="number"
+                min="1"
+                max="40"
+                value={hawkerLeadTime}
+                onChange={(e) => setHawkerLeadTime(e.target.value)}
+              />
+            </div>
             <input
               style={{ marginTop: 20 }}
               type="submit"
@@ -128,6 +141,11 @@ export default function Profile({
           <b>Opening Hours: </b>
           <div>
             <label>{hawkerOpeningHours}</label>
+          </div>
+
+          <b>Lead Time: </b>
+          <div>
+            <label>{hawker.leadTime} mins</label>
           </div>
 
           <button

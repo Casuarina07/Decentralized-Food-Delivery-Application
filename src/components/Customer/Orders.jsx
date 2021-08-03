@@ -61,14 +61,22 @@ class Orders extends Component {
           return (
             <div>
               <h4 style={{ display: "flex" }}>
-                {custOrder.date} {custOrder.time}
+                Ordered on: {custOrder.dateTime}
               </h4>
-              <h4 style={{ display: "flex" }}></h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
 
-              {custOrder.state >= 2 && custOrder.state < 5 ? (
+              {custOrder.state >= 2 && custOrder.state < 4 ? (
                 <div>
-                  <h5 style={{ display: "flex" }}>Rider: {custOrder.rider}</h5>
+                  <h5 style={{ display: "flex" }}>
+                    Estimated Delivery Time: {custOrder.deliveryDateTime}
+                  </h5>
+                </div>
+              ) : null}
+              {custOrder.state >= 1 && custOrder.state < 5 ? (
+                <div>
+                  <h5 style={{ display: "flex" }}>
+                    Estimated Delivery Time: {custOrder.deliveryDateTime}
+                  </h5>
                 </div>
               ) : null}
 
