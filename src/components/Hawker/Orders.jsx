@@ -1,17 +1,24 @@
 import React, { Component } from "react";
 import { Button } from "react-bootstrap";
-import {
-  getCurrentTime,
-  getCurrentTimePlusLeadTime,
-} from "../utils/utils-time";
+import { getEstDeliveryTime, getHawkerFdTime } from "../utils/utils-time";
+import { HawkerModal } from "./HawkerModal";
 
 class Orders extends Component {
   constructor(props) {
     super(props);
-    this.state = { orderNo: 0, itemCount: 0, orderState: 0 };
+    this.state = {
+      orderNo: 0,
+      itemCount: 0,
+      orderState: 0,
+      modalShow: false,
+      hawkerTime: "",
+      deliveryTime: "",
+    };
   }
 
   render() {
+    let modalClose = () => this.setState({ modalShow: false });
+
     console.log(this.props.hawkerOrderItems);
     console.log("Hawker orders: ", this.props.hawkerOrders);
     var counter = 1;
@@ -67,20 +74,39 @@ class Orders extends Component {
                     <Button
                       variant="primary"
                       onClick={(event) => {
-                        var leadtime = this.props.hawker.leadTime;
-                        console.log("hawker: ", leadtime);
-                        console.log(
-                          "what is this: ",
-                          getCurrentTimePlusLeadTime(Number(leadtime))
+                        // var leadtime = this.props.hawker.leadTime;
+                        // console.log("hawker: ", leadtime);
+                        // console.log(
+                        //   "what is this: ",
+                        //   getCurrentTimePlusLeadTime(Number(leadtime))
+                        // );
+                        // let estTime = getCurrentTimePlusLeadTime(
+                        //   Number(leadtime)
+                        // );
+                        // this.props.hawkerConfirmOrder(hawkerOrder.id, estTime);
+                        var hawkerEstTime = getHawkerFdTime(
+                          Number(this.props.hawker.leadTime)
                         );
-                        var estTime = getCurrentTimePlusLeadTime(
-                          Number(leadtime)
+                        var deliveryEstTime = getEstDeliveryTime(
+                          Number(this.props.hawker.leadTime)
                         );
-                        this.props.hawkerConfirmOrder(hawkerOrder.id, estTime);
+                        console.log("est time: ", hawkerEstTime);
+                        this.setState({ hawkerTime: hawkerEstTime });
+                        this.setState({ deliveryTime: deliveryEstTime });
+                        this.setState({ modalShow: true });
                       }}
                     >
                       Accept
                     </Button>
+                    <HawkerModal
+                      show={this.state.modalShow}
+                      onHide={modalClose}
+                      // hawker={this.props.hawker}
+                      orderId={hawkerOrder.id}
+                      hawkerTime={this.state.hawkerTime}
+                      deliveryTime={this.state.deliveryTime}
+                      hawkerConfirmOrder={this.props.hawkerConfirmOrder}
+                    />
                     <Button
                       style={{ marginLeft: 5 }}
                       variant="danger"

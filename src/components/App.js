@@ -91,6 +91,8 @@ export default function App() {
   const [fdAcceptedOrderItems, setFDAcceptedOrderItems] = useState([]);
 
   const [pastEvents, setPastEvents] = useState([]);
+  const [transactions, setTransactions] = useState();
+  // const [hawkerReceipts, setHawkerReceipts] = useState([]);
 
   //acount-details
   // const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
@@ -124,7 +126,16 @@ export default function App() {
     //Load account
     const accounts = await web3.eth.getAccounts();
     setAccount(accounts[0]);
-    console.log("Account: ", accounts);
+    // const transactions = await web3.eth
+    //   .getPastLogs({
+    //     address: accounts,
+    //     fromBlock: "0x1",
+    //     toBlock: "latest",
+    //   })
+    //   .then(console.log)
+    //   .catch((e) => console.log(e));
+    // setTransactions(transactions);
+    // console.log("Account: ", transactions);
     let balance = await web3.eth.getBalance(accounts.toString());
     let accountBalance = web3.utils.fromWei(balance.toString());
     setAccBalance(accountBalance);
@@ -582,10 +593,10 @@ export default function App() {
       });
   };
 
-  const fdCompleteOrder = (orderId, fdId) => {
+  const fdCompleteOrder = (orderId, fdId, dateTime) => {
     setLoading(true);
     marketplace.methods
-      .fdCompleteOrder(orderId, fdId)
+      .fdCompleteOrder(orderId, fdId, dateTime)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Order completed");
@@ -628,6 +639,7 @@ export default function App() {
       .createRestProduct(name, price, published, imageHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
+        console.log("Receipt: ", receipt);
         alert("Successfully created");
         window.location.reload();
         setLoading(false);
@@ -780,7 +792,7 @@ export default function App() {
       .addCustomer(owner, name, addressLocation, phone)
       .send({ from: account })
       .once("receipt", (receipt) => {
-        console.log("Receipt?? ", receipt);
+        // console.log("Receipt?? ", receipt);
         alert("New Customer Added");
         window.location.reload();
         setLoading(false);
@@ -802,7 +814,6 @@ export default function App() {
   const addSupplier = (
     owner,
     name,
-    email,
     address,
     phone,
     moq,
@@ -815,7 +826,6 @@ export default function App() {
       .addSupplier(
         owner,
         name,
-        email,
         address,
         phone,
         moq,

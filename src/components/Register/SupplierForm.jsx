@@ -4,7 +4,6 @@ import Dropdown from "react-bootstrap/Dropdown";
 export default function SupplierForm({ addSupplier }) {
   const [publicKey, setPublicKey] = useState("");
   const [supplierName, setSupplierName] = useState("");
-  const [supplierEmail, setSupplierEmail] = useState("");
   const [supplierAdd, setSupplierAdd] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [moq, setMoq] = useState(0);
@@ -18,7 +17,6 @@ export default function SupplierForm({ addSupplier }) {
     addSupplier(
       publicKey,
       supplierName,
-      supplierEmail,
       supplierAdd,
       phoneNo,
       moq,
@@ -57,19 +55,6 @@ export default function SupplierForm({ addSupplier }) {
           required
           onChange={(e) => {
             setSupplierName(e.target.value);
-          }}
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Email address</label>
-        <input
-          type="email"
-          className="form-control"
-          placeholder="Enter email"
-          required
-          onChange={(e) => {
-            setSupplierEmail(e.target.value);
           }}
         />
       </div>

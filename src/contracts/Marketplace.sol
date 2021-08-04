@@ -62,7 +62,6 @@ contract Marketplace {
         uint256 id;
         address owner;
         string name;
-        string email;
         string addressLocation;
         string phone;
         uint256 MOQ;
@@ -82,7 +81,6 @@ contract Marketplace {
     function addSupplier(
         address _owner,
         string memory _name,
-        string memory _email,
         string memory _addressLocation,
         string memory _phone,
         uint256 _moq,
@@ -97,7 +95,6 @@ contract Marketplace {
             suppliersCount,
             msg.sender,
             _name,
-            _email,
             _addressLocation,
             _phone,
             _moq,
@@ -812,9 +809,14 @@ contract Marketplace {
     }
 
     //food delivery completes order delivery
-    function fdCompleteOrder(uint256 _orderId, uint256 _fdId) public payable {
+    function fdCompleteOrder(
+        uint256 _orderId,
+        uint256 _fdId,
+        string memory _dateTime
+    ) public payable {
         //set orderId state to OrderCompleted
         orders[_orderId].state = Status.OrderCompleted;
+        orders[_orderId].deliveryDateTime = _dateTime;
         //Pay the rider after completion
         address(msg.sender).transfer(orders[_orderId].riderPayment);
         (foodDeliveries[_fdId].ordersAcceptedCount)++;

@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { FdModal } from "./FdModal";
+import { getCurrentTime, getHawkerFdTime } from "../utils/utils-time";
 
 class Orders extends Component {
   constructor(props) {
@@ -9,6 +11,9 @@ class Orders extends Component {
       orderState: 0,
       disable: false,
       fdId: this.props.fdDelivery.id,
+      leadTime: 10,
+      modalShow: false,
+      fdTime: "",
     };
   }
 
@@ -22,6 +27,8 @@ class Orders extends Component {
         ? (this.disable = false)
         : (this.disable = true);
     }
+    let modalClose = () => this.setState({ modalShow: false });
+
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
         {console.log("Accepted Orders: ", this.props.fdAcceptedOrders)}
@@ -52,12 +59,13 @@ class Orders extends Component {
               </h4>
 
               {this.props.hawkers.map((hawker, key) => {
-                if (hawker.owner.toString() == fdAcceptedOrder.seller)
+                if (hawker.owner.toString() == fdAcceptedOrder.seller) {
                   return (
                     <h5 style={{ display: "flex" }}>
                       Hawker Address: {hawker.addressLocation}
                     </h5>
                   );
+                }
               })}
 
               {this.props.customers.map((customer, key) => {
@@ -87,9 +95,12 @@ class Orders extends Component {
                 <button
                   style={{ display: "flex", marginBottom: 10 }}
                   onClick={(event) => {
+                    // console.log("Pressed at: ", getCurrentTime());
+                    var deliveredTime = getCurrentTime();
                     this.props.fdCompleteOrder(
                       fdAcceptedOrder.id,
-                      this.state.fdId
+                      this.state.fdId,
+                      deliveredTime
                     );
                   }}
                 >
@@ -184,6 +195,7 @@ class Orders extends Component {
         {this.props.fdDeliveryOrders.map((fdDeliveryOrder, key) => {
           this.orderNo = fdDeliveryOrder.id;
           this.itemCount = fdDeliveryOrder.purchasedItemCount;
+
           if (fdDeliveryOrder.state == 0) {
             this.orderState = "Order Placed";
           } else if (fdDeliveryOrder.state == 1) {
@@ -216,12 +228,14 @@ class Orders extends Component {
               </h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
               {this.props.hawkers.map((hawker, key) => {
-                if (hawker.owner.toString() == fdDeliveryOrder.seller)
+                if (hawker.owner.toString() == fdDeliveryOrder.seller) {
+                  this.leadTime = Number(hawker.leadTime);
                   return (
                     <h5 style={{ display: "flex" }}>
                       Hawker Address: {hawker.addressLocation}
                     </h5>
                   );
+                }
               })}
 
               {this.props.customers.map((customer, key) => {
@@ -236,7 +250,10 @@ class Orders extends Component {
                 {fdDeliveryOrder.state == 1 && this.disable == false ? (
                   <button
                     onClick={(event) => {
-                      this.props.fdAcceptOrder(fdDeliveryOrder.id);
+                      this.setState({ modalShow: true });
+                      var fdEstTime = getHawkerFdTime(Number(this.leadTime));
+                      this.fdTime = fdEstTime;
+                      // this.props.fdAcceptOrder(fdDeliveryOrder.id);
                     }}
                   >
                     Accept Order
@@ -251,6 +268,13 @@ class Orders extends Component {
                     Accept Order
                   </button>
                 )}
+                <FdModal
+                  show={this.state.modalShow}
+                  onHide={modalClose}
+                  fdTime={this.fdTime}
+                  orderId={fdDeliveryOrder.id}
+                  fdAcceptOrder={this.props.fdAcceptOrder}
+                />
               </div>
 
               <table className="table">

@@ -30,10 +30,47 @@ class Home extends Component {
     var arrayCounter = 0;
     console.log("What is this now: ", this.props.custOrderItems);
     console.log("What is this: ", this.props.orders);
-
+    let overallSales = 0;
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
-        <h2>Transaction History</h2>
+        <div style={{ marginTop: 30, marginBottom: 30 }}>
+          <h2 style={{ color: "#808080" }}>Sales</h2>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col"> Sold</th>
+                <th scope="col">Total Sales</th>
+              </tr>
+            </thead>
+            {this.props.restProducts.map((product, key) => {
+              if (product.owner == this.props.account) {
+                overallSales += product.price * product.soldCount;
+                return (
+                  <tbody id="productList">
+                    <tr>
+                      <td>{product.name}</td>
+                      <td>{product.soldCount}</td>
+                      <td>
+                        {window.web3.utils.fromWei(
+                          (product.price * product.soldCount).toString(),
+                          "Ether"
+                        )}{" "}
+                        Eth
+                      </td>
+                    </tr>
+                  </tbody>
+                );
+              }
+            })}
+          </table>
+          <h4 style={{ display: "flex", justifyContent: "flex-end" }}>
+            Overall Sales:{" "}
+            {window.web3.utils.fromWei(overallSales.toString(), "Ether")} Eth
+          </h4>
+        </div>
+
+        <h2 style={{ color: "#808080" }}>Transaction History</h2>
         {this.props.custOrders.map((custOrder, key) => {
           this.orderNo = custOrder.id;
           this.itemCount = custOrder.purchasedItemCount;

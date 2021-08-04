@@ -65,17 +65,18 @@ class Orders extends Component {
               </h4>
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
 
-              {custOrder.state >= 2 && custOrder.state < 4 ? (
+              {custOrder.state >= 1 && custOrder.state < 4 ? (
                 <div>
                   <h5 style={{ display: "flex" }}>
                     Estimated Delivery Time: {custOrder.deliveryDateTime}
                   </h5>
                 </div>
               ) : null}
-              {custOrder.state >= 1 && custOrder.state < 5 ? (
+
+              {custOrder.state == 4 ? (
                 <div>
                   <h5 style={{ display: "flex" }}>
-                    Estimated Delivery Time: {custOrder.deliveryDateTime}
+                    Delivered at: {custOrder.deliveryDateTime}
                   </h5>
                 </div>
               ) : null}
