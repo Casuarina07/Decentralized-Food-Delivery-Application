@@ -29,9 +29,9 @@ export class FdModal extends Component {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton>
+        <Modal.Header closeButton onClick={this.props.onHide}>
           <Modal.Title id="contained-modal-title-vcenter">
-            Confirm Transaction
+            Confirmation
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

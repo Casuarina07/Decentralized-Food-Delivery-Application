@@ -72,6 +72,18 @@ class Orders extends Component {
                 {hawkerOrder.state == 0 ? (
                   <div>
                     <Button
+                      style={{ marginRight: 5 }}
+                      variant="danger"
+                      onClick={(event) => {
+                        this.props.cancelOrder(
+                          hawkerOrder.id,
+                          hawkerOrder.owner
+                        );
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
                       variant="primary"
                       onClick={(event) => {
                         // var leadtime = this.props.hawker.leadTime;
@@ -107,18 +119,6 @@ class Orders extends Component {
                       deliveryTime={this.state.deliveryTime}
                       hawkerConfirmOrder={this.props.hawkerConfirmOrder}
                     />
-                    <Button
-                      style={{ marginLeft: 5 }}
-                      variant="danger"
-                      onClick={(event) => {
-                        this.props.cancelOrder(
-                          hawkerOrder.id,
-                          hawkerOrder.owner
-                        );
-                      }}
-                    >
-                      Cancel
-                    </Button>
                   </div>
                 ) : null}
               </div>

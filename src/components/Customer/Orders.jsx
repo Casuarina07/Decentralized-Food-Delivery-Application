@@ -4,6 +4,7 @@ import Modal from "@material-ui/core/Modal";
 import "./Cust.css";
 import { Button, ButtonToolbar } from "react-bootstrap";
 import { RateModal } from "./RateModal";
+import { ReportModal } from "./ReportModal";
 
 class Orders extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class Orders extends Component {
       rider: "",
       hawkerId: 0,
       fdId: 0,
+      reportModalShow: false,
     };
   }
 
@@ -27,6 +29,8 @@ class Orders extends Component {
 
   render() {
     let rateModalClose = () => this.setState({ rateModalShow: false });
+    let reportModalClose = () => this.setState({ reportModalShow: false });
+
     var counter = 1;
     var arrayCounter = 0;
     console.log("What is this now: ", this.props.custOrderItems);
@@ -74,10 +78,8 @@ class Orders extends Component {
               ) : null}
 
               {custOrder.state == 4 ? (
-                <div>
-                  <h5 style={{ display: "flex" }}>
-                    Delivered at: {custOrder.deliveryDateTime}
-                  </h5>
+                <div style={{ flexDirection: "row", display: "flex" }}>
+                  <h5>Delivered at: {custOrder.deliveryDateTime}</h5>
                 </div>
               ) : null}
 
@@ -124,6 +126,23 @@ class Orders extends Component {
                         setRating={this.props.setRating}
                         hawkerId={this.hawkerId}
                         fdId={this.fdId}
+                      />
+                      <Button
+                        variant="danger"
+                        style={{ marginLeft: 5 }}
+                        onClick={() => {
+                          console.log("Report Button Clicked");
+                          this.setState({ reportModalShow: true });
+                        }}
+                      >
+                        Report
+                      </Button>
+                      <ReportModal
+                        show={this.state.reportModalShow}
+                        onHide={reportModalClose}
+                        order={custOrder}
+                        orders={this.props.custOrders}
+                        orderItems={this.props.custOrderItems}
                       />
                     </ButtonToolbar>
                   ) : (
