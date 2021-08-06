@@ -164,6 +164,7 @@ class Orders extends Component {
                         orders={this.props.custOrders}
                         orderItems={this.props.custOrderItems}
                         restProducts={this.props.restProducts}
+                        createReport={this.props.createReport}
                       />
                     </ButtonToolbar>
                   ) : (

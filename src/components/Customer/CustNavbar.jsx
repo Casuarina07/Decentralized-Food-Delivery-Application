@@ -35,6 +35,7 @@ function CustNavbar({
   hawkerFeedback,
   cancelOrder,
   foodDeliveries,
+  createReport,
 }) {
   const navLinks = [
     {
@@ -99,6 +100,7 @@ function CustNavbar({
           setRating={setRating}
           cancelOrder={cancelOrder}
           foodDeliveries={foodDeliveries}
+          createReport={createReport}
         />
         <Profile
           path="/profile"

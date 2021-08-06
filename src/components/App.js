@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
+import Reports from "../abis/Reports.json";
 import { BrowserRouter as Router } from "react-router-dom";
 import SuppNav from "./Supplier/SuppNavbar";
 import RestNavbar from "./Hawker/RestNavbar";
@@ -14,27 +15,14 @@ export default function App() {
   const [account, setAccount] = useState("");
   const [productCount, setProductCount] = useState(0);
   const [marketplace, setMarketPlace] = useState({});
+  const [reports, setReports] = useState({});
   const [restProducts, setRestProducts] = useState([]);
   const [restProdCount, setRestProdCount] = useState(0);
   const [suppProducts, setSuppProducts] = useState([]);
   const [suppProdCount, setSuppProdCount] = useState(0);
-  // const [hawkersPublicKey, setHawkersPublicKey] = useState([
-  //   "0x73c005D4B234C63F416F6e1038C011D55edDBF1e",
-  //   // "0x87ECEE1454A7b32253A9020F6ae1FF25e9CE35B5",
-  // ]);
   const [hawkersPublicKey, setHawkersPublicKey] = useState([]);
-  // const [custsPublicKey, setCustsPublicKey] = useState([
-  //   "0xC9342f12d49ca9e40d600eBF17266DcCc88a0639",
-  //   // "0x7C2eA58a210F8e7c80fdeB6788C1D5Fc4a3E73ba",
-  // ]);
   const [custsPublicKey, setCustsPublicKey] = useState([]);
-  // const [fdsPublicKey, setFDsPublicKey] = useState([
-  //   "0x66f8f66996aaB36b041b1cAdA9f20864a0C42698",
-  // ]);
   const [fdsPublicKey, setFDsPublicKey] = useState([]);
-  // const [suppliersPublicKey, setSuppliersPublicKey] = useState([
-  //   "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8",
-  // ]);
   const [suppliersPublicKey, setSuppliersPublicKey] = useState([]);
   const [custAcc, setCustAcc] = useState(false);
   const [hawkerAcc, setHawkerAcc] = useState(false);
@@ -94,13 +82,12 @@ export default function App() {
   const [transactions, setTransactions] = useState();
   // const [hawkerReceipts, setHawkerReceipts] = useState([]);
 
-  //acount-details
-  // const suppPublicKey = "0x09Df3eb010bF64141C020b2f98d521916dF2F9a8";
+  //REPORTS SMART CONTRACT
+  const [reportsCount, setReportsCount] = useState(0);
 
   useEffect(() => {
     loadWeb3();
     loadBlockchainData();
-    // accountType();
   }, []);
 
   useEffect(() => {
@@ -142,12 +129,28 @@ export default function App() {
 
     const networkId = await web3.eth.net.getId(); //5777
     const networkData = Marketplace.networks[networkId];
+    const networkDataReport = Reports.networks[networkId];
     if (networkData) {
       const marketplace = new web3.eth.Contract(
         Marketplace.abi,
         networkData.address
       );
       setMarketPlace(marketplace);
+
+      const reports = new web3.eth.Contract(
+        Reports.abi,
+        networkDataReport.address
+      );
+      setReports(reports);
+
+      //testing reports solidity connection
+      var result = await reports.methods.name.call().call((error, result) => {
+        console.log("RESULT NAME: ", result);
+      });
+
+      const reportCount = await reports.methods.reportsCount().call();
+      setReportsCount(reportCount);
+      console.log("How many reports Counts are there? ", reportCount);
 
       //FETCH RESTAURANT PRODUCTS
       const restProdCount = await marketplace.methods.restProdCount().call();
@@ -441,6 +444,18 @@ export default function App() {
     setNewAcc(true);
     setLoading(false);
   }
+
+  const createReport = (orderId, title, imageHash, missingItems, remarks) => {
+    setLoading(true);
+    reports.methods
+      .createReport(orderId, title, imageHash, missingItems, remarks)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Report successfully sent");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
 
   const removeProdCart = (custId, cartId) => {
     setLoading(true);
@@ -924,6 +939,7 @@ export default function App() {
             hawkerFeedback={hawkerFeedback}
             cancelOrder={cancelOrder}
             foodDeliveries={foodDeliveries}
+            createReport={createReport}
           />
         ) : null}
         {fdAcc ? (

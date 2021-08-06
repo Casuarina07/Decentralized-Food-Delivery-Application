@@ -47,6 +47,14 @@ export class ReportModal extends Component {
       alert("Please add one supporting image");
     }
 
+    this.props.createReport(
+      this.props.order.id,
+      this.state.issueType,
+      this.state.imageHash,
+      missingItems,
+      this.state.remarks
+    );
+
     if (this.state.issueType == "missingItem") {
     } else if (this.state.issueType == "incorrectOrder") {
     } else if (this.state.issueType == "undelivered") {
@@ -122,7 +130,7 @@ export class ReportModal extends Component {
     return (
       <Modal
         show={this.props.show}
-        size="lg"
+        size="md"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >

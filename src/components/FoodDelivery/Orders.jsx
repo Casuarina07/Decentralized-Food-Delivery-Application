@@ -36,7 +36,11 @@ class Orders extends Component {
 
         {/* Accepted Orders */}
         {this.props.fdAcceptedOrders.length > 0 ? (
-          <h2>Accepted orders</h2>
+          <div>
+            {" "}
+            <h2>Accepted orders</h2>
+            <hr style={{ width: "100%", display: "flex" }} />
+          </div>
         ) : null}
         {this.props.fdAcceptedOrders.map((fdAcceptedOrder, key) => {
           this.orderNo = fdAcceptedOrder.id;
@@ -191,7 +195,11 @@ class Orders extends Component {
         {this.props.fdDeliveryOrders.length < 1 ? (
           <h2>No available orders</h2>
         ) : (
-          <h2>Available Orders</h2>
+          <div>
+            {" "}
+            <h2>Available Orders</h2>
+            <hr style={{ width: "60%", display: "flex" }} />
+          </div>
         )}
         {this.props.fdDeliveryOrders.map((fdDeliveryOrder, key) => {
           this.orderNo = fdDeliveryOrder.id;
