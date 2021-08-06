@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { FdModal } from "./FdModal";
 import { getCurrentTime, getHawkerFdTime } from "../utils/utils-time";
+import { Button } from "react-bootstrap";
 
 class Orders extends Component {
   constructor(props) {
@@ -78,7 +79,7 @@ class Orders extends Component {
               })}
 
               {fdAcceptedOrder.state == 2 ? (
-                <button
+                <Button
                   style={{
                     display: "flex",
                     marginBottom: 10,
@@ -87,12 +88,12 @@ class Orders extends Component {
                     this.props.fdCollectedOrder(fdAcceptedOrder.id);
                   }}
                 >
-                  Collected Order
-                </button>
+                  Collected
+                </Button>
               ) : null}
 
               {fdAcceptedOrder.state == 3 ? (
-                <button
+                <Button
                   style={{ display: "flex", marginBottom: 10 }}
                   onClick={(event) => {
                     // console.log("Pressed at: ", getCurrentTime());
@@ -104,12 +105,12 @@ class Orders extends Component {
                     );
                   }}
                 >
-                  Complete Order
-                </button>
+                  Complete
+                </Button>
               ) : null}
 
               {fdAcceptedOrder.state == 4 ? (
-                <button
+                <Button
                   style={{
                     display: "flex",
                     marginBottom: 10,
@@ -118,7 +119,7 @@ class Orders extends Component {
                   }}
                 >
                   Completed
-                </button>
+                </Button>
               ) : null}
 
               <table className="table">
@@ -248,7 +249,7 @@ class Orders extends Component {
               })}
               <div style={{ display: "flex", marginBottom: 10 }}>
                 {fdDeliveryOrder.state == 1 && this.disable == false ? (
-                  <button
+                  <Button
                     onClick={(event) => {
                       this.setState({ modalShow: true });
                       var fdEstTime = getHawkerFdTime(Number(this.leadTime));
@@ -256,17 +257,17 @@ class Orders extends Component {
                       // this.props.fdAcceptOrder(fdDeliveryOrder.id);
                     }}
                   >
-                    Accept Order
-                  </button>
+                    Accept
+                  </Button>
                 ) : (
-                  <button
+                  <Button
                     style={{ opacity: 0.6 }}
                     onClick={(event) => {
                       alert("Please start shift");
                     }}
                   >
-                    Accept Order
-                  </button>
+                    Accept
+                  </Button>
                 )}
                 <FdModal
                   show={this.state.modalShow}

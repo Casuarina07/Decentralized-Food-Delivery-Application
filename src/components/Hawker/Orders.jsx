@@ -59,6 +59,14 @@ class Orders extends Component {
                 Ordered on: {hawkerOrder.dateTime}
               </h4>
 
+              {hawkerOrder.state == 4 ? (
+                <div>
+                  <h4 style={{ display: "flex" }}>
+                    Delivered at : {hawkerOrder.deliveryDateTime}
+                  </h4>
+                </div>
+              ) : null}
+
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
 
               {hawkerOrder.state >= 2 && hawkerOrder.state < 5 ? (
@@ -68,6 +76,7 @@ class Orders extends Component {
                   </h5>
                 </div>
               ) : null}
+
               <div style={{ display: "flex", marginBottom: 10 }}>
                 {hawkerOrder.state == 0 ? (
                   <div>

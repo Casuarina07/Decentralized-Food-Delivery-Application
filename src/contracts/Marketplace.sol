@@ -526,31 +526,6 @@ contract Marketplace {
         }
     }
 
-    // function getOrderProduct2(uint256 orderId, uint256 cartId)
-    //     public
-    //     returns (uint256 productId, uint256 prodQty)
-    // {
-    //     Order storage ord = orders[orderId];
-    //     // uint256 prodId = ord.purchasedItemId[cartId].productId;
-    //     // RestProduct memory _product = restProducts[prodId];
-    //     // CartItem memory _cart = ord.purchasedItemId[cartId];
-    //     return (
-    //         ord.purchasedItemId[cartId].productId,
-    //         ord.purchasedItemId[cartId].productQty
-    //     );
-    // }
-
-    // function getOrderProduct(uint256 orderId, uint256 cartId)
-    //     public
-    //     returns (RestProduct memory, CartItem memory)
-    // {
-    //     Order storage ord = orders[orderId];
-    //     uint256 prodId = ord.purchasedItemId[cartId].productId;
-    //     RestProduct memory _product = restProducts[prodId];
-    //     CartItem memory _cart = ord.purchasedItemId[cartId];
-    //     return (_product, _cart);
-    // }
-
     function getOrderProduct(uint256 orderId, uint256 cartId)
         public
         returns (CartItem memory)
@@ -560,17 +535,6 @@ contract Marketplace {
         CartItem memory _cart = ord.purchasedItemId[cartId];
         return (_cart);
     }
-
-    // function getOrderProductHawker(uint256 orderId, uint256 cartId)
-    //     public
-    //     returns (SuppProduct memory, CartItem memory)
-    // {
-    //     // Order storage ord = orders[orderId];
-    //     uint256 prodId = orders[orderId].purchasedItemId[cartId].productId;
-    //     SuppProduct memory _product = suppProducts[prodId];
-    //     CartItem memory _cart = orders[orderId].purchasedItemId[cartId];
-    //     return (_product, _cart);
-    // }
 
     function getHawkerFeedback(uint256 hawkerId, uint256 feedbackCount)
         public
@@ -644,61 +608,6 @@ contract Marketplace {
     //     uint256 totalCost,
     //     uint256 indexed date
     // );
-
-    // function purchaseProduct(
-    //     uint256 _custId,
-    //     address payable _seller,
-    //     uint256 _hawkerPayment,
-    //     uint256 _riderPayment,
-    //     uint256 _totalCost,
-    //     string memory _date,
-    //     string memory _time
-    // ) public payable {
-    //     Customer memory cust = customers[_custId];
-    //     // Increment order count
-    //     ordersCount++;
-    //     // Create the enum
-    //     state = Status.OrderPlaced;
-
-    //     // Create the order
-    //     orders[ordersCount] = Order(
-    //         ordersCount,
-    //         cust.owner,
-    //         _seller,
-    //         address(0),
-    //         _hawkerPayment,
-    //         _riderPayment,
-    //         _totalCost,
-    //         cust.itemCount,
-    //         _date,
-    //         _time,
-    //         state,
-    //         false
-    //     );
-
-    //     //add the items in cartItems(Customer structure) to purchasedItemId (Order structure)
-    //     for (uint256 i = 1; i <= cust.itemCount; i++) {
-    //         (uint256 item, uint256 qty) = getCartProduct(_custId, i, 1);
-    //         orders[ordersCount].purchasedItemId[i] = CartItem(i, item, qty);
-
-    //         restProducts[item].soldCount++;
-    //     }
-
-    //     //Require that there is enough Ether in the transaction
-    //     require(msg.value >= _totalCost);
-
-    //     //remove the CartItem in the Customer id
-    //     removeAllProdCart(_custId);
-
-    //     // //Trigger an event
-    //     // emit HawkerProdPurchased(
-    //     //     ordersCount,
-    //     //     cust.owner,
-    //     //     _seller,
-    //     //     _totalCost,
-    //     //     now
-    //     // );
-    // }
 
     //indicator  1 - customer, 2 - hawker
     function purchaseProduct(

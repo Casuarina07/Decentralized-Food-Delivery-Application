@@ -18,7 +18,8 @@ class Orders extends Component {
       rider: "",
       hawkerId: 0,
       fdId: 0,
-      reportModalShow: false,
+      reportModalShow: [],
+      hi: "",
     };
   }
 
@@ -27,18 +28,27 @@ class Orders extends Component {
     console.log("Rate Show: ", this.rateShow);
   };
 
+  reportModalClose = (event, key) => {
+    let reportModalShow = [...this.state.reportModalShow];
+    reportModalShow[key] = false;
+    this.setState({ ...this.state, reportModalShow }, () => {
+      console.log(this.state);
+    });
+  };
+
   render() {
     let rateModalClose = () => this.setState({ rateModalShow: false });
-    let reportModalClose = () => this.setState({ reportModalShow: false });
 
     var counter = 1;
     var arrayCounter = 0;
     console.log("What is this now: ", this.props.custOrderItems);
+    console.log("Length: ", this.props.custOrders.length);
 
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
         <h2>Transaction History</h2>
         {this.props.custOrders.map((custOrder, key) => {
+          console.log("Key: ", key);
           this.orderNo = custOrder.id;
           this.itemCount = custOrder.purchasedItemCount;
           if (custOrder.state == 0) {
@@ -130,19 +140,30 @@ class Orders extends Component {
                       <Button
                         variant="danger"
                         style={{ marginLeft: 5 }}
+                        key={key}
                         onClick={() => {
                           console.log("Report Button Clicked");
-                          this.setState({ reportModalShow: true });
+                          let tmp = this.state.reportModalShow;
+                          tmp[key] = !tmp[key];
+                          this.setState({ reportModalShow: tmp });
+                          console.log(
+                            "report modal show: ",
+                            this.state.reportModalShow[key]
+                          );
                         }}
                       >
                         Report
                       </Button>
                       <ReportModal
-                        show={this.state.reportModalShow}
-                        onHide={reportModalClose}
+                        show={this.state.reportModalShow[key]}
+                        key={key}
+                        onHide={(e) => {
+                          this.reportModalClose(e, key);
+                        }}
                         order={custOrder}
                         orders={this.props.custOrders}
                         orderItems={this.props.custOrderItems}
+                        restProducts={this.props.restProducts}
                       />
                     </ButtonToolbar>
                   ) : (

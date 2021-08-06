@@ -284,12 +284,12 @@ export default function App() {
 
           //get the item that the order consists
           for (var k = 1; k <= order.purchasedItemCount; k++) {
-            const prod = await marketplace.methods
+            let prod = await marketplace.methods
               .getOrderProduct(order.id, k)
               .call();
+            prod = Object.assign({ orderId: order.id }, prod);
             setCustOrderItems((custOrderItems) => [...custOrderItems, prod]);
           }
-          console.log("RESULT: ", custOrderItems);
         }
         // order inventory for each hawker
         if (order.seller.toString() === accounts.toString()) {
