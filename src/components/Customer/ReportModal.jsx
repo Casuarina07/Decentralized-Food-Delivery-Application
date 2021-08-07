@@ -21,7 +21,7 @@ export class ReportModal extends Component {
     super(props);
     this.state = {
       issueType: "",
-      remarks: "",
+      remarks: "-",
       buffer: null,
       imageHash: [],
       imageChange: false,

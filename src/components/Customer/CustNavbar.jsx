@@ -6,6 +6,8 @@ import Purchase from "./Purchase";
 import Profile from "./Profile";
 import HawkerInfo from "./HawkerInfo";
 import Cart from "./Cart";
+import ReportList from "./ReportList";
+import ReportDetails from "./ReportDetails";
 import ResponsiveNavigation from "../ResponsiveNavigation";
 import logo from "../logo.svg";
 import "../Navbar.css";
@@ -36,6 +38,7 @@ function CustNavbar({
   cancelOrder,
   foodDeliveries,
   createReport,
+  custReports,
 }) {
   const navLinks = [
     {
@@ -90,7 +93,7 @@ function CustNavbar({
           addToCart={addToCart}
           custId={custId}
         />
-        <Home path="/" />
+        <Home path="/" reportsIssued />
         <Orders
           path="/orders"
           custOrders={custOrders}
@@ -110,6 +113,7 @@ function CustNavbar({
           custAdd={custAdd}
           custPhone={custPhone}
           editCustProfile={editCustProfile}
+          custReports={custReports}
         />
         <HawkerInfo
           path="/hawkerInfo/:id"
@@ -117,6 +121,14 @@ function CustNavbar({
           hawkersCount={hawkersCount}
           hawkerFeedback={hawkerFeedback}
         />
+        <ReportList path="/reports" />
+        <ReportDetails
+          path="/reportDetails/:id"
+          custOrders={custOrders}
+          custOrderItems={custOrderItems}
+          restProducts={restProducts}
+        />
+
         <Cart
           path="/cart"
           custCart={custCart}

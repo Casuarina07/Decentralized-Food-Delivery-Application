@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./Cust.css";
 import { BsFillPersonCheckFill } from "react-icons/bs";
+import { Button } from "react-bootstrap";
+import { Link } from "@reach/router";
 
 export default function Profile({
   account,
@@ -9,6 +11,7 @@ export default function Profile({
   custAdd,
   custPhone,
   editCustProfile,
+  custReports,
 }) {
   const [editClicked, setEditClicked] = useState(false);
   const [custPhoneNo, setCustPhoneNo] = useState(custPhone);
@@ -25,6 +28,31 @@ export default function Profile({
 
   return (
     <div style={{ marginTop: 20, marginBottom: 30 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginRight: 20,
+          flexDirection: "row",
+        }}
+      >
+        {/* <Button variant="warning">Reports Issued</Button> */}
+        <h5
+          style={{
+            backgroundColor: "#5F5858",
+            padding: 10,
+            borderRadius: 4,
+          }}
+        >
+          <Link
+            style={{ color: "#FFF", fontSize: 18 }}
+            to={`/reports`}
+            state={{ reports: custReports }}
+          >
+            Reports Issued
+          </Link>
+        </h5>
+      </div>
       <BsFillPersonCheckFill size={60} color="#016094" />
       <h3 className="header">{account}</h3>
       <h4 style={{ color: "#016094", marginTop: 30 }}>Profile Details</h4>

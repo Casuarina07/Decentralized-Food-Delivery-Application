@@ -103,5 +103,4 @@ export default function HawkerInfo(props) {
       })}
     </div>
   );
-  //return <h1>Hello</h1>;
 }

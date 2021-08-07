@@ -3,8 +3,8 @@ import "./Cust.css";
 
 function Home() {
   return (
-    <div>
-      <h1 className="header">Customer's Home</h1>
+    <div style={{ margin: 60, marginTop: 20 }}>
+      <h3 className="header">List of Reports</h3>
     </div>
   );
 }

@@ -15,7 +15,7 @@ export default function App() {
   const [account, setAccount] = useState("");
   const [productCount, setProductCount] = useState(0);
   const [marketplace, setMarketPlace] = useState({});
-  const [reports, setReports] = useState({});
+  const [reportsContract, setReportsContract] = useState({});
   const [restProducts, setRestProducts] = useState([]);
   const [restProdCount, setRestProdCount] = useState(0);
   const [suppProducts, setSuppProducts] = useState([]);
@@ -64,6 +64,7 @@ export default function App() {
   const [custCount, setCustCount] = useState(0);
   const [custOrders, setCustOrders] = useState([]);
   const [custOrderItems, setCustOrderItems] = useState([]);
+  const [custReports, setCustReports] = useState([]);
 
   //order-details
   const [orders, setOrders] = useState([]);
@@ -84,6 +85,7 @@ export default function App() {
 
   //REPORTS SMART CONTRACT
   const [reportsCount, setReportsCount] = useState(0);
+  const [reportsIssued, setReportsIssued] = useState([]);
 
   useEffect(() => {
     loadWeb3();
@@ -141,7 +143,7 @@ export default function App() {
         Reports.abi,
         networkDataReport.address
       );
-      setReports(reports);
+      setReportsContract(reports);
 
       //testing reports solidity connection
       var result = await reports.methods.name.call().call((error, result) => {
@@ -151,6 +153,24 @@ export default function App() {
       const reportCount = await reports.methods.reportsCount().call();
       setReportsCount(reportCount);
       console.log("How many reports Counts are there? ", reportCount);
+      for (var i = 1; i <= reportCount; i++) {
+        const reportIssued = await reports.methods.reports(i).call();
+        setReportsIssued((reportsIssued) => [...reportsIssued, reportIssued]);
+        if (reportIssued.reporter == accounts.toString()) {
+          let imageHash = await reports.methods
+            .getImageHash(reportIssued.id)
+            .call();
+          let missingItems = await reports.methods
+            .getMissingItems(reportIssued.id)
+            .call();
+          let newReportIssued = reportIssued;
+          newReportIssued = Object.assign(
+            { imageHash: imageHash, missingItems: missingItems },
+            newReportIssued
+          );
+          setCustReports((custReports) => [...custReports, newReportIssued]);
+        }
+      }
 
       //FETCH RESTAURANT PRODUCTS
       const restProdCount = await marketplace.methods.restProdCount().call();
@@ -392,6 +412,8 @@ export default function App() {
     console.log("ALL THE CUSTOMER ACCOUNTS: ", custsPublicKey);
     console.log("ALL THE FD ACCOUNTS: ", fdsPublicKey);
     console.log("ALL THE SUPPLIER ACCOUNTS: ", suppliersPublicKey);
+    console.log("Reports Issued: ", reportsIssued);
+    console.log("Customer reports: ", custReports);
 
     // check if customer, hawkers, suppliers or fooddelivery (fd)
     for (var i = 0; i < hawkersPublicKey.length; i++) {
@@ -447,7 +469,7 @@ export default function App() {
 
   const createReport = (orderId, title, imageHash, missingItems, remarks) => {
     setLoading(true);
-    reports.methods
+    reportsContract.methods
       .createReport(orderId, title, imageHash, missingItems, remarks)
       .send({ from: account })
       .once("receipt", (receipt) => {
@@ -940,6 +962,8 @@ export default function App() {
             cancelOrder={cancelOrder}
             foodDeliveries={foodDeliveries}
             createReport={createReport}
+            reportsIssued={reportsIssued}
+            custReports={custReports}
           />
         ) : null}
         {fdAcc ? (

@@ -11,7 +11,7 @@ export default function Profile({
   function changeAvailability() {
     for (var i = 0; i < fdAcceptedOrders.length; i++) {
       console.log("what is this: ", fdAcceptedOrders[i].state);
-      if (fdAcceptedOrders[i].state < 3) {
+      if (fdAcceptedOrders[i].state < 4) {
         alert("You still have ongoing orders. Please complete before stopping");
         return;
       }

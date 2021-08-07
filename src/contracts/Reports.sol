@@ -50,4 +50,18 @@ contract Reports {
             0
         );
     }
+
+    function getImageHash(uint256 _reportId)
+        public
+        returns (string[] memory imageHash)
+    {
+        return reports[_reportId].imageHash;
+    }
+
+    function getMissingItems(uint256 _reportId)
+        public
+        returns (string[] memory missingItems)
+    {
+        return reports[_reportId].missingItems;
+    }
 }
