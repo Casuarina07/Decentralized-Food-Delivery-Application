@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Cust.css";
-import { BsFillPersonCheckFill } from "react-icons/bs";
+import { TiTick } from "react-icons/ti";
+import { ImCross } from "react-icons/im";
 import { Button } from "react-bootstrap";
 import { Link } from "@reach/router";
 import Image from "react-bootstrap/Image";
@@ -26,6 +27,8 @@ export default function ReportDetails(props) {
   console.log("Image Hash: ", report.imageHash);
   console.log("Report Details: ", report);
   console.log("Customer Order Items: ", props.custOrderItems);
+  console.log("Hawker Order Items: ", props.hawkerOrderItems);
+
   //   console.log("Rest Products: ", props.restProducts[1]);
   return (
     <div
@@ -109,7 +112,7 @@ export default function ReportDetails(props) {
 
       <h4 style={{ color: "#226BBF", marginBottom: 20 }}>Order Details</h4>
       {/* Order details */}
-      {props.custOrders.map((order, key) => {
+      {props.orders.map((order, key) => {
         if (order.id == report.orderId)
           return (
             <div>
@@ -122,7 +125,7 @@ export default function ReportDetails(props) {
               <h5>Delivered at: </h5>
               <div style={{ marginBottom: 20 }}> {order.deliveryDateTime} </div>
               <h5>Item(s) Ordered: </h5>
-              {props.custOrderItems.map((item, key) => {
+              {props.ordersItems.map((item, key) => {
                 if (item.orderId == report.orderId) {
                   return (
                     <div>

@@ -19,7 +19,7 @@ class Orders extends Component {
       hawkerId: 0,
       fdId: 0,
       reportModalShow: [],
-      hi: "",
+      reported: false,
     };
   }
 
@@ -48,6 +48,7 @@ class Orders extends Component {
       <div style={{ margin: 60, marginTop: 20 }}>
         <h2>Transaction History</h2>
         {this.props.custOrders.map((custOrder, key) => {
+          this.reported = false;
           console.log("Key: ", key);
           this.orderNo = custOrder.id;
           this.itemCount = custOrder.purchasedItemCount;
@@ -110,6 +111,10 @@ class Orders extends Component {
                 }
               })}
 
+              {this.props.reportsIssued.map((report, key) => {
+                if (report.orderId == custOrder.id) this.reported = true;
+              })}
+
               {/* allow customer to rate the transaction after completion */}
               {custOrder.state == 4 ? (
                 <div style={{ display: "flex", marginBottom: 10 }}>
@@ -137,23 +142,34 @@ class Orders extends Component {
                         hawkerId={this.hawkerId}
                         fdId={this.fdId}
                       />
-                      <Button
-                        variant="danger"
-                        style={{ marginLeft: 5 }}
-                        key={key}
-                        onClick={() => {
-                          console.log("Report Button Clicked");
-                          let tmp = this.state.reportModalShow;
-                          tmp[key] = !tmp[key];
-                          this.setState({ reportModalShow: tmp });
-                          console.log(
-                            "report modal show: ",
-                            this.state.reportModalShow[key]
-                          );
-                        }}
-                      >
-                        Report
-                      </Button>
+                      {this.reported ? (
+                        <Button
+                          variant="danger"
+                          style={{ marginLeft: 5 }}
+                          disabled
+                        >
+                          Reported
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="danger"
+                          style={{ marginLeft: 5 }}
+                          key={key}
+                          onClick={() => {
+                            console.log("Report Button Clicked");
+                            let tmp = this.state.reportModalShow;
+                            tmp[key] = !tmp[key];
+                            this.setState({ reportModalShow: tmp });
+                            console.log(
+                              "report modal show: ",
+                              this.state.reportModalShow[key]
+                            );
+                          }}
+                        >
+                          Report
+                        </Button>
+                      )}
+
                       <ReportModal
                         show={this.state.reportModalShow[key]}
                         key={key}

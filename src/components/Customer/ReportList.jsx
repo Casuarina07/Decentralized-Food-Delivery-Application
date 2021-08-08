@@ -10,45 +10,48 @@ export default function ReportList(props) {
 
   return (
     <div style={{ margin: 60, marginTop: 20 }}>
-      <h3>Reports filed by you</h3>
+      {reports.length == 0 ? (
+        <h3>No reports filed by you</h3>
+      ) : (
+        <div>
+          <h3>Reports filed by you</h3>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Reported by</th>
+                <th scope="col">Approval Count</th>
+                {/* <th scope="col">Owner</th> */}
+                <th scope="col">Rejection Count</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            {reports.map((report, key) => {
+              return (
+                <>
+                  <tbody id="productList">
+                    <tr>
+                      <td style={{ textOverflow: "ellipsis" }}>
+                        {report.reporter}
+                      </td>
+                      <td>{report.approvalCount}</td>
+                      <td>{report.rejectionCount}</td>
+                      {report.complete == false ? (
+                        <td
+                          style={{
+                            color: "green",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          In progress
+                        </td>
+                      ) : (
+                        <td style={{ color: "#DC0126", fontWeight: "bold" }}>
+                          Completed
+                        </td>
+                      )}
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th scope="col">Reported by</th>
-            <th scope="col">Approval Count</th>
-            {/* <th scope="col">Owner</th> */}
-            <th scope="col">Rejection Count</th>
-            <th scope="col">Status</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        {reports.map((report, key) => {
-          return (
-            <>
-              <tbody id="productList">
-                <tr>
-                  <td style={{ textOverflow: "ellipsis" }}>
-                    {report.reporter}
-                  </td>
-                  <td>{report.approvalCount}</td>
-                  <td>{report.rejectionCount}</td>
-                  {report.complete == false ? (
-                    <td
-                      style={{
-                        color: "green",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      In progress
-                    </td>
-                  ) : (
-                    <td style={{ color: "#DC0126", fontWeight: "bold" }}>
-                      Completed
-                    </td>
-                  )}
-
-                  {/* <td>
+                      {/* <td>
                     <Button
                       //   style={{ backgroundColor: "#0072F5" }}
                       style={{ backgroundColor: "#226BBF" }}
@@ -60,29 +63,35 @@ export default function ReportList(props) {
                       Details
                     </Button>
                   </td> */}
-                  <td>
-                    <h5
-                      style={{
-                        backgroundColor: "#226BBF",
-                        borderRadius: 4,
-                        padding: 4,
-                      }}
-                    >
-                      <Link
-                        style={{ color: "#FFF", fontSize: 18 }}
-                        to={`/reportDetails/${report.id}`}
-                        state={{ report: report }}
-                      >
-                        Details
-                      </Link>
-                    </h5>
-                  </td>
-                </tr>
-              </tbody>
-            </>
-          );
-        })}
-      </table>
+                      <td>
+                        <h5
+                          style={{
+                            backgroundColor: "#226BBF",
+                            borderRadius: 4,
+                            padding: 4,
+                          }}
+                        >
+                          <Link
+                            style={{
+                              color: "#FFF",
+                              fontSize: 18,
+                              textDecoration: "none",
+                            }}
+                            to={`/reportDetails/${report.id}`}
+                            state={{ report: report }}
+                          >
+                            Details
+                          </Link>
+                        </h5>
+                      </td>
+                    </tr>
+                  </tbody>
+                </>
+              );
+            })}
+          </table>
+        </div>
+      )}
     </div>
   );
 }

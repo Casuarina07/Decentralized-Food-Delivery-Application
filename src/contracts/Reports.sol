@@ -20,6 +20,7 @@ contract Reports {
         string remarks;
         uint256 approvalCount;
         uint256 rejectionCount;
+        address[] voters;
         bool complete;
         uint256 penaltyFee;
     }
@@ -46,6 +47,7 @@ contract Reports {
             _remarks,
             0,
             0,
+            new address[](0),
             false,
             0
         );
@@ -63,5 +65,24 @@ contract Reports {
         returns (string[] memory missingItems)
     {
         return reports[_reportId].missingItems;
+    }
+
+    function getVoters(uint256 _reportId)
+        public
+        returns (address[] memory voters)
+    {
+        return reports[_reportId].voters;
+    }
+
+    function addApprovalCount(uint256 _reportId) public {
+        reports[_reportId].approvalCount = reports[_reportId].approvalCount + 1;
+        (reports[_reportId].voters).push(msg.sender);
+    }
+
+    function addRejectionCount(uint256 _reportId) public {
+        reports[_reportId].rejectionCount =
+            reports[_reportId].rejectionCount +
+            1;
+        (reports[_reportId].voters).push(msg.sender);
     }
 }

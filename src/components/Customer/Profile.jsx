@@ -45,7 +45,7 @@ export default function Profile({
           }}
         >
           <Link
-            style={{ color: "#FFF", fontSize: 18 }}
+            style={{ color: "#FFF", fontSize: 18, textDecoration: "none" }}
             to={`/reports`}
             state={{ reports: custReports }}
           >

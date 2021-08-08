@@ -68,6 +68,7 @@ export default function App() {
 
   //order-details
   const [orders, setOrders] = useState([]);
+  const [ordersItems, setOrdersItems] = useState([]);
   const [ordersCount, setOrdersCount] = useState(0);
 
   //food-delivery
@@ -155,19 +156,34 @@ export default function App() {
       console.log("How many reports Counts are there? ", reportCount);
       for (var i = 1; i <= reportCount; i++) {
         const reportIssued = await reports.methods.reports(i).call();
-        setReportsIssued((reportsIssued) => [...reportsIssued, reportIssued]);
+        let imageHash = await reports.methods
+          .getImageHash(reportIssued.id)
+          .call();
+        let missingItems = await reports.methods
+          .getMissingItems(reportIssued.id)
+          .call();
+        let voters = await reports.methods.getVoters(reportIssued.id).call();
+        let newReportIssued = reportIssued;
+        newReportIssued = Object.assign(
+          { imageHash: imageHash, missingItems: missingItems, voters: voters },
+          newReportIssued
+        );
+        setReportsIssued((reportsIssued) => [
+          ...reportsIssued,
+          newReportIssued,
+        ]);
         if (reportIssued.reporter == accounts.toString()) {
-          let imageHash = await reports.methods
-            .getImageHash(reportIssued.id)
-            .call();
-          let missingItems = await reports.methods
-            .getMissingItems(reportIssued.id)
-            .call();
-          let newReportIssued = reportIssued;
-          newReportIssued = Object.assign(
-            { imageHash: imageHash, missingItems: missingItems },
-            newReportIssued
-          );
+          // let imageHash = await reports.methods
+          //   .getImageHash(reportIssued.id)
+          //   .call();
+          // let missingItems = await reports.methods
+          //   .getMissingItems(reportIssued.id)
+          //   .call();
+          // let newReportIssued = reportIssued;
+          // newReportIssued = Object.assign(
+          //   { imageHash: imageHash, missingItems: missingItems },
+          //   newReportIssued
+          // );
           setCustReports((custReports) => [...custReports, newReportIssued]);
         }
       }
@@ -302,6 +318,13 @@ export default function App() {
       for (var l = 1; l <= ordersCount; l++) {
         const order = await marketplace.methods.orders(l).call();
         setOrders((orders) => [...orders, order]);
+        for (var k = 1; k <= order.purchasedItemCount; k++) {
+          let prod = await marketplace.methods
+            .getOrderProduct(order.id, k)
+            .call();
+          prod = Object.assign({ orderId: order.id }, prod);
+          setOrdersItems((ordersItems) => [...ordersItems, prod]);
+        }
         if (order.owner.toString() === accounts.toString()) {
           setCustOrders((custOrders) => [...custOrders, order]);
 
@@ -319,12 +342,17 @@ export default function App() {
           setHawkerOrders((hawkerOrders) => [...hawkerOrders, order]);
           //get the item that the order consists
           for (var k = 1; k <= order.purchasedItemCount; k++) {
-            const prodId = await marketplace.methods
+            let prod = await marketplace.methods
               .getOrderProduct(order.id, k)
               .call();
+            prod = Object.assign({ orderId: order.id }, prod);
+            // setCustOrderItems((custOrderItems) => [...custOrderItems, prod]);
+            // const prodId = await marketplace.methods
+            //   .getOrderProduct(order.id, k)
+            //   .call();
             setHawkerOrderItems((hawkerOrderItems) => [
               ...hawkerOrderItems,
-              prodId,
+              prod,
             ]);
           }
         }
@@ -474,6 +502,30 @@ export default function App() {
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Report successfully sent");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const addApprovalCount = (reportId) => {
+    setLoading(true);
+    reportsContract.methods
+      .addApprovalCount(reportId)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Vote added");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  const addRejectionCount = (reportId) => {
+    setLoading(true);
+    reportsContract.methods
+      .addRejectionCount(reportId)
+      .send({ from: account })
+      .once("receipt", (receipt) => {
+        alert("Vote added");
         window.location.reload();
         setLoading(false);
       });
@@ -964,6 +1016,10 @@ export default function App() {
             createReport={createReport}
             reportsIssued={reportsIssued}
             custReports={custReports}
+            orders={orders}
+            ordersItems={ordersItems}
+            addApprovalCount={addApprovalCount}
+            addRejectionCount={addRejectionCount}
           />
         ) : null}
         {fdAcc ? (

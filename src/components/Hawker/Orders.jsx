@@ -21,6 +21,8 @@ class Orders extends Component {
 
     console.log(this.props.hawkerOrderItems);
     console.log("Hawker orders: ", this.props.hawkerOrders);
+    console.log("Hawker orders: ", this.props.hawkerOrderItems);
+
     var counter = 1;
     var arrayCounter = 0;
     return (

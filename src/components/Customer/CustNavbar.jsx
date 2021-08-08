@@ -39,6 +39,11 @@ function CustNavbar({
   foodDeliveries,
   createReport,
   custReports,
+  reportsIssued,
+  orders,
+  ordersItems,
+  addApprovalCount,
+  addRejectionCount,
 }) {
   const navLinks = [
     {
@@ -93,7 +98,13 @@ function CustNavbar({
           addToCart={addToCart}
           custId={custId}
         />
-        <Home path="/" reportsIssued />
+        <Home
+          path="/"
+          account={account}
+          reportsIssued={reportsIssued}
+          addApprovalCount={addApprovalCount}
+          addRejectionCount={addRejectionCount}
+        />
         <Orders
           path="/orders"
           custOrders={custOrders}
@@ -104,6 +115,7 @@ function CustNavbar({
           cancelOrder={cancelOrder}
           foodDeliveries={foodDeliveries}
           createReport={createReport}
+          reportsIssued={reportsIssued}
         />
         <Profile
           path="/profile"
@@ -127,6 +139,8 @@ function CustNavbar({
           custOrders={custOrders}
           custOrderItems={custOrderItems}
           restProducts={restProducts}
+          orders={orders}
+          ordersItems={ordersItems}
         />
 
         <Cart
