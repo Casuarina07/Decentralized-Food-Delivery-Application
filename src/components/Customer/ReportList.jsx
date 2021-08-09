@@ -27,6 +27,11 @@ export default function ReportList(props) {
               </tr>
             </thead>
             {reports.map((report, key) => {
+              let complete = false;
+              let reportDate = new Date(report.deadlineDate * 1000);
+              if (new Date() > reportDate) {
+                complete = true;
+              }
               return (
                 <>
                   <tbody id="productList">
@@ -36,7 +41,7 @@ export default function ReportList(props) {
                       </td>
                       <td>{report.approvalCount}</td>
                       <td>{report.rejectionCount}</td>
-                      {report.complete == false ? (
+                      {complete == false ? (
                         <td
                           style={{
                             color: "green",

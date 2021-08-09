@@ -43,7 +43,11 @@ export class ReportModal extends Component {
     console.log("Images Hash: ", this.state.imageHash);
     console.log("Remarks: ", this.state.remarks);
 
-    if (this.state.issueType != "" && this.state.imageChange == false) {
+    if (
+      this.state.issueType != "" &&
+      this.state.issueType != "undelivered" &&
+      this.state.imageChange == false
+    ) {
       alert("Please add one supporting image");
     }
 
@@ -67,10 +71,6 @@ export class ReportModal extends Component {
   handleChange = (event) => {
     this.setState({ issueType: event.target.value });
   };
-
-  // change = (event) => {
-  //   console.log("idk", event.target.value);
-  // };
 
   captureFile = async (event) => {
     this.setState({ imageHash: [] });
@@ -179,7 +179,7 @@ export class ReportModal extends Component {
               <b>Which items were missing?</b>
               <div>{items}</div>
               <div style={{ marginTop: 10 }}>
-                <b>Upload any supporting images:</b>
+                <b>Upload supporting images:</b>
                 <div style={{ display: "flex" }}>
                   <input
                     className="form-group mr-sm-1"

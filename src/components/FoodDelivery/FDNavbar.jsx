@@ -22,6 +22,10 @@ function FDNavbar({
   customers,
   hawkers,
   restProducts,
+  fdCompletedOrders,
+  fdCompletedOrderItems,
+  fdOngoingOrders,
+  fdOngoingOrderItems,
 }) {
   const navLinks = [
     {
@@ -68,6 +72,10 @@ function FDNavbar({
           fdCompleteOrder={fdCompleteOrder}
           customers={customers}
           hawkers={hawkers}
+          fdCompletedOrders={fdCompletedOrders}
+          fdCompletedOrderItems={fdCompletedOrderItems}
+          fdOngoingOrders={fdOngoingOrders}
+          fdOngoingOrderItems={fdOngoingOrderItems}
         />
         <Profile
           path="/profile"

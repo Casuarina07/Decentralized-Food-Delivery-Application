@@ -79,6 +79,10 @@ export default function App() {
   const [fdOrderItems, setFDOrderItems] = useState([]);
   const [fdAcceptedOrders, setFDAcceptedOrders] = useState([]);
   const [fdAcceptedOrderItems, setFDAcceptedOrderItems] = useState([]);
+  const [fdCompletedOrders, setFDCompletedOrders] = useState([]);
+  const [fdCompletedOrderItems, setFDCompletedOrderItems] = useState([]);
+  const [fdOngoingOrders, setFDOngoingOrders] = useState([]);
+  const [fdOngoingOrderItems, setFDOngoingOrderItems] = useState([]);
 
   const [pastEvents, setPastEvents] = useState([]);
   const [transactions, setTransactions] = useState();
@@ -173,19 +177,9 @@ export default function App() {
           newReportIssued,
         ]);
         if (reportIssued.reporter == accounts.toString()) {
-          // let imageHash = await reports.methods
-          //   .getImageHash(reportIssued.id)
-          //   .call();
-          // let missingItems = await reports.methods
-          //   .getMissingItems(reportIssued.id)
-          //   .call();
-          // let newReportIssued = reportIssued;
-          // newReportIssued = Object.assign(
-          //   { imageHash: imageHash, missingItems: missingItems },
-          //   newReportIssued
-          // );
           setCustReports((custReports) => [...custReports, newReportIssued]);
         }
+        let dateTime = new Date(reportIssued.reportDate * 1000);
       }
 
       //FETCH RESTAURANT PRODUCTS
@@ -371,21 +365,39 @@ export default function App() {
           }
         }
 
-        //fetch accepted orders
-        if (order.state >= 2 && order.rider.toString() == accounts.toString()) {
-          console.log("Hello");
-          setFDAcceptedOrders((fdAcceptedOrders) => [
-            ...fdAcceptedOrders,
+        //fetch completed orders
+        if (order.state == 4 && order.rider.toString() == accounts.toString()) {
+          setFDCompletedOrders((fdCompletedOrders) => [
+            ...fdCompletedOrders,
             order,
           ]);
 
           for (var k = 1; k <= order.purchasedItemCount; k++) {
-            const prodId = await marketplace.methods
+            const prod = await marketplace.methods
               .getOrderProduct(order.id, k)
               .call();
-            setFDAcceptedOrderItems((fdAcceptedOrderItems) => [
-              ...fdAcceptedOrderItems,
-              prodId,
+            setFDCompletedOrderItems((fdCompletedOrderItems) => [
+              ...fdCompletedOrderItems,
+              prod,
+            ]);
+          }
+        }
+
+        //fetch ongoing orders
+        if (
+          order.state >= 2 &&
+          order.state < 4 &&
+          order.rider.toString() == accounts.toString()
+        ) {
+          setFDOngoingOrders((fdOngoingOrders) => [...fdOngoingOrders, order]);
+
+          for (var k = 1; k <= order.purchasedItemCount; k++) {
+            const prod = await marketplace.methods
+              .getOrderProduct(order.id, k)
+              .call();
+            setFDOngoingOrderItems((fdOngoingOrderItems) => [
+              ...fdOngoingOrderItems,
+              prod,
             ]);
           }
         }
@@ -1039,6 +1051,10 @@ export default function App() {
             fdAcceptedOrderItems={fdAcceptedOrderItems}
             fdCollectedOrder={fdCollectedOrder}
             fdCompleteOrder={fdCompleteOrder}
+            fdCompletedOrders={fdCompletedOrders}
+            fdCompletedOrderItems={fdCompletedOrderItems}
+            fdOngoingOrders={fdOngoingOrders}
+            fdOngoingOrderItems={fdOngoingOrderItems}
           />
         ) : null}
         {newAcc ? (

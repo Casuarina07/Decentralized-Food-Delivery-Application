@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { getCurrentDate } from "../utils/utils-date";
 import { getCurrentTime } from "../utils/utils-time";
+import { ImCross } from "react-icons/im";
+import { Button } from "react-bootstrap";
 
 class Cart extends Component {
   checkOut = (event) => {
@@ -66,7 +68,7 @@ class Cart extends Component {
                             </td>
                             <td>{cart[1]}</td>
                             <td>
-                              <button
+                              {/* <button
                                 onClick={(event) => {
                                   this.props.removeProdCart(
                                     this.props.custId,
@@ -75,7 +77,17 @@ class Cart extends Component {
                                 }}
                               >
                                 Remove
-                              </button>
+                              </button> */}
+                              <ImCross
+                                size="18"
+                                style={{ color: "red", cursor: "pointer" }}
+                                onClick={(event) => {
+                                  this.props.removeProdCart(
+                                    this.props.custId,
+                                    cart
+                                  );
+                                }}
+                              />
                             </td>
                           </tr>
                         );
@@ -161,7 +173,7 @@ class Cart extends Component {
               justifyContent: "flex-end",
             }}
           >
-            <button
+            <Button
               onClick={(event) => {
                 var dateTime = getCurrentDate() + " " + getCurrentTime();
 
@@ -179,16 +191,17 @@ class Cart extends Component {
               }}
             >
               Confirm Purchase
-            </button>
+            </Button>
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button
+            <Button
+              variant="danger"
               onClick={(event) => {
                 this.props.removeAllProdCart(this.props.custId, 1);
               }}
             >
               Remove All Products
-            </button>
+            </Button>
           </div>
         </div>
       );

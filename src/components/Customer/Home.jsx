@@ -28,6 +28,11 @@ function Home({ reportsIssued, account, addApprovalCount, addRejectionCount }) {
             </thead>
             {reportsIssued.map((report, key) => {
               let voted = false;
+              let complete = false;
+              let reportDate = new Date(report.deadlineDate * 1000);
+              if (new Date() > reportDate) {
+                complete = true;
+              }
               {
                 report.voters.map((voter, key) => {
                   if (voter == account) voted = true;
@@ -43,7 +48,7 @@ function Home({ reportsIssued, account, addApprovalCount, addRejectionCount }) {
                         </td>
                         <td>{report.approvalCount}</td>
                         <td>{report.rejectionCount}</td>
-                        {report.complete == false ? (
+                        {complete == false ? (
                           <>
                             <td
                               style={{
@@ -53,45 +58,37 @@ function Home({ reportsIssued, account, addApprovalCount, addRejectionCount }) {
                             >
                               In progress
                             </td>
+                            {voted == false ? (
+                              <td>
+                                <TiTick
+                                  size="29"
+                                  style={{
+                                    color: "green",
+                                    marginRight: 20,
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => addApprovalCount(report.id)}
+                                />
+                                <ImCross
+                                  size="17"
+                                  style={{ color: "red", cursor: "pointer" }}
+                                  onClick={() => addRejectionCount(report.id)}
+                                />
+                              </td>
+                            ) : (
+                              <td>Voted</td>
+                            )}
                           </>
                         ) : (
-                          <td style={{ color: "#DC0126", fontWeight: "bold" }}>
-                            Completed
-                          </td>
+                          <>
+                            <td
+                              style={{ color: "#DC0126", fontWeight: "bold" }}
+                            >
+                              Completed
+                            </td>
+                            {voted == true ? <td>Voted</td> : <td>-</td>}
+                          </>
                         )}
-                        {report.complete == false && voted == false ? (
-                          <td>
-                            <TiTick
-                              size="29"
-                              style={{
-                                color: "green",
-                                marginRight: 20,
-                                cursor: "pointer",
-                              }}
-                              onClick={() => addApprovalCount(report.id)}
-                            />
-                            <ImCross
-                              size="17"
-                              style={{ color: "red", cursor: "pointer" }}
-                              onClick={() => addRejectionCount(report.id)}
-                            />
-                          </td>
-                        ) : (
-                          <td>Voted</td>
-                        )}
-
-                        {/* <td>
-                  <Button
-                    //   style={{ backgroundColor: "#0072F5" }}
-                    style={{ backgroundColor: "#226BBF" }}
-                    //   onClick={(event) => {
-                    //     // this.props.removeProdCart(this.props.custId, cart);
-                    //   }}
-                    //   onClick={routeChange(report.id)}
-                  >
-                    Details
-                  </Button>
-                </td> */}
 
                         <td>
                           <h5

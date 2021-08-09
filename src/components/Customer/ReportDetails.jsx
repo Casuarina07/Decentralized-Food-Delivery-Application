@@ -22,14 +22,27 @@ export default function ReportDetails(props) {
   }
   //date
   let reportDate = new Date(report.reportDate * 1000);
+  let endDate = new Date(report.deadlineDate * 1000);
+  let complete = false;
+
+  let newDate =
+    reportDate.getDate() +
+    "/" +
+    reportDate.getMonth() +
+    "/" +
+    reportDate.getFullYear();
+
+  if (new Date() > endDate) {
+    complete = true;
+  }
 
   //image hash
   console.log("Image Hash: ", report.imageHash);
   console.log("Report Details: ", report);
   console.log("Customer Order Items: ", props.custOrderItems);
   console.log("Hawker Order Items: ", props.hawkerOrderItems);
-
-  //   console.log("Rest Products: ", props.restProducts[1]);
+  // console.log("What isi this? ", new Date(report.reportDate * 1000));
+  // console.log("what is this? ", new Date());
   return (
     <div
       style={{
@@ -42,16 +55,43 @@ export default function ReportDetails(props) {
         alignItems: "center",
       }}
     >
-      <h4 style={{ color: "#DC0126", fontWeight: "bold" }}>
+      <h4
+        style={{
+          color: "#DC0126",
+          fontWeight: "bold",
+          textDecorationLine: "underline",
+        }}
+      >
         Reported for {titleDisplay}
       </h4>
-      <label style={{ color: "green", marginBottom: 10 }}>
+      {/* <label style={{ color: "green", marginBottom: 10 }}>
         Status: In Progress
-      </label>
+      </label> */}
+      {complete ? (
+        <label style={{ color: "red", marginBottom: 10 }}>
+          Status: Completed
+        </label>
+      ) : (
+        <label style={{ color: "green", marginBottom: 10 }}>
+          Status: In Progress
+        </label>
+      )}
       <h5>Report filed on:</h5>
       <div style={{ marginBottom: 20 }}>
-        {reportDate.toLocaleDateString()}, {reportDate.toLocaleTimeString()} by{" "}
-        <div style={{ color: "#808080" }}>{report.reporter}</div>
+        {reportDate.toLocaleDateString("en-GB")},{" "}
+        {reportDate.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}{" "}
+        by <div style={{ color: "#808080" }}>{report.reporter}</div>
+      </div>
+      <h5>Voting ends on:</h5>
+      <div style={{ marginBottom: 20 }}>
+        {endDate.toLocaleDateString("en-GB")},{" "}
+        {endDate.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
       </div>
 
       <div style={{ marginBottom: 20 }}>
@@ -113,13 +153,27 @@ export default function ReportDetails(props) {
       <h4 style={{ color: "#226BBF", marginBottom: 20 }}>Order Details</h4>
       {/* Order details */}
       {props.orders.map((order, key) => {
+        let hawkerReport = [];
         if (order.id == report.orderId)
           return (
             <div>
               <h5>Ordered on: </h5>
               <div style={{ marginBottom: 20 }}> {order.dateTime} </div>
               <h5>Ordered from: </h5>
-              <div style={{ marginBottom: 20 }}> {order.seller} </div>
+              {props.hawkers.map((hawker, key) => {
+                if (hawker.owner == order.seller) {
+                  hawkerReport = hawker;
+                }
+              })}
+              <div style={{ marginBottom: 20 }}>
+                <Link
+                  to={`/hawkerInfo/${order.seller}`}
+                  state={{ chosenHawkerPk: hawkerReport }}
+                  // state={{ chosenHawkerPk: hawker }}
+                >
+                  {order.seller}
+                </Link>
+              </div>
               <h5>Delivered by: </h5>
               <div style={{ marginBottom: 20 }}> {order.rider} </div>
               <h5>Delivered at: </h5>

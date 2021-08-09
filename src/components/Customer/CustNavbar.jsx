@@ -141,6 +141,7 @@ function CustNavbar({
           restProducts={restProducts}
           orders={orders}
           ordersItems={ordersItems}
+          hawkers={hawkers}
         />
 
         <Cart

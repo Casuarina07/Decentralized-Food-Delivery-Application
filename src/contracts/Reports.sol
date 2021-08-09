@@ -13,6 +13,7 @@ contract Reports {
         uint256 id;
         address reporter;
         uint256 reportDate;
+        uint256 deadlineDate;
         uint256 orderId;
         string title;
         string[] imageHash;
@@ -21,7 +22,6 @@ contract Reports {
         uint256 approvalCount;
         uint256 rejectionCount;
         address[] voters;
-        bool complete;
         uint256 penaltyFee;
     }
 
@@ -40,6 +40,7 @@ contract Reports {
             reportsCount,
             msg.sender,
             now,
+            now + 3 * 1 days,
             _orderId,
             _title,
             _imageHash,
@@ -48,7 +49,6 @@ contract Reports {
             0,
             0,
             new address[](0),
-            false,
             0
         );
     }

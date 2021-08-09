@@ -34,17 +34,18 @@ class Orders extends Component {
       <div style={{ margin: 60, marginTop: 20 }}>
         {console.log("Accepted Orders: ", this.props.fdAcceptedOrders)}
 
-        {/* Accepted Orders */}
-        {this.props.fdAcceptedOrders.length > 0 ? (
+        {/* Ongoing Orders */}
+        {this.props.fdOngoingOrders.length > 0 ? (
           <div>
             {" "}
-            <h2>Accepted orders</h2>
+            <h2 style={{ color: "orange" }}>Ongoing orders</h2>
             <hr style={{ width: "100%", display: "flex" }} />
           </div>
         ) : null}
-        {this.props.fdAcceptedOrders.map((fdAcceptedOrder, key) => {
-          this.orderNo = fdAcceptedOrder.id;
-          this.itemCount = fdAcceptedOrder.purchasedItemCount;
+
+        {this.props.fdOngoingOrders.map((fdOngoingOrder, key) => {
+          this.orderNo = fdOngoingOrder.id;
+          this.itemCount = fdOngoingOrder.purchasedItemCount;
           counter = 0;
           console.log(
             "Order ",
@@ -56,15 +57,15 @@ class Orders extends Component {
           return (
             <>
               <h4 style={{ display: "flex" }}>
-                Placed by: {fdAcceptedOrder.owner}
+                Placed by: {fdOngoingOrder.owner}
               </h4>
 
               <h4 style={{ display: "flex" }}>
-                {fdAcceptedOrder.date} {fdAcceptedOrder.time}
+                {fdOngoingOrder.date} {fdOngoingOrder.time}
               </h4>
 
               {this.props.hawkers.map((hawker, key) => {
-                if (hawker.owner.toString() == fdAcceptedOrder.seller) {
+                if (hawker.owner.toString() == fdOngoingOrder.seller) {
                   return (
                     <h5 style={{ display: "flex" }}>
                       Hawker Address: {hawker.addressLocation}
@@ -74,7 +75,7 @@ class Orders extends Component {
               })}
 
               {this.props.customers.map((customer, key) => {
-                if (customer.owner.toString() == fdAcceptedOrder.owner)
+                if (customer.owner.toString() == fdOngoingOrder.owner)
                   return (
                     <h5 style={{ display: "flex" }}>
                       Customer Address: {customer.addressLocation}
@@ -82,28 +83,28 @@ class Orders extends Component {
                   );
               })}
 
-              {fdAcceptedOrder.state == 2 ? (
+              {fdOngoingOrder.state == 2 ? (
                 <Button
                   style={{
                     display: "flex",
                     marginBottom: 10,
                   }}
                   onClick={(event) => {
-                    this.props.fdCollectedOrder(fdAcceptedOrder.id);
+                    this.props.fdCollectedOrder(fdOngoingOrder.id);
                   }}
                 >
                   Collected
                 </Button>
               ) : null}
 
-              {fdAcceptedOrder.state == 3 ? (
+              {fdOngoingOrder.state == 3 ? (
                 <Button
                   style={{ display: "flex", marginBottom: 10 }}
                   onClick={(event) => {
                     // console.log("Pressed at: ", getCurrentTime());
                     var deliveredTime = getCurrentTime();
                     this.props.fdCompleteOrder(
-                      fdAcceptedOrder.id,
+                      fdOngoingOrder.id,
                       this.state.fdId,
                       deliveredTime
                     );
@@ -113,7 +114,7 @@ class Orders extends Component {
                 </Button>
               ) : null}
 
-              {fdAcceptedOrder.state == 4 ? (
+              {fdOngoingOrder.state == 4 ? (
                 <Button
                   style={{
                     display: "flex",
@@ -137,15 +138,13 @@ class Orders extends Component {
                 </thead>
 
                 <tbody id="productList">
-                  {this.props.fdAcceptedOrderItems.map((product, key) => {
-                    product = this.props.fdAcceptedOrderItems[arrayCounter];
+                  {this.props.fdOngoingOrderItems.map((product, key) => {
+                    product = this.props.fdOngoingOrderItems[arrayCounter];
 
                     if (counter >= this.itemCount) {
                       return;
                     }
-                    if (
-                      arrayCounter >= this.props.fdAcceptedOrderItems.length
-                    ) {
+                    if (arrayCounter >= this.props.fdOngoingOrderItems.length) {
                       return;
                     }
 
@@ -191,14 +190,17 @@ class Orders extends Component {
           );
         })}
 
-        {/* Not Accepted Orders */}
+        {/* Available Orders */}
         {this.props.fdDeliveryOrders.length < 1 ? (
-          <h2>No available orders</h2>
+          <div>
+            <h2>No available orders</h2>
+            <hr style={{ width: "100%", display: "flex" }} />
+          </div>
         ) : (
           <div>
             {" "}
             <h2>Available Orders</h2>
-            <hr style={{ width: "60%", display: "flex" }} />
+            <hr style={{ width: "100%", display: "flex" }} />
           </div>
         )}
         {this.props.fdDeliveryOrders.map((fdDeliveryOrder, key) => {
@@ -325,6 +327,131 @@ class Orders extends Component {
                           Eth
                         </td>
                         <td>{product.productQty}</td>
+                        <td>
+                          {this.props.restProducts[product.productId - 1]
+                            .imageHash == "" ? (
+                            <label>-</label>
+                          ) : (
+                            <img
+                              height="50"
+                              width="120"
+                              alt="logo"
+                              src={
+                                "https://ipfs.infura.io/ipfs/" +
+                                this.props.restProducts[product.productId - 1]
+                                  .imageHash
+                              }
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </>
+          );
+        })}
+        {/* Completed Orders */}
+        {this.props.fdCompletedOrders.length > 0 ? (
+          <div>
+            {" "}
+            <h2 style={{ color: "green" }}>Completed orders</h2>
+            <hr style={{ width: "100%", display: "flex" }} />
+          </div>
+        ) : null}
+        {this.props.fdCompletedOrders.map((fdCompletedOrder, key) => {
+          this.orderNo = fdCompletedOrder.id;
+          this.itemCount = fdCompletedOrder.purchasedItemCount;
+          counter = 0;
+          console.log(
+            "Order ",
+            this.orderNo,
+            " have ",
+            this.itemCount,
+            "items"
+          );
+          return (
+            <>
+              <h4 style={{ display: "flex" }}>
+                Placed by: {fdCompletedOrder.owner}
+              </h4>
+
+              <h4 style={{ display: "flex" }}>
+                {fdCompletedOrder.date} {fdCompletedOrder.time}
+              </h4>
+
+              {this.props.hawkers.map((hawker, key) => {
+                if (hawker.owner.toString() == fdCompletedOrder.seller) {
+                  return (
+                    <h5 style={{ display: "flex" }}>
+                      Hawker Address: {hawker.addressLocation}
+                    </h5>
+                  );
+                }
+              })}
+
+              {this.props.customers.map((customer, key) => {
+                if (customer.owner.toString() == fdCompletedOrder.owner)
+                  return (
+                    <h5 style={{ display: "flex" }}>
+                      Customer Address: {customer.addressLocation}
+                    </h5>
+                  );
+              })}
+
+              {fdCompletedOrder.state == 4 ? (
+                <Button
+                  style={{
+                    display: "flex",
+                    marginBottom: 10,
+                    opacity: 0.6,
+                    pointerEvents: "none",
+                  }}
+                >
+                  Completed
+                </Button>
+              ) : null}
+
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Image</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+
+                <tbody id="productList">
+                  {this.props.fdCompletedOrderItems.map((product, key) => {
+                    product = this.props.fdCompletedOrderItems[arrayCounter];
+
+                    if (counter >= this.itemCount) {
+                      return;
+                    }
+                    if (
+                      arrayCounter >= this.props.fdCompletedOrderItems.length
+                    ) {
+                      return;
+                    }
+
+                    counter++;
+                    arrayCounter++;
+                    return (
+                      <tr key={key}>
+                        <td>
+                          {this.props.restProducts[product.productId - 1].name}
+                        </td>
+                        <td>
+                          {window.web3.utils.fromWei(
+                            this.props.restProducts[
+                              product.productId - 1
+                            ].price.toString(),
+                            "Ether"
+                          )}{" "}
+                          Eth
+                        </td>
                         <td>
                           {this.props.restProducts[product.productId - 1]
                             .imageHash == "" ? (
