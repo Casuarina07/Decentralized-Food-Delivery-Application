@@ -28,6 +28,7 @@ class Orders extends Component {
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
         <h2>Transactions</h2>
+        <hr style={{ width: "100%", display: "flex" }} />
         {this.props.hawkerOrders.map((hawkerOrder, key) => {
           this.orderNo = hawkerOrder.id;
           this.itemCount = hawkerOrder.purchasedItemCount;

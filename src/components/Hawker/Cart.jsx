@@ -3,6 +3,8 @@ import { getCurrentDate } from "../utils/utils-date";
 import { getCurrentTime } from "../utils/utils-time";
 import Card from "react-bootstrap/Card";
 import DatePicker from "react-datepicker";
+import { ImCross } from "react-icons/im";
+import { Button } from "react-bootstrap";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -104,7 +106,7 @@ class Cart extends Component {
                             </td>
                             <td>{cart[1]}</td>
                             <td>
-                              <button
+                              {/* <button
                                 onClick={(event) => {
                                   //   this.props.removeProdCart(
                                   //     this.props.custId,
@@ -113,7 +115,17 @@ class Cart extends Component {
                                 }}
                               >
                                 Remove
-                              </button>
+                              </button> */}
+                              <ImCross
+                                size="18"
+                                style={{ color: "red", cursor: "pointer" }}
+                                // onClick={(event) => {
+                                //   this.props.removeProdCart(
+                                //     this.props.custId,
+                                //     key + 1
+                                //   );
+                                // }}
+                              />
                             </td>
                           </tr>
                         );
@@ -204,7 +216,7 @@ class Cart extends Component {
               justifyContent: "flex-end",
             }}
           >
-            <button
+            <Button
               onClick={(event) => {
                 var dateTime = getCurrentDate() + " " + getCurrentTime();
                 var deliveryDateTime =
@@ -227,16 +239,17 @@ class Cart extends Component {
               }}
             >
               Confirm Purchase
-            </button>
+            </Button>
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button
+            <Button
+              variant="danger"
               onClick={(event) => {
                 this.props.removeAllProdCart(this.props.hawkerId, 2);
               }}
             >
               Remove All Products
-            </button>
+            </Button>
           </div>
         </div>
       );

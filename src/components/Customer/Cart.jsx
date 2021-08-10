@@ -84,7 +84,7 @@ class Cart extends Component {
                                 onClick={(event) => {
                                   this.props.removeProdCart(
                                     this.props.custId,
-                                    cart
+                                    key + 1
                                   );
                                 }}
                               />
