@@ -52,6 +52,7 @@ export default function App() {
   const [hawkerFeedback, setHawkerFeedback] = useState([]);
   const [hawkerCart, setHawkerCart] = useState([]);
   const [hawkerCartCount, setHawkerCartCount] = useState(0);
+  const [hawkerReports, setHawkerReports] = useState([]);
 
   //customer-details
   const [custId, setCustId] = useState(0);
@@ -176,11 +177,19 @@ export default function App() {
           ...reportsIssued,
           newReportIssued,
         ]);
-        if (reportIssued.reporter == accounts.toString()) {
+
+        if (reportIssued.owner == accounts.toString()) {
           setCustReports((custReports) => [...custReports, newReportIssued]);
+        }
+        if (reportIssued.hawker == accounts.toString()) {
+          setHawkerReports((hawkerReports) => [
+            ...hawkerReports,
+            newReportIssued,
+          ]);
         }
         let dateTime = new Date(reportIssued.reportDate * 1000);
       }
+      console.log("reports Issued: ", reportsIssued);
 
       //FETCH RESTAURANT PRODUCTS
       const restProdCount = await marketplace.methods.restProdCount().call();
@@ -507,10 +516,26 @@ export default function App() {
     setLoading(false);
   }
 
-  const createReport = (orderId, title, imageHash, missingItems, remarks) => {
+  const createReport = (
+    hawkerAddress,
+    claimAmt,
+    orderId,
+    title,
+    imageHash,
+    missingItems,
+    remarks
+  ) => {
     setLoading(true);
     reportsContract.methods
-      .createReport(orderId, title, imageHash, missingItems, remarks)
+      .createReport(
+        hawkerAddress,
+        claimAmt,
+        orderId,
+        title,
+        imageHash,
+        missingItems,
+        remarks
+      )
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Report successfully sent");
@@ -541,6 +566,61 @@ export default function App() {
         window.location.reload();
         setLoading(false);
       });
+  };
+
+  // const claimReturns = (hawkerAddress, claimAmt) => {
+  //   setLoading(true);
+  //   reportsContract.methods
+  //     .claimReturns(hawkerAddress, claimAmt)
+  //     .send({ from: account, to: hawkerAddress, value: claimAmt })
+  //     .once("receipt", (receipt) => {
+  //       alert("Your returns have been deposited into your account");
+  //       window.location.reload();
+  //       setLoading(false);
+  //     });
+  // };
+
+  const resolveReport = (reportId, reporterAddress, claimAmt) => {
+    // const web3 = new Web3(window.ethereum);
+    // web3.eth.sendTransaction({
+    //   from: account,
+    //   to: reporterAddress,
+    //   value: claimAmt,
+    // });
+    reportsContract.methods
+      .resolveReport(reportId, reporterAddress, claimAmt)
+      .send({ from: account, to: reporterAddress, value: claimAmt })
+      .once("receipt", (receipt) => {
+        alert("Resolved");
+        window.location.reload();
+        setLoading(false);
+      });
+  };
+
+  // const resolveReport = (reportId, reporterAddress, claimAmt) => {
+  //   setLoading(true);
+  //   reportsContract.methods
+  //     .resolveReport(reportId, reporterAddress, claimAmt)
+  //     .send({ from: account })
+  //     .once("receipt", (receipt) => {
+  //       alert("Resolved");
+  //       window.location.reload();
+  //       setLoading(false);
+  //     });
+  // };
+
+  const claimReturns = (hawkerAddress, claimAmt) => {
+    const hawkerAdd = hawkerAddress;
+    setLoading(true);
+    console.log("What is the type: ", typeof account, account);
+    console.log("What is the type: ", typeof hawkerAddress, hawkerAddress);
+    var receiver = "0x73c005d4b234c63f416f6e1038c011d55eddbf1e";
+    const web3 = new Web3(window.ethereum);
+    // web3.eth.sendTransaction({
+    //   from: receiver,
+    //   to: account,
+    //   value: claimAmt,
+    // });
   };
 
   const removeProdCart = (custId, cartId) => {
@@ -997,6 +1077,9 @@ export default function App() {
             custOrders={custOrders}
             custOrderItems={custOrderItems}
             orders={orders}
+            ordersItems={ordersItems}
+            hawkerReports={hawkerReports}
+            resolveReport={resolveReport}
           />
         ) : null}
         {custAcc ? (
@@ -1032,6 +1115,7 @@ export default function App() {
             ordersItems={ordersItems}
             addApprovalCount={addApprovalCount}
             addRejectionCount={addRejectionCount}
+            claimReturns={claimReturns}
           />
         ) : null}
         {fdAcc ? (

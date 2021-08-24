@@ -327,6 +327,7 @@ contract Marketplace {
     }
 
     //ORDERS
+
     enum Status {
         OrderPlaced,
         OrderConfirm,
@@ -383,7 +384,6 @@ contract Marketplace {
         string memory _phone
     ) public {
         require(msg.sender == _owner);
-        // require(msg.sender == address(_owner));
         customersCount++;
         customers[customersCount] = Customer(
             customersCount,

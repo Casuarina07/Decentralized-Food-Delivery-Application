@@ -24,6 +24,8 @@ export default function ReportDetails(props) {
   let reportDate = new Date(report.reportDate * 1000);
   let endDate = new Date(report.deadlineDate * 1000);
   let complete = false;
+  let claimAmt = 0;
+  let hawkerAddress = "";
 
   let newDate =
     reportDate.getDate() +
@@ -35,14 +37,11 @@ export default function ReportDetails(props) {
   if (new Date() > endDate) {
     complete = true;
   }
-
   //image hash
   console.log("Image Hash: ", report.imageHash);
   console.log("Report Details: ", report);
   console.log("Customer Order Items: ", props.custOrderItems);
   console.log("Hawker Order Items: ", props.hawkerOrderItems);
-  // console.log("What isi this? ", new Date(report.reportDate * 1000));
-  // console.log("what is this? ", new Date());
   return (
     <div
       style={{
@@ -64,16 +63,44 @@ export default function ReportDetails(props) {
       >
         Reported for {titleDisplay}
       </h4>
-      {/* <label style={{ color: "green", marginBottom: 10 }}>
-        Status: In Progress
-      </label> */}
+
       {complete ? (
-        <label style={{ color: "red", marginBottom: 10 }}>
-          Status: Completed
-        </label>
+        <>
+          <label style={{ color: "red", marginBottom: 10 }}>
+            Status: Completed
+          </label>
+          {report.approvalCount >= report.rejectionCount ? (
+            <>
+              <label style={{ color: "green", marginBottom: 10 }}>
+                Outcome: Successful
+              </label>
+              {report.resolved ? (
+                <label
+                  style={{
+                    color: "green",
+                    marginBottom: 10,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {" "}
+                  ***{" "}
+                  {window.web3.utils.fromWei(
+                    report.claimAmt.toString(),
+                    "Ether"
+                  )}{" "}
+                  Eth have been credited to your account ***
+                </label>
+              ) : null}
+            </>
+          ) : (
+            <label style={{ color: "red", marginBottom: 10 }}>
+              Outcome: Unsuccessful
+            </label>
+          )}
+        </>
       ) : (
         <label style={{ color: "green", marginBottom: 10 }}>
-          Status: In Progress
+          Status: Pending
         </label>
       )}
       <h5>Report filed on:</h5>
@@ -83,7 +110,7 @@ export default function ReportDetails(props) {
           hour: "2-digit",
           minute: "2-digit",
         })}{" "}
-        by <div style={{ color: "#808080" }}>{report.reporter}</div>
+        by <div style={{ color: "#808080" }}>{report.owner}</div>
       </div>
       <h5>Voting ends on:</h5>
       <div style={{ marginBottom: 20 }}>
@@ -154,7 +181,9 @@ export default function ReportDetails(props) {
       {/* Order details */}
       {props.orders.map((order, key) => {
         let hawkerReport = [];
-        if (order.id == report.orderId)
+        if (order.id == report.orderId) {
+          claimAmt = order.hawkerPayment;
+          hawkerAddress = order.seller;
           return (
             <div>
               <h5>Ordered on: </h5>
@@ -201,6 +230,7 @@ export default function ReportDetails(props) {
               </div>
             </div>
           );
+        }
       })}
     </div>
   );

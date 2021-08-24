@@ -136,42 +136,7 @@ class Cart extends Component {
               );
             })}
           </table>
-          <div style={{ display: "flex" }}>
-            <Card
-              style={{ marginTop: 15, flexDirection: "row", width: "100%" }}
-            >
-              <Card.Img
-                style={{
-                  width: 150,
-                  height: 150,
-                  margin: 20,
-                }}
-                variant="top"
-                // src={"https://ipfs.infura.io/ipfs/" + product.imageHash}
-              />
-              <div
-                style={{
-                  float: "left",
-                  flexDirection: "column",
-                  marginTop: 20,
-                }}
-              >
-                <Card.Title>YOO</Card.Title>
-                <Card.Text>
-                  {/* {" "}
-                {window.web3.utils.fromWei(
-                  product.price.toString(),
-                  "Ether"
-                )}{" "} */}
-                  Eth
-                </Card.Text>
-                <label>Hi</label>
-                <Card.Text>Packaging Size:</Card.Text>
-                <Card.Text>Minimum Order (unit): </Card.Text>
-              </div>
-              <label style={{ float: "left" }}>Hi</label>
-            </Card>
-          </div>
+
           <div
             style={{
               display: "flex",
@@ -264,3 +229,39 @@ class Cart extends Component {
 }
 
 export default Cart;
+{
+  /* <div style={{ display: "flex" }}>
+  <Card style={{ marginTop: 15, flexDirection: "row", width: "100%" }}>
+    <Card.Img
+      style={{
+        width: 150,
+        height: 150,
+        margin: 20,
+      }}
+      variant="top"
+      // src={"https://ipfs.infura.io/ipfs/" + product.imageHash}
+    />
+    <div
+      style={{
+        float: "left",
+        flexDirection: "column",
+        marginTop: 20,
+      }}
+    >
+      <Card.Title>YOO</Card.Title>
+      <Card.Text>
+        {" "}
+    {window.web3.utils.fromWei(
+      product.price.toString(),
+      "Ether"
+    )}{" "}
+        Eth
+      </Card.Text>
+      <label>Hi</label>
+      <Card.Text>Packaging Size:</Card.Text>
+      <Card.Text>Minimum Order (unit): </Card.Text>
+    </div>
+    <label style={{ float: "left" }}>Hi</label>
+  </Card>
+</div>; */
+}

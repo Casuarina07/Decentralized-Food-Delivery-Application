@@ -47,6 +47,7 @@ class Orders extends Component {
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
         <h2>Transaction History</h2>
+        <hr style={{ width: "100%", display: "flex" }} />
         {this.props.custOrders.map((custOrder, key) => {
           this.reported = false;
           console.log("Key: ", key);

@@ -3,6 +3,7 @@ import { BsConeStriped } from "react-icons/bs";
 import Modal from "@material-ui/core/Modal";
 import { Button, ButtonToolbar } from "react-bootstrap";
 import { RateModal } from "./RateModal";
+import { Link } from "@reach/router";
 
 class Home extends Component {
   constructor(props) {
@@ -31,6 +32,7 @@ class Home extends Component {
     console.log("What is this now: ", this.props.custOrderItems);
     console.log("What is this: ", this.props.orders);
     let overallSales = 0;
+    let issueType = "";
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
         <div style={{ marginTop: 30, marginBottom: 30 }}>
@@ -68,6 +70,131 @@ class Home extends Component {
             Overall Sales:{" "}
             {window.web3.utils.fromWei(overallSales.toString(), "Ether")} Eth
           </h4>
+        </div>
+
+        <div style={{ marginTop: 30, marginBottom: 30 }}>
+          <h2 style={{ color: "#808080" }}>Reports Linked to You</h2>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Made by</th>
+                <th scope="col">Reported for</th>
+                <th scope="col">Status/Outcome</th>
+                <th scope="col">Details</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            {this.props.hawkerReports.map((hawkerReport, key) => {
+              if (hawkerReport.title == "missingItem") {
+                issueType = "Missing Item";
+              } else if (hawkerReport.title == "incorrectOrder") {
+                issueType = "Incorrect order";
+              } else if (hawkerReport.title == "undelivered") {
+                issueType = "Undelivered order";
+              } else {
+                issueType = "Safety issues";
+              }
+              let complete = false;
+              let reportDate = new Date(hawkerReport.deadlineDate * 1000);
+              if (new Date() > reportDate) {
+                complete = true;
+              }
+              return (
+                <tbody id="productList">
+                  <tr>
+                    <td>{hawkerReport.owner}</td>
+                    <td>{issueType}</td>
+                    {complete ? (
+                      <>
+                        <td style={{ color: "#DC0126", fontWeight: "bold" }}>
+                          Completed{" "}
+                          {hawkerReport.approvalCount >=
+                          hawkerReport.rejectionCount ? (
+                            <>
+                              <label
+                                style={{ color: "green", marginBottom: 10 }}
+                              >
+                                (Successful)
+                              </label>
+                            </>
+                          ) : (
+                            <label style={{ color: "red", marginBottom: 10 }}>
+                              (Unsuccessful)
+                            </label>
+                          )}
+                        </td>
+                      </>
+                    ) : (
+                      <td
+                        style={{
+                          color: "green",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Pending
+                      </td>
+                    )}
+                    <td>
+                      <h5
+                        style={{
+                          backgroundColor: "#226BBF",
+                          borderRadius: 4,
+                          paddingLeft: 6,
+                          paddingRight: 6,
+                          paddingBottom: 7,
+                          paddingTop: 7,
+                          alignItems: "center",
+                        }}
+                      >
+                        <Link
+                          style={{
+                            color: "#FFF",
+                            fontSize: 18,
+                            textDecoration: "none",
+                          }}
+                          to={`/reportDetails/${hawkerReport.id}`}
+                          state={{ hawkerReport: hawkerReport }}
+                        >
+                          Details
+                        </Link>
+                      </h5>
+                    </td>
+                    <td>
+                      {complete && hawkerReport.resolved ? (
+                        <Button
+                          disabled
+                          variant="danger"
+                          onClick={() => {
+                            this.props.resolveReport(
+                              hawkerReport.id,
+                              hawkerReport.owner,
+                              hawkerReport.claimAmt
+                            );
+                          }}
+                        >
+                          Resolved
+                        </Button>
+                      ) : null}
+                      {!complete && !hawkerReport.resolved ? (
+                        <Button
+                          variant="danger"
+                          onClick={() => {
+                            this.props.resolveReport(
+                              hawkerReport.id,
+                              hawkerReport.owner,
+                              hawkerReport.claimAmt
+                            );
+                          }}
+                        >
+                          Resolve
+                        </Button>
+                      ) : null}
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            })}
+          </table>
         </div>
 
         <h2 style={{ color: "#808080" }}>Transaction History</h2>

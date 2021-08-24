@@ -19,7 +19,7 @@ class Purchase extends Component {
   render() {
     return (
       <div style={{ margin: 70, marginTop: 20 }}>
-        <h2>Purchase Food</h2>
+        {/* <h2>Purchase Food</h2> */}
         {this.props.hawkers.map((hawker, key) => {
           return (
             <>

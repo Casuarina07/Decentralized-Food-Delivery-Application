@@ -44,6 +44,7 @@ function CustNavbar({
   ordersItems,
   addApprovalCount,
   addRejectionCount,
+  claimReturns,
 }) {
   const navLinks = [
     {
@@ -142,6 +143,7 @@ function CustNavbar({
           orders={orders}
           ordersItems={ordersItems}
           hawkers={hawkers}
+          claimReturns={claimReturns}
         />
 
         <Cart

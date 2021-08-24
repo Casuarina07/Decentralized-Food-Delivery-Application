@@ -10,6 +10,7 @@ import logo from "../logo.svg";
 import "../Navbar.css";
 import SupplierInfo from "./SupplierInfo";
 import Cart from "./Cart";
+import ReportDetails from "../Customer/ReportDetails";
 
 function RestNavbar({
   account,
@@ -45,7 +46,10 @@ function RestNavbar({
   custOrders,
   custOrderItems,
   orders,
+  ordersItems,
   hawker,
+  hawkerReports,
+  resolveReport,
 }) {
   const navLinks = [
     {
@@ -121,6 +125,8 @@ function RestNavbar({
           suppProducts={suppProducts}
           suppliers={suppliers}
           orders={orders}
+          hawkerReports={hawkerReports}
+          resolveReport={resolveReport}
         />
         <Orders
           path="/orders"
@@ -167,6 +173,15 @@ function RestNavbar({
           hawkerCart={hawkerCart}
           suppProducts={suppProducts}
           purchaseProduct={purchaseProduct}
+        />
+        <ReportDetails
+          path="/reportDetails/:id"
+          custOrders={custOrders}
+          custOrderItems={custOrderItems}
+          restProducts={restProducts}
+          orders={orders}
+          ordersItems={ordersItems}
+          hawkers={hawkers}
         />
       </Router>
     </div>

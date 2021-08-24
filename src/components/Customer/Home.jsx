@@ -15,7 +15,7 @@ function Home({ reportsIssued, account, addApprovalCount, addRejectionCount }) {
         <div>
           <h3>All reports filed</h3>
           <table className="table">
-            <thead>
+            <thead style={{ backgroundColor: "#708090", color: "white" }}>
               <tr>
                 <th scope="col">Reported by</th>
                 <th scope="col">Approval Count</th>
@@ -38,13 +38,13 @@ function Home({ reportsIssued, account, addApprovalCount, addRejectionCount }) {
                   if (voter == account) voted = true;
                 });
               }
-              if (report.reporter != account)
+              if (report.owner != account)
                 return (
                   <>
                     <tbody id="productList">
                       <tr>
                         <td style={{ textOverflow: "ellipsis" }}>
-                          {report.reporter}
+                          {report.owner}
                         </td>
                         <td>{report.approvalCount}</td>
                         <td>{report.rejectionCount}</td>

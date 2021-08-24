@@ -11,7 +11,9 @@ contract Reports {
 
     struct Report {
         uint256 id;
-        address reporter;
+        address owner;
+        address hawker;
+        uint256 claimAmt;
         uint256 reportDate;
         uint256 deadlineDate;
         uint256 orderId;
@@ -22,13 +24,15 @@ contract Reports {
         uint256 approvalCount;
         uint256 rejectionCount;
         address[] voters;
-        uint256 penaltyFee;
+        bool resolved;
     }
 
     mapping(uint256 => Report) public reports;
     uint256 public reportsCount;
 
     function createReport(
+        address _hawkerAddress,
+        uint256 _claimAmt,
         uint256 _orderId,
         string memory _title,
         string[] memory _imageHash,
@@ -39,8 +43,11 @@ contract Reports {
         reports[reportsCount] = Report(
             reportsCount,
             msg.sender,
+            _hawkerAddress,
+            _claimAmt,
             now,
-            now + 3 * 1 days,
+            now + 60,
+            // now + 3 * 1 days,
             _orderId,
             _title,
             _imageHash,
@@ -49,7 +56,7 @@ contract Reports {
             0,
             0,
             new address[](0),
-            0
+            false
         );
     }
 
@@ -84,5 +91,21 @@ contract Reports {
             reports[_reportId].rejectionCount +
             1;
         (reports[_reportId].voters).push(msg.sender);
+    }
+
+    // function claimReturns(address payable _hawker, uint256 _claimAmt)
+    //     public
+    //     payable
+    // {
+    //     _hawker.transfer(_claimAmt);
+    // }
+
+    function resolveReport(
+        uint256 reportId,
+        address payable _reporter,
+        uint256 _claimAmt
+    ) public payable {
+        address(_reporter).transfer(_claimAmt);
+        reports[reportId].resolved = true;
     }
 }

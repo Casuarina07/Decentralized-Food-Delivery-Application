@@ -16,7 +16,7 @@ export default function ReportList(props) {
         <div>
           <h3>Reports filed by you</h3>
           <table className="table">
-            <thead>
+            <thead style={{ backgroundColor: "#708090", color: "white" }}>
               <tr>
                 <th scope="col">Reported by</th>
                 <th scope="col">Approval Count</th>
@@ -37,7 +37,7 @@ export default function ReportList(props) {
                   <tbody id="productList">
                     <tr>
                       <td style={{ textOverflow: "ellipsis" }}>
-                        {report.reporter}
+                        {report.owner}
                       </td>
                       <td>{report.approvalCount}</td>
                       <td>{report.rejectionCount}</td>
@@ -48,7 +48,7 @@ export default function ReportList(props) {
                             fontWeight: "bold",
                           }}
                         >
-                          In progress
+                          Pending
                         </td>
                       ) : (
                         <td style={{ color: "#DC0126", fontWeight: "bold" }}>

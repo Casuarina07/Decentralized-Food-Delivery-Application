@@ -49,7 +49,7 @@ export default function Profile({
             to={`/reports`}
             state={{ reports: custReports }}
           >
-            Reports Issued
+            Reports Filed
           </Link>
         </h5>
       </div>

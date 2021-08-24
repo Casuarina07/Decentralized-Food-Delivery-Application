@@ -52,6 +52,8 @@ export class ReportModal extends Component {
     }
 
     this.props.createReport(
+      this.props.order.seller,
+      this.props.order.hawkerPayment,
       this.props.order.id,
       this.state.issueType,
       this.state.imageHash,
@@ -154,7 +156,7 @@ export class ReportModal extends Component {
               <FormControlLabel
                 value="missingItem"
                 control={<Radio />}
-                label="Missing Items"
+                label="Missing Item(s)"
               />
               <FormControlLabel
                 value="incorrectOrder"
@@ -176,7 +178,7 @@ export class ReportModal extends Component {
           {/* missing items  */}
           {this.state.issueType == "missingItem" ? (
             <div>
-              <b>Which items were missing?</b>
+              <b>Which item(s) were missing?</b>
               <div>{items}</div>
               <div style={{ marginTop: 10 }}>
                 <b>Upload supporting images:</b>
