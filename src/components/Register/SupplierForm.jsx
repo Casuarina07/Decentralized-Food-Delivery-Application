@@ -88,12 +88,12 @@ export default function SupplierForm({ addSupplier }) {
       <b>Delivery Details: </b>
 
       <div className="form-group" style={{ marginTop: 10 }}>
-        <label>MOQ (SGD)</label>
+        <label>Minimum Order (ETH)</label>
         <input
           type="number"
           min="0"
           className="form-control"
-          placeholder="Enter minimum order quantity"
+          placeholder="Enter minimum order"
           required
           onChange={(e) => {
             setMoq(e.target.value);

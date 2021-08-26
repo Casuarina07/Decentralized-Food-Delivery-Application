@@ -14,11 +14,23 @@ import ProductCardItem from "./ProductCardItem";
 class Purchase extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      inputSearch: "",
+    };
   }
 
   render() {
+    console.log(this.props.restProducts);
     return (
       <div style={{ margin: 70, marginTop: 20 }}>
+        <input
+          type="text"
+          placeholder="Search..."
+          style={{ display: "flex", paddingLeft: 8 }}
+          onChange={(event) =>
+            this.setState({ inputSearch: event.target.value })
+          }
+        />
         {/* <h2>Purchase Food</h2> */}
         {this.props.hawkers.map((hawker, key) => {
           return (
@@ -37,21 +49,33 @@ class Purchase extends Component {
                 {hawker.owner}
               </h6>
               <CardGroup>
-                {this.props.restProducts.map((product, key) => {
-                  if (
-                    product.owner == hawker.owner &&
-                    product.published == true
-                  )
-                    return (
-                      <Col md={4}>
-                        <ProductCardItem
-                          product={product}
-                          custId={this.props.custId}
-                          addToCart={this.props.addToCart}
-                        />
-                      </Col>
-                    );
-                })}
+                {this.props.restProducts
+                  .filter((product) => {
+                    if (this.state.inputSearch == "") {
+                      return product;
+                    } else if (
+                      product.name
+                        .toLowerCase()
+                        .includes(this.state.inputSearch.toLowerCase())
+                    ) {
+                      return product;
+                    }
+                  })
+                  .map((product, key) => {
+                    if (
+                      product.owner == hawker.owner &&
+                      product.published == true
+                    )
+                      return (
+                        <Col md={4}>
+                          <ProductCardItem
+                            product={product}
+                            custId={this.props.custId}
+                            addToCart={this.props.addToCart}
+                          />
+                        </Col>
+                      );
+                  })}
               </CardGroup>
             </>
           );

@@ -50,6 +50,8 @@ function RestNavbar({
   hawker,
   hawkerReports,
   resolveReport,
+  hawkerOrderCount,
+  hawkerCancellationCount,
 }) {
   const navLinks = [
     {
@@ -166,6 +168,8 @@ function RestNavbar({
           editHawkerProfile={editHawkerProfile}
           hawkerFeedback={hawkerFeedback}
           hawker={hawker}
+          hawkerOrderCount={hawkerOrderCount}
+          hawkerCancellationCount={hawkerCancellationCount}
         />
         <Cart
           path="/cart"

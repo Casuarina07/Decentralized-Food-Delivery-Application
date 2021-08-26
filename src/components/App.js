@@ -48,6 +48,8 @@ export default function App() {
   const [hawkersCount, setHawkersCount] = useState(0);
   const [hawkers, setHawkers] = useState([]);
   const [hawkerOrders, setHawkerOrders] = useState([]);
+  const [hawkerOrderCount, setHawkerOrderCount] = useState(0);
+  const [hawkerCancellationCount, setHawkerCancellationCount] = useState(0);
   const [hawkerOrderItems, setHawkerOrderItems] = useState([]);
   const [hawkerFeedback, setHawkerFeedback] = useState([]);
   const [hawkerCart, setHawkerCart] = useState([]);
@@ -342,7 +344,11 @@ export default function App() {
         }
         // order inventory for each hawker
         if (order.seller.toString() === accounts.toString()) {
+          setHawkerOrderCount(hawkerOrderCount + 1);
           setHawkerOrders((hawkerOrders) => [...hawkerOrders, order]);
+          if (order.state == "OrderCancelled") {
+            setHawkerCancellationCount(hawkerCancellationCount + 1);
+          }
           //get the item that the order consists
           for (var k = 1; k <= order.purchasedItemCount; k++) {
             let prod = await marketplace.methods
@@ -1080,6 +1086,8 @@ export default function App() {
             ordersItems={ordersItems}
             hawkerReports={hawkerReports}
             resolveReport={resolveReport}
+            hawkerOrderCount={hawkerOrderCount}
+            hawkerCancellationCount={hawkerCancellationCount}
           />
         ) : null}
         {custAcc ? (

@@ -16,6 +16,8 @@ export default function Profile({
   boolOpen,
   hawkerRating,
   hawkerFeedback,
+  hawkerOrderCount,
+  hawkerCancellationCount,
 }) {
   const [editClicked, setEditClicked] = useState(false);
   const [hawkerPhoneNo, setHawkerPhoneNo] = useState(hawkerPhone);
@@ -60,7 +62,10 @@ export default function Profile({
       <h3 className="header">{account}</h3>
       {stars}
       <h5>AVERAGE RATING OF: {hawker.feedbackCount} CUSTOMER(S)</h5>
-      <h5 style={{ color: "red" }}>CANCELLATION RATE: 40 %</h5>
+      <h5 style={{ color: "red" }}>
+        CANCELLATION RATE: {(hawkerCancellationCount / hawkerOrderCount) * 100}{" "}
+        %
+      </h5>
 
       <h4 style={{ color: "#016094", marginTop: 30 }}>Hawker Details</h4>
       {editClicked ? (

@@ -22,7 +22,9 @@ class Cart extends Component {
         <div style={{ margin: 60, marginTop: 20 }}>
           <h2>Cart</h2>
           <table className="table">
-            <thead style={{ backgroundColor: "#708090", color: "white" }}>
+            <thead
+            // style={{ backgroundColor: "#708090", color: "white" }}
+            >
               <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Price</th>

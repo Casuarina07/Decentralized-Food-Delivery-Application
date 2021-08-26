@@ -69,7 +69,7 @@ export default function ReportDetails(props) {
           <label style={{ color: "red", marginBottom: 10 }}>
             Status: Completed
           </label>
-          {report.approvalCount >= report.rejectionCount ? (
+          {report.approvalCount > report.rejectionCount ? (
             <>
               <label style={{ color: "green", marginBottom: 10 }}>
                 Outcome: Successful

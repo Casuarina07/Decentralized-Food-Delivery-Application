@@ -7,10 +7,23 @@ import { Link } from "@reach/router";
 import SupplierProdCardItem from "./SupplierProdCardItem";
 
 class Purchase extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputSearch: "",
+    };
+  }
   render() {
     return (
       <div style={{ margin: 70, marginTop: 20 }}>
-        <h2>Purchase Food Ingredients</h2>
+        <input
+          type="text"
+          placeholder="Search..."
+          style={{ display: "flex", paddingLeft: 8 }}
+          onChange={(event) =>
+            this.setState({ inputSearch: event.target.value })
+          }
+        />
         {this.props.suppliers.map((supplier, key) => {
           return (
             <>
@@ -27,21 +40,33 @@ class Purchase extends Component {
                 {supplier.owner}
               </h6>
               <CardGroup>
-                {this.props.suppProducts.map((product, key) => {
-                  if (
-                    product.owner == supplier.owner &&
-                    product.published == true
-                  )
-                    return (
-                      <Col md={4}>
-                        <SupplierProdCardItem
-                          product={product}
-                          hawkerId={this.props.hawkerId}
-                          addToCartHawker={this.props.addToCartHawker}
-                        />
-                      </Col>
-                    );
-                })}
+                {this.props.suppProducts
+                  .filter((product) => {
+                    if (this.state.inputSearch == "") {
+                      return product;
+                    } else if (
+                      product.name
+                        .toLowerCase()
+                        .includes(this.state.inputSearch.toLowerCase())
+                    ) {
+                      return product;
+                    }
+                  })
+                  .map((product, key) => {
+                    if (
+                      product.owner == supplier.owner &&
+                      product.published == true
+                    )
+                      return (
+                        <Col md={4}>
+                          <SupplierProdCardItem
+                            product={product}
+                            hawkerId={this.props.hawkerId}
+                            addToCartHawker={this.props.addToCartHawker}
+                          />
+                        </Col>
+                      );
+                  })}
               </CardGroup>
             </>
           );

@@ -16,7 +16,7 @@ export default function ReportList(props) {
         <div>
           <h3>Reports filed by you</h3>
           <table className="table">
-            <thead style={{ backgroundColor: "#708090", color: "white" }}>
+            <thead>
               <tr>
                 <th scope="col">Reported by</th>
                 <th scope="col">Approval Count</th>

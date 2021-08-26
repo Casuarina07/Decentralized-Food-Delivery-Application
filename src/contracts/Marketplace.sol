@@ -264,9 +264,9 @@ contract Marketplace {
         string memory _imageHash
     ) public {
         // Require a valid name
-        require(bytes(_name).length > 0);
+        // require(bytes(_name).length > 0);
         // Require a valid price
-        require(_price > 0);
+        // require(_price > 0);
         // Increment product count
         suppProdCount++;
         // Create the product --- msg.sender is the one who accessed the function

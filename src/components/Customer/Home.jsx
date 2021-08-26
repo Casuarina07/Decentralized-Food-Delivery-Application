@@ -15,7 +15,9 @@ function Home({ reportsIssued, account, addApprovalCount, addRejectionCount }) {
         <div>
           <h3>All reports filed</h3>
           <table className="table">
-            <thead style={{ backgroundColor: "#708090", color: "white" }}>
+            <thead
+            // style={{ backgroundColor: "#708090", color: "white" }}
+            >
               <tr>
                 <th scope="col">Reported by</th>
                 <th scope="col">Approval Count</th>
