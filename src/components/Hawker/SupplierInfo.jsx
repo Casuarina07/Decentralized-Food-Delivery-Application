@@ -1,75 +1,114 @@
 //import { Card } from "@material-ui/core";
 import Card from "react-bootstrap/Card";
 // import CardBody from "react-bootstrap/CardBody";
+import axios from "axios";
 
-import React, { Component, useLocation } from "react";
-import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import React, { Component, useEffect, useState } from "react";
+import { BsStarFill, BsStar } from "react-icons/bs";
 
 export default function SupplierInfo(props) {
   const suppliers = props.suppliers;
-  const chosenSupplier = props.location.state.chosenSupplierPk;
-
+  const supplier = props.location.state.chosenSupplier;
+  const [supplierDetails, setSupplierDetails] = useState([]);
+  const [fullStarsCount, setFullStars] = useState(supplier.avgRating);
+  const [emptyStarsCount, setEmptyStars] = useState(5 - fullStarsCount);
+  var stars = [];
+  for (var i = 1; i <= fullStarsCount; i++) {
+    stars.push(
+      <BsStarFill
+        color="#eba834"
+        size="20"
+        style={{ marginRight: 5, marginBottom: 5 }}
+      />
+    );
+  }
+  for (var i = 1; i <= emptyStarsCount; i++) {
+    stars.push(
+      <BsStar
+        color="#eba834"
+        size="20"
+        style={{ marginRight: 5, marginBottom: 5 }}
+      />
+    );
+  }
   console.log("Passed: ", props.hawkerFeedback);
+
+  useEffect(() => {
+    getSupplierDetails();
+  }, []);
+
+  async function getSupplierDetails() {
+    const supplierDetails = axios
+      .get("https://ipfs.infura.io/ipfs/" + supplier.profileHash)
+      .then(function (response) {
+        console.log("this is the data: ", response.data);
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    supplierDetails.then((details) => {
+      setSupplierDetails(details);
+    });
+  }
   return (
     <div style={{ marginTop: 20 }}>
-      {suppliers.map((supplier, key) => {
-        if (supplier.owner === chosenSupplier) {
-          return (
-            <div>
-              <div style={{ flexDirection: "row" }}>
-                <h2>{supplier.name}</h2>
-                <h3>Rating: {supplier.avgRating}/5</h3>
-              </div>
-              <div style={{ marginTop: 30 }}>
-                <b>Public Key: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>{supplier.owner}</h5>
-                </div>
+      <div>
+        <div style={{ flexDirection: "row" }}>
+          <h2>{supplierDetails.name}</h2>
+        </div>
+        {stars}
+        <h5 style={{ color: "#838383" }}>
+          AVERAGE RATING OF: {supplier.feedbackCount} CUSTOMER(S)
+        </h5>
+        <div style={{ marginTop: 30 }}>
+          <b>Public Key: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>{supplier.owner}</h5>
+          </div>
 
-                <b>Company Address: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>
-                    {supplier.addressLocation}
-                  </h5>
-                </div>
+          <b>Company Address: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>
+              {supplierDetails.addressLocation}
+            </h5>
+          </div>
 
-                <b>Contact: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>{supplier.phone}</h5>
-                </div>
+          <b>Contact: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>{supplierDetails.phone}</h5>
+          </div>
 
-                <b>MOQ: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>
-                    ${supplier.MOQ} - 0.024 Eth
-                  </h5>
-                </div>
+          <b>MOQ: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>${supplierDetails.MOQ}</h5>
+          </div>
 
-                <b>Lead Time: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>{supplier.leadTime}</h5>
-                </div>
+          <b>Lead Time: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>{supplierDetails.leadTime}</h5>
+          </div>
 
-                <b>Delivery Days: </b>
-                <div style={{ marginBottom: 20 }}>
-                  <h5 style={{ color: "#016094" }}>{supplier.deliveryDays}</h5>
-                </div>
+          <b>Delivery Days: </b>
+          <div style={{ marginBottom: 20 }}>
+            <h5 style={{ color: "#016094" }}>{supplierDetails.deliveryDays}</h5>
+          </div>
 
-                <b>Additional Remarks: </b>
-                <div
-                  style={{
-                    marginBottom: 20,
-                    paddingRight: 100,
-                    paddingLeft: 100,
-                  }}
-                >
-                  <h5 style={{ color: "#016094" }}>{supplier.remarks}</h5>
-                </div>
-              </div>
-            </div>
-          );
-        }
-      })}
+          <b>Additional Remarks: </b>
+          <div
+            style={{
+              marginBottom: 20,
+              paddingRight: 100,
+              paddingLeft: 100,
+            }}
+          >
+            <h5 style={{ color: "#016094", marginBottom: 50 }}>
+              {supplierDetails.remarks}
+            </h5>
+          </div>
+        </div>
+      </div>
+
       {/* {props.hawkerFeedback.map((feedback, key) => {
         if (feedback.seller.toString() == chosenHawker.toString()) {
           console.log("Same seller account: ", feedback.seller);

@@ -63,6 +63,7 @@ export default function App() {
   const [custPhone, setCustPhone] = useState("");
   const [cartCount, setCartCount] = useState(0);
   const [custCart, setCustCart] = useState([]);
+  const [customer, setCustomer] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [custCount, setCustCount] = useState(0);
   const [custOrders, setCustOrders] = useState([]);
@@ -105,7 +106,6 @@ export default function App() {
   }, [hawkersPublicKey, custsPublicKey, fdsPublicKey]);
 
   async function loadWeb3() {
-    console.log("first");
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
@@ -113,7 +113,7 @@ export default function App() {
       window.web3 = new Web3(window.web3.currentProvider);
     } else {
       window.alert(
-        "Non-Ethereum browser detected. You should consider trying MetaMask!"
+        "You are using a Non-Ethereum browser. Consider trying MetaMask!"
       );
     }
   }
@@ -123,21 +123,11 @@ export default function App() {
     //Load account
     const accounts = await web3.eth.getAccounts();
     setAccount(accounts[0]);
-    // const transactions = await web3.eth
-    //   .getPastLogs({
-    //     address: accounts,
-    //     fromBlock: "0x1",
-    //     toBlock: "latest",
-    //   })
-    //   .then(console.log)
-    //   .catch((e) => console.log(e));
-    // setTransactions(transactions);
-    // console.log("Account: ", transactions);
     let balance = await web3.eth.getBalance(accounts.toString());
     let accountBalance = web3.utils.fromWei(balance.toString());
     setAccBalance(accountBalance);
 
-    const networkId = await web3.eth.net.getId(); //5777
+    const networkId = await web3.eth.net.getId();
     const networkData = Marketplace.networks[networkId];
     const networkDataReport = Reports.networks[networkId];
     if (networkData) {
@@ -304,6 +294,7 @@ export default function App() {
           setCustAdd(cust.addressLocation);
           setCustPhone(cust.phone);
           setCartCount(cust.itemCount);
+          setCustomer(cust);
 
           //fetch cart products
           for (var k = 1; k <= cust.itemCount; k++) {
@@ -653,10 +644,10 @@ export default function App() {
       });
   };
 
-  const editHawkerProfile = (id, phone, openingHours, leadTime) => {
+  const editHawkerProfile = (id, profileHash) => {
     setLoading(true);
     marketplace.methods
-      .editHawkerProfile(id, phone, openingHours, leadTime)
+      .editHawkerProfile(id, profileHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Changed");
@@ -689,10 +680,10 @@ export default function App() {
       });
   };
 
-  const editCustProfile = (id, phone, address) => {
+  const editCustProfile = (id, profileHash) => {
     setLoading(true);
     marketplace.methods
-      .editCustProfile(id, phone, address)
+      .editCustProfile(id, profileHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Changed");
@@ -701,17 +692,10 @@ export default function App() {
       });
   };
 
-  const editSupplierProfile = (
-    id,
-    phone,
-    moq,
-    leadTime,
-    deliveryDays,
-    remarks
-  ) => {
+  const editSupplierProfile = (id, profileHash) => {
     setLoading(true);
     marketplace.methods
-      .editSupplierProfile(id, phone, moq, leadTime, deliveryDays, remarks)
+      .editSupplierProfile(id, profileHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully Changed");
@@ -726,7 +710,7 @@ export default function App() {
       .addToCart(cust_id, prod_id, qty)
       .send({ from: account })
       .once("receipt", (receipt) => {
-        alert("Successfully Added");
+        // alert("Successfully Added");
         window.location.reload();
         setLoading(false);
       });
@@ -839,11 +823,20 @@ export default function App() {
     size,
     minOrder,
     published,
-    imageHash
+    imageHash,
+    expiryDate
   ) => {
     setLoading(true);
     marketplace.methods
-      .createSuppProduct(name, price, size, minOrder, published, imageHash)
+      .createSuppProduct(
+        name,
+        price,
+        size,
+        minOrder,
+        published,
+        imageHash,
+        expiryDate
+      )
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("Successfully created");
@@ -946,26 +939,10 @@ export default function App() {
       });
   };
 
-  const addHawker = (
-    owner,
-    name,
-    addressLocation,
-    phone,
-    openingHours,
-    leadTime,
-    licenseHash
-  ) => {
+  const addHawker = (owner, profileHash) => {
     setLoading(true);
     marketplace.methods
-      .addHawker(
-        owner,
-        name,
-        addressLocation,
-        phone,
-        openingHours,
-        leadTime,
-        licenseHash
-      )
+      .addHawker(owner, profileHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("New Hawker Added");
@@ -973,10 +950,10 @@ export default function App() {
         setLoading(false);
       });
   };
-  const addCustomer = (owner, name, addressLocation, phone) => {
+  const addCustomer = (owner, profileHash) => {
     setLoading(true);
     marketplace.methods
-      .addCustomer(owner, name, addressLocation, phone)
+      .addCustomer(owner, profileHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         // console.log("Receipt?? ", receipt);
@@ -986,10 +963,10 @@ export default function App() {
       });
   };
 
-  const addFoodDelivery = (owner, name, email, phone) => {
+  const addFoodDelivery = (owner, profileHash) => {
     setLoading(true);
     marketplace.methods
-      .addFoodDelivery(owner, name, email, phone)
+      .addFoodDelivery(owner, profileHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("New Food Delivery Rider Added");
@@ -998,28 +975,10 @@ export default function App() {
       });
   };
 
-  const addSupplier = (
-    owner,
-    name,
-    address,
-    phone,
-    moq,
-    leadTime,
-    deliveryDays,
-    remarks
-  ) => {
+  const addSupplier = (owner, profileHash) => {
     setLoading(true);
     marketplace.methods
-      .addSupplier(
-        owner,
-        name,
-        address,
-        phone,
-        moq,
-        leadTime,
-        deliveryDays,
-        remarks
-      )
+      .addSupplier(owner, profileHash)
       .send({ from: account })
       .once("receipt", (receipt) => {
         alert("New supplier Added");
@@ -1099,6 +1058,7 @@ export default function App() {
             restProdCount={restProdCount}
             hawkers={hawkers}
             hawkersCount={hawkersCount}
+            customer={customer}
             custId={custId}
             custName={custName}
             custAdd={custAdd}

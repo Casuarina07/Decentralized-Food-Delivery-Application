@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Rest.css";
 import { FaUserCircle } from "react-icons/fa";
 import { BsStarFill, BsStar } from "react-icons/bs";
+import axios from "axios";
 
 export default function Profile({
   account,
   hawkerId,
-  hawkerName,
-  hawkerAdd,
-  hawkerOpeningHours,
-  hawkerPhone,
   editHawkerProfile,
   hawker,
   hawkerBoolOpen,
@@ -19,12 +16,42 @@ export default function Profile({
   hawkerOrderCount,
   hawkerCancellationCount,
 }) {
+  useEffect(() => {
+    retrieveHawkerDetails();
+  }, []);
+
   const [editClicked, setEditClicked] = useState(false);
-  const [hawkerPhoneNo, setHawkerPhoneNo] = useState(hawkerPhone);
-  const [hawkerOH, setHawkerOH] = useState(hawkerOpeningHours);
-  const [hawkerLeadTime, setHawkerLeadTime] = useState(hawker.leadTime);
+  const [hawkerName, setHawkerName] = useState();
+  const [hawkerPhoneNo, setHawkerPhoneNo] = useState();
+  const [hawkerAddress, setHawkerAddress] = useState();
+  const [hawkerLicenseHash, setHawkerLicenseHash] = useState();
+  const [hawkerOH, setHawkerOH] = useState();
+  const [hawkerLeadTime, setHawkerLeadTime] = useState();
   const [fullStarsCount, setFullStars] = useState(hawkerRating);
   const [emptyStarsCount, setEmptyStars] = useState(5 - fullStarsCount);
+  const [hawkerDetails, setHawkerDetails] = useState([]);
+
+  async function retrieveHawkerDetails() {
+    const hi = axios
+      .get("https://ipfs.infura.io/ipfs/" + hawker.profileHash)
+      .then(function (response) {
+        console.log("this is the data: ", response.data);
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    hi.then((details) => {
+      setHawkerDetails(details);
+      setHawkerName(hawkerDetails.name);
+      setHawkerAddress(hawkerDetails.addressLocation);
+      setHawkerPhoneNo(hawkerDetails.phone);
+      setHawkerLicenseHash(hawkerDetails.licenseHash);
+      setHawkerOH(hawkerDetails.openingHours);
+      setHawkerLeadTime(hawkerDetails.leadTime);
+      console.log("Result: ", hawkerDetails);
+    });
+  }
 
   function editProfile() {
     setEditClicked(!editClicked);
@@ -33,9 +60,26 @@ export default function Profile({
   function changeShopStatus() {
     boolOpen(hawkerId);
   }
-  const saveChanges = (evt) => {
+  const saveChanges = async (evt) => {
     evt.preventDefault();
-    editHawkerProfile(hawkerId, hawkerPhoneNo, hawkerOH, hawkerLeadTime);
+    const { create } = require("ipfs-http-client");
+    const ipfs = create({
+      host: "ipfs.infura.io",
+      port: "5001",
+      protocol: "https",
+    });
+    const metaObj = {
+      name: hawkerName,
+      addressLocation: hawkerAddress,
+      phone: hawkerPhoneNo,
+      openingHours: hawkerOH,
+      leadTime: hawkerLeadTime,
+      licenseHash: hawkerLicenseHash,
+    };
+    const jsonObj = JSON.stringify(metaObj);
+    const profileHash = await ipfs.add(jsonObj);
+    console.log("JSON hash: ", profileHash.path);
+    editHawkerProfile(hawkerId, profileHash.path);
   };
   var stars = [];
   for (var i = 1; i <= fullStarsCount; i++) {
@@ -56,6 +100,7 @@ export default function Profile({
       />
     );
   }
+
   return (
     <div style={{ marginTop: 20, marginBottom: 30 }}>
       <FaUserCircle size={60} color="#016094" />
@@ -72,12 +117,12 @@ export default function Profile({
         <div>
           <b>Name: </b>
           <div style={{ padding: 5 }}>
-            <label>{hawkerName}</label>
+            <label>{hawkerDetails.name}</label>
           </div>
 
           <b>Address: </b>
           <div style={{ padding: 5 }}>
-            <label>{hawkerAdd}</label>
+            <label>{hawkerDetails.addressLocation}</label>
           </div>
 
           <form onSubmit={saveChanges}>
@@ -131,27 +176,27 @@ export default function Profile({
         <div>
           <b>Name: </b>
           <div style={{ padding: 5 }}>
-            <label>{hawkerName}</label>
+            <label>{hawkerDetails.name}</label>
           </div>
 
           <b>Address: </b>
           <div style={{ padding: 5 }}>
-            <label>{hawkerAdd}</label>
+            <label>{hawkerDetails.addressLocation}</label>
           </div>
 
           <b>Phone: </b>
           <div style={{ padding: 5 }}>
-            <label>{hawkerPhone}</label>
+            <label>{hawkerDetails.phone}</label>
           </div>
 
           <b>Opening Hours: </b>
           <div>
-            <label>{hawkerOpeningHours}</label>
+            <label>{hawkerDetails.openingHours}</label>
           </div>
 
           <b>Lead Time: </b>
           <div>
-            <label>{hawker.leadTime} mins</label>
+            <label>{hawkerDetails.leadTime} mins</label>
           </div>
 
           <button

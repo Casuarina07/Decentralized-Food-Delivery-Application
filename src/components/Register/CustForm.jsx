@@ -6,8 +6,22 @@ export default function CustForm({ addCustomer }) {
   const [custAddress, setCustAddress] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
 
-  const register = (event) => {
-    addCustomer(publicKey, custName, custAddress, phoneNo);
+  const register = async (event) => {
+    const { create } = require("ipfs-http-client");
+    const ipfs = create({
+      host: "ipfs.infura.io",
+      port: "5001",
+      protocol: "https",
+    });
+    const metaObj = {
+      name: custName,
+      addressLocation: custAddress,
+      phone: phoneNo,
+    };
+    const jsonObj = JSON.stringify(metaObj);
+    const profileHash = await ipfs.add(jsonObj);
+    console.log("JSON hash: ", profileHash.path);
+    addCustomer(publicKey, profileHash.path);
   };
   return (
     <div>

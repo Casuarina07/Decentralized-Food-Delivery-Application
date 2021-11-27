@@ -1,29 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Cust.css";
 import { BsFillPersonCheckFill } from "react-icons/bs";
 import { Button } from "react-bootstrap";
 import { Link } from "@reach/router";
+import axios from "axios";
 
 export default function Profile({
   account,
+  customer,
   custId,
-  custName,
+  // custName,
   custAdd,
   custPhone,
   editCustProfile,
   custReports,
 }) {
   const [editClicked, setEditClicked] = useState(false);
-  const [custPhoneNo, setCustPhoneNo] = useState(custPhone);
-  const [custAddress, setCustAddress] = useState(custAdd);
+  const [custPhoneNo, setCustPhoneNo] = useState();
+  const [custAddress, setCustAddress] = useState();
+  const [custDetails, setCustDetails] = useState([]);
+  const [custName, setCustName] = useState();
+
+  useEffect(() => {
+    retrieveCustDetails();
+  }, []);
+
+  async function retrieveCustDetails() {
+    const hi = axios
+      .get("https://ipfs.infura.io/ipfs/" + customer.profileHash)
+      .then(function (response) {
+        console.log("this is the data: ", response.data);
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    hi.then((details) => {
+      setCustDetails(details);
+      setCustPhoneNo(details.phone);
+      setCustAddress(details.addressLocation);
+      setCustName(details.name);
+    });
+  }
 
   function editProfile() {
     setEditClicked(!editClicked);
   }
 
-  const saveChanges = (evt) => {
+  const saveChanges = async (evt) => {
     evt.preventDefault();
-    editCustProfile(custId, custPhoneNo, custAddress);
+    const { create } = require("ipfs-http-client");
+    const ipfs = create({
+      host: "ipfs.infura.io",
+      port: "5001",
+      protocol: "https",
+    });
+    const metaObj = {
+      name: custName,
+      addressLocation: custAddress,
+      phone: custPhoneNo,
+    };
+    const jsonObj = JSON.stringify(metaObj);
+    const profileHash = await ipfs.add(jsonObj);
+    editCustProfile(custId, profileHash.path);
   };
 
   return (
@@ -59,9 +98,9 @@ export default function Profile({
 
       {editClicked ? (
         <div>
-          <b>Name: </b>
+          <b>Namee: </b>
           <div style={{ padding: 5 }}>
-            <label>{custName}</label>
+            <label>{custDetails.name}</label>
           </div>
 
           <form onSubmit={saveChanges}>
@@ -103,15 +142,15 @@ export default function Profile({
         <div>
           <b>Name: </b>
           <div style={{ padding: 5 }}>
-            <label>{custName}</label>
+            <label>{custDetails.name}</label>
           </div>
           <b>Address: </b>
           <div style={{ padding: 5 }}>
-            <label>{custAdd}</label>
+            <label>{custDetails.addressLocation}</label>
           </div>
           <b>Phone: </b>
           <div style={{ padding: 5 }}>
-            <label>{custPhone}</label>
+            <label>{custDetails.phone}</label>
           </div>
           <button
             type="submit"

@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import { Button, ButtonToolbar, Col } from "react-bootstrap";
-
+import DatePicker from "react-datepicker";
 import { EditModal } from "./EditModal";
-import Modal from "@material-ui/core/Modal";
 import { GoPrimitiveDot } from "react-icons/go";
 import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/CardGroup";
@@ -19,6 +18,8 @@ const ipfs = create({
 class Sell extends Component {
   constructor(props) {
     super(props);
+    let currentDate = new Date();
+    let minDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
     this.state = {
       buffer: null,
       imageHash: "",
@@ -27,6 +28,8 @@ class Sell extends Component {
       editModalShow: false,
       productId: "",
       productModal: [],
+      expirationDate: minDate,
+      minDate: minDate,
     };
   }
   captureFile = (event) => {
@@ -50,6 +53,9 @@ class Sell extends Component {
     );
     const size = this.size.value;
     const minOrder = this.minOrder.value;
+
+    var expiryDate = this.state.expirationDate.toLocaleDateString("en-GB");
+    console.log("What is this: ", expiryDate);
     // Image file adding ipfs - Example hash - QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
     // Example URL - https://ipfs.infura.io/ipfs/QmVuL45kGoKVaLMv1FpFBj4h4N5eGageaeFSN4BtXPSGbi
     if (this.imageChange === true) {
@@ -72,7 +78,8 @@ class Sell extends Component {
           size,
           minOrder,
           this.publish,
-          this.state.imageHash
+          this.state.imageHash,
+          expiryDate
         );
       });
     } else {
@@ -83,7 +90,8 @@ class Sell extends Component {
         size,
         minOrder,
         this.publish,
-        ""
+        "",
+        expiryDate
       );
     }
   };
@@ -101,7 +109,7 @@ class Sell extends Component {
   render() {
     let editModalClose = () => this.setState({ editModalShow: false });
     console.log("CURRENT SUPPLIER PRODUCTS: ", this.props.suppProducts);
-    
+
     return (
       <div style={{ margin: 60, marginTop: 30 }}>
         <h1>Add Product</h1>
@@ -158,6 +166,25 @@ class Sell extends Component {
               placeholder="Minimum order (units) "
             />
           </div>
+          <div
+            className="form-group mr-sm-2"
+            style={{
+              display: "flex",
+              justifyContent: "flex-start",
+              marginTop: 20,
+            }}
+          >
+            <label style={{ marginRight: 10, size: 20 }}>
+              Expiration Date:
+            </label>
+            <DatePicker
+              dateFormat="dd/MM/yyyy"
+              minDate={this.state.minDate}
+              selected={this.state.expirationDate}
+              onChange={(date) => this.setState({ expirationDate: date })}
+            />
+          </div>
+
           <div style={{ display: "flex" }}>
             <input
               className="form-group mr-sm-1"
@@ -230,6 +257,9 @@ class Sell extends Component {
                       <Card.Text>Packaging Size: {product.size}kg</Card.Text>
                       <Card.Text>
                         Minimum Order: {product.minOrder} unit(s)
+                      </Card.Text>
+                      <Card.Text>
+                        Expiration Date: {product.expiryDate}
                       </Card.Text>
                     </Card.Body>
                     <Card.Footer>

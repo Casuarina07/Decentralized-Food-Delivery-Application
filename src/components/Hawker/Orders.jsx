@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button } from "react-bootstrap";
 import { getEstDeliveryTime, getHawkerFdTime } from "../utils/utils-time";
 import { HawkerModal } from "./HawkerModal";
+import axios from "axios";
 
 class Orders extends Component {
   constructor(props) {
@@ -13,8 +14,28 @@ class Orders extends Component {
       modalShow: false,
       hawkerTime: "",
       deliveryTime: "",
+      hawkerLeadTime: "",
     };
   }
+
+  componentDidMount() {
+    this.retrieveHawkerDetails();
+  }
+
+  retrieveHawkerDetails = () => {
+    const hawkerDetails = axios
+      .get("https://ipfs.infura.io/ipfs/" + this.props.hawker.profileHash)
+      .then(function (response) {
+        console.log("this is the data: ", response.data);
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    hawkerDetails.then((details) => {
+      this.setState({ hawkerLeadTime: details.leadTime });
+    });
+  };
 
   render() {
     let modalClose = () => this.setState({ modalShow: false });
@@ -109,10 +130,10 @@ class Orders extends Component {
                         // );
                         // this.props.hawkerConfirmOrder(hawkerOrder.id, estTime);
                         var hawkerEstTime = getHawkerFdTime(
-                          Number(this.props.hawker.leadTime)
+                          Number(this.state.hawkerLeadTime)
                         );
                         var deliveryEstTime = getEstDeliveryTime(
-                          Number(this.props.hawker.leadTime)
+                          Number(this.state.hawkerLeadTime)
                         );
                         console.log("est time: ", hawkerEstTime);
                         this.setState({ hawkerTime: hawkerEstTime });

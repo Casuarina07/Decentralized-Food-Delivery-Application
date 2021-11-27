@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { FdModal } from "./FdModal";
 import { getCurrentTime, getHawkerFdTime } from "../utils/utils-time";
 import { Button } from "react-bootstrap";
+import axios from "axios";
 
 class Orders extends Component {
   constructor(props) {
@@ -15,7 +16,66 @@ class Orders extends Component {
       leadTime: 10,
       modalShow: false,
       fdTime: "",
+      hawkersAddress: [],
+      hawkersLeadTime: [],
+      customersAddress: [],
     };
+  }
+
+  retrieveHawkersDetails = () => {
+    {
+      this.props.hawkers.map((hawker, key) => {
+        const hawkerDetails = axios
+          .get("https://ipfs.infura.io/ipfs/" + hawker.profileHash)
+          .then(function (response) {
+            console.log("this is the data: ", response.data);
+            return response.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        const hName = hawkerDetails.then((details) => {
+          this.setState({
+            hawkersAddress: [
+              ...this.state.hawkersAddress,
+              details.addressLocation,
+            ],
+          });
+          this.setState({
+            hawkersLeadTime: [...this.state.hawkersLeadTime, details.leadTime],
+          });
+        });
+      });
+    }
+  };
+
+  retrieveCustomerDetails = () => {
+    {
+      this.props.customers.map((customer, key) => {
+        const customerDetails = axios
+          .get("https://ipfs.infura.io/ipfs/" + customer.profileHash)
+          .then(function (response) {
+            console.log("this is the data: ", response.data);
+            return response.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        const custName = customerDetails.then((details) => {
+          this.setState({
+            customersAddress: [
+              ...this.state.customersAddress,
+              details.addressLocation,
+            ],
+          });
+        });
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.retrieveHawkersDetails();
+    this.retrieveCustomerDetails();
   }
 
   render() {
@@ -68,7 +128,7 @@ class Orders extends Component {
                 if (hawker.owner.toString() == fdOngoingOrder.seller) {
                   return (
                     <h5 style={{ display: "flex" }}>
-                      Hawker Address: {hawker.addressLocation}
+                      Hawker Address: {this.state.hawkersAddress[key]}
                     </h5>
                   );
                 }
@@ -78,7 +138,7 @@ class Orders extends Component {
                 if (customer.owner.toString() == fdOngoingOrder.owner)
                   return (
                     <h5 style={{ display: "flex" }}>
-                      Customer Address: {customer.addressLocation}
+                      Customer Address: {this.state.customersAddress[key]}
                     </h5>
                   );
               })}
@@ -240,10 +300,11 @@ class Orders extends Component {
               <h5 style={{ display: "flex" }}>Status: {this.orderState}</h5>
               {this.props.hawkers.map((hawker, key) => {
                 if (hawker.owner.toString() == fdDeliveryOrder.seller) {
-                  this.leadTime = Number(hawker.leadTime);
+                  this.leadTime = this.state.hawkersLeadTime[key];
+
                   return (
                     <h5 style={{ display: "flex" }}>
-                      Hawker Address: {hawker.addressLocation}
+                      Hawker Address: {this.state.hawkersAddress[key]}
                     </h5>
                   );
                 }
@@ -253,7 +314,7 @@ class Orders extends Component {
                 if (customer.owner.toString() == fdDeliveryOrder.owner)
                   return (
                     <h5 style={{ display: "flex" }}>
-                      Customer Address: {customer.addressLocation}
+                      Customer Address: {this.state.customersAddress[key]}
                     </h5>
                   );
               })}
@@ -385,7 +446,7 @@ class Orders extends Component {
                 if (hawker.owner.toString() == fdCompletedOrder.seller) {
                   return (
                     <h5 style={{ display: "flex" }}>
-                      Hawker Address: {hawker.addressLocation}
+                      Hawker Address: {this.state.hawkersAddress[key]}
                     </h5>
                   );
                 }
@@ -395,7 +456,7 @@ class Orders extends Component {
                 if (customer.owner.toString() == fdCompletedOrder.owner)
                   return (
                     <h5 style={{ display: "flex" }}>
-                      Customer Address: {customer.addressLocation}
+                      Customer Address: {this.state.customersAddress[key]}
                     </h5>
                   );
               })}

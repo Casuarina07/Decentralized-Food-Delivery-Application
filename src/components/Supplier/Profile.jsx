@@ -1,34 +1,82 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BsFillPersonCheckFill } from "react-icons/bs";
+import axios from "axios";
 
 export default function Profile({ account, supplier, editSupplierProfile }) {
   const [editClicked, setEditClicked] = useState(false);
-  const [supplierPhoneNo, setSupplierPhoneNo] = useState(supplier.phone);
-  const [supplierMoq, setSupplierMoq] = useState(supplier.MOQ);
-  const [supplierLeadTime, setSupplierLeadTime] = useState(supplier.leadTime);
-  const [deliveryDays, setDeliveryDays] = useState(supplier.deliveryDays);
+  const [supplierPhoneNo, setSupplierPhoneNo] = useState();
+  const [supplierMoq, setSupplierMoq] = useState();
+  const [supplierLeadTime, setSupplierLeadTime] = useState();
+  const [deliveryDays, setDeliveryDays] = useState();
   const [fromDeliveryDay, setFromDeliveryDay] = useState("Monday");
   const [toDeliveryDay, setToDeliveryDay] = useState("Sunday");
-  const [supplierRemarks, setSupplierRemarks] = useState(supplier.remarks);
+  const [supplierName, setSupplierName] = useState();
+  const [supplierRemarks, setSupplierRemarks] = useState();
+  const [supplierDetails, setSupplierDetails] = useState([]);
+  const [supplierAddress, setSupplierAddress] = useState();
 
   // const [custAddress, setCustAddress] = useState(custAdd);
+  useEffect(() => {
+    retrieveSupplierDetails();
+  }, []);
+
+  async function retrieveSupplierDetails() {
+    const hi = axios
+      .get("https://ipfs.infura.io/ipfs/" + supplier.profileHash)
+      .then(function (response) {
+        console.log("this is the data: ", response.data);
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    hi.then((details) => {
+      setSupplierDetails(details);
+      setSupplierName(details.name);
+      setSupplierAddress(details.addressLocation);
+      setSupplierPhoneNo(details.phone);
+      setSupplierLeadTime(details.leadTime);
+      setSupplierMoq(details.MOQ);
+      setDeliveryDays(details.deliveryDays);
+      setSupplierRemarks(details.remarks);
+    });
+  }
 
   function editProfile() {
     setEditClicked(!editClicked);
   }
 
-  const saveChanges = (evt) => {
+  const saveChanges = async (evt) => {
     evt.preventDefault();
     var deliveryDays = fromDeliveryDay + "-" + toDeliveryDay;
     setDeliveryDays(deliveryDays);
-    editSupplierProfile(
-      supplier.id,
-      supplierPhoneNo,
-      supplierMoq,
-      supplierLeadTime,
-      deliveryDays,
-      supplierRemarks
-    );
+    // editSupplierProfile(
+    //   supplier.id,
+    //   supplierPhoneNo,
+    //   supplierMoq,
+    //   supplierLeadTime,
+    //   deliveryDays,
+    //   supplierRemarks
+    // );
+    const { create } = require("ipfs-http-client");
+    const ipfs = create({
+      host: "ipfs.infura.io",
+      port: "5001",
+      protocol: "https",
+    });
+    const metaObj = {
+      name: supplierName,
+      addressLocation: supplierAddress,
+      phone: supplierPhoneNo,
+      MOQ: supplierMoq,
+      leadTime: supplierLeadTime,
+      deliveryDays: deliveryDays,
+      remarks: supplierRemarks,
+    };
+    const jsonObj = JSON.stringify(metaObj);
+    const profileHash = await ipfs.add(jsonObj);
+    console.log("JSON hash: ", profileHash.path);
+    editSupplierProfile(supplier.id, profileHash.path);
   };
 
   const handleChangeFrom = (event) => {
@@ -50,12 +98,12 @@ export default function Profile({ account, supplier, editSupplierProfile }) {
         <div>
           <b>Name: </b>
           <div style={{ padding: 5 }}>
-            <label>{supplier.name}</label>
+            <label>{supplierDetails.name}</label>
           </div>
 
           <b>Address: </b>
           <div>
-            <label>{supplier.addressLocation}</label>
+            <label>{supplierDetails.addressLocation}</label>
           </div>
 
           <form onSubmit={saveChanges}>
@@ -68,7 +116,7 @@ export default function Profile({ account, supplier, editSupplierProfile }) {
               />
             </div>
 
-            <b>MOQ: </b>
+            <b>MOQ ($):</b>
             <div style={{ padding: 5 }}>
               <input
                 type="text"
@@ -77,7 +125,7 @@ export default function Profile({ account, supplier, editSupplierProfile }) {
               />
             </div>
 
-            <b>Lead Time: </b>
+            <b>Lead Time (days): </b>
             <div style={{ padding: 5 }}>
               <input
                 type="text"
@@ -150,35 +198,31 @@ export default function Profile({ account, supplier, editSupplierProfile }) {
         <div>
           <b>Name: </b>
           <div style={{ padding: 5 }}>
-            <label>{supplier.name}</label>
-          </div>
-          <b>Email: </b>
-          <div style={{ padding: 5 }}>
-            <label>{supplier.email}</label>
+            <label>{supplierDetails.name}</label>
           </div>
           <b>Address: </b>
           <div style={{ padding: 5 }}>
-            <label>{supplier.addressLocation}</label>
+            <label>{supplierDetails.addressLocation}</label>
           </div>
           <b>Phone: </b>
           <div style={{ padding: 5 }}>
-            <label>{supplier.phone}</label>
+            <label>{supplierDetails.phone}</label>
           </div>
-          <b>MOQ: </b>
+          <b>MOQ ($):</b>
           <div style={{ padding: 5 }}>
-            <label>{supplier.MOQ}</label>
+            <label>{supplierDetails.MOQ}</label>
           </div>
-          <b>Lead Time: </b>
+          <b>Lead Time (days): </b>
           <div style={{ padding: 5 }}>
-            <label>{supplier.leadTime}</label>
+            <label>{supplierDetails.leadTime}</label>
           </div>
           <b>Delivery Days: </b>
           <div style={{ padding: 5 }}>
-            <label>{supplier.deliveryDays}</label>
+            <label>{supplierDetails.deliveryDays}</label>
           </div>
           <b>Additional Remarks: </b>
           <div style={{ padding: 5, marginLeft: 200, marginRight: 200 }}>
-            <label>{supplier.remarks}</label>
+            <label>{supplierDetails.remarks}</label>
           </div>
           <button
             type="submit"

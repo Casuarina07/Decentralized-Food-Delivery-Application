@@ -5,6 +5,7 @@ import "./Cust.css";
 import { Button, ButtonToolbar } from "react-bootstrap";
 import { RateModal } from "./RateModal";
 import { ReportModal } from "./ReportModal";
+import axios from "axios";
 
 class Orders extends Component {
   constructor(props) {
@@ -20,7 +21,34 @@ class Orders extends Component {
       fdId: 0,
       reportModalShow: [],
       reported: false,
+      hawkerNames: [],
     };
+  }
+
+  retrieveHawkerNames = () => {
+    // this.setState({ hawkerNames: "hi" });
+    {
+      this.props.hawkers.map((hawker, key) => {
+        const hawkerDetails = axios
+          .get("https://ipfs.infura.io/ipfs/" + hawker.profileHash)
+          .then(function (response) {
+            console.log("this is the data: ", response.data);
+            return response.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        const hName = hawkerDetails.then((details) => {
+          this.setState({
+            hawkerNames: [...this.state.hawkerNames, details.name],
+          });
+        });
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.retrieveHawkerNames();
   }
 
   handleShow = (event) => {
@@ -100,7 +128,7 @@ class Orders extends Component {
                   this.hawkerId = hawker.id;
                   return (
                     <div style={{ display: "flex" }}>
-                      <h5>Ordered from: {hawker.name}</h5>
+                      <h5>Ordered from: {this.state.hawkerNames[key]}</h5>
                     </div>
                   );
                 }

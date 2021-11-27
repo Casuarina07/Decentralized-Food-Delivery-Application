@@ -5,13 +5,40 @@ import CardGroup from "react-bootstrap/CardGroup";
 import { Row, Col, Button } from "react-bootstrap";
 import { Link } from "@reach/router";
 import SupplierProdCardItem from "./SupplierProdCardItem";
+import axios from "axios";
 
 class Purchase extends Component {
   constructor(props) {
     super(props);
     this.state = {
       inputSearch: "",
+      supplierNames: [],
     };
+  }
+
+  retrieveSupplierNames = () => {
+    {
+      this.props.suppliers.map((supplier, key) => {
+        const supplierDetails = axios
+          .get("https://ipfs.infura.io/ipfs/" + supplier.profileHash)
+          .then(function (response) {
+            console.log("this is the data: ", response.data);
+            return response.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        const sName = supplierDetails.then((details) => {
+          this.setState({
+            supplierNames: [...this.state.supplierNames, details.name],
+          });
+        });
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.retrieveSupplierNames();
   }
   render() {
     return (
@@ -30,9 +57,10 @@ class Purchase extends Component {
               <h4 style={{ display: "flex", marginTop: 20 }}>
                 <Link
                   to={`/supplierInfo/${supplier.owner}`}
-                  state={{ chosenSupplierPk: supplier.owner }}
+                  // state={{ chosenSupplierPk: supplier.owner }}
+                  state={{ chosenSupplier: supplier }}
                 >
-                  {supplier.name}
+                  {this.state.supplierNames[key]}
                 </Link>
               </h4>
 

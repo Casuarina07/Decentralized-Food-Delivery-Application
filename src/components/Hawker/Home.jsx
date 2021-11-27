@@ -4,6 +4,7 @@ import Modal from "@material-ui/core/Modal";
 import { Button, ButtonToolbar } from "react-bootstrap";
 import { RateModal } from "./RateModal";
 import { Link } from "@reach/router";
+import axios from "axios";
 
 class Home extends Component {
   constructor(props) {
@@ -17,7 +18,33 @@ class Home extends Component {
       rider: "",
       hawkerId: 0,
       fdId: 0,
+      supplierNames: [],
     };
+  }
+
+  retrieveSupplierNames = () => {
+    {
+      this.props.suppliers.map((supplier, key) => {
+        const supplierDetails = axios
+          .get("https://ipfs.infura.io/ipfs/" + supplier.profileHash)
+          .then(function (response) {
+            console.log("this is the data: ", response.data);
+            return response.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        const sName = supplierDetails.then((details) => {
+          this.setState({
+            supplierNames: [...this.state.supplierNames, details.name],
+          });
+        });
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.retrieveSupplierNames();
   }
 
   handleShow = (event) => {
@@ -29,10 +56,9 @@ class Home extends Component {
     let rateModalClose = () => this.setState({ rateModalShow: false });
     var counter = 1;
     var arrayCounter = 0;
-    console.log("What is this now: ", this.props.custOrderItems);
-    console.log("What is this: ", this.props.orders);
     let overallSales = 0;
     let issueType = "";
+    console.log("Loading...", this.props.loading);
     return (
       <div style={{ margin: 60, marginTop: 20 }}>
         <div style={{ marginTop: 30, marginBottom: 30 }}>
@@ -175,7 +201,7 @@ class Home extends Component {
                           Resolved
                         </Button>
                       ) : null}
-                      {!complete && !hawkerReport.resolved ? (
+                      {complete && !hawkerReport.resolved ? (
                         <Button
                           variant="danger"
                           onClick={() => {
@@ -241,7 +267,7 @@ class Home extends Component {
                   this.hawkerId = hawker.id;
                   return (
                     <div style={{ display: "flex" }}>
-                      <h5>Ordered from: {hawker.name}</h5>
+                      <h5>Ordered from: {this.state.supplierNames[key]}</h5>
                     </div>
                   );
                 }

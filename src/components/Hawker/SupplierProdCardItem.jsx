@@ -44,6 +44,7 @@ export default class SupplierProdCardItem extends Component {
           </Card.Text>
           <Card.Text>Packaging Size: {product.size}kg</Card.Text>
           <Card.Text>Minimum Order (unit): {product.minOrder}</Card.Text>
+          <Card.Text>Expiration Date: {product.expiryDate}</Card.Text>
         </Card.Body>
         <Card.Footer>
           <h5></h5>

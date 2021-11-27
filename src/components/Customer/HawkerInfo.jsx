@@ -1,14 +1,15 @@
 //import { Card } from "@material-ui/core";
 import Card from "react-bootstrap/Card";
 // import CardBody from "react-bootstrap/CardBody";
+import axios from "axios";
 
-import React, { Component, useLocation, useState } from "react";
-import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import React, { Component, useEffect, useState } from "react";
 import { BsStarFill, BsStar } from "react-icons/bs";
 
 export default function HawkerInfo(props) {
-  const hawkers = props.hawkers;
+  // const hawkers = props.hawkers;
   const hawker = props.location.state.chosenHawkerPk;
+  const [hawkerDetails, setHawkerDetails] = useState([]);
   const [fullStarsCount, setFullStars] = useState(hawker.avgRating);
   const [emptyStarsCount, setEmptyStars] = useState(5 - fullStarsCount);
   var stars = [];
@@ -31,11 +32,29 @@ export default function HawkerInfo(props) {
     );
   }
   console.log("Passed: ", props.hawkerFeedback);
+  useEffect(() => {
+    getHawkerDetails();
+  }, []);
+
+  async function getHawkerDetails() {
+    const hawkerDetails = axios
+      .get("https://ipfs.infura.io/ipfs/" + hawker.profileHash)
+      .then(function (response) {
+        console.log("this is the data: ", response.data);
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    hawkerDetails.then((details) => {
+      setHawkerDetails(details);
+    });
+  }
   return (
     <div style={{ marginTop: 20 }}>
       <div>
         <div style={{ flexDirection: "row" }}>
-          <h2>{hawker.name}</h2>
+          <h2>{hawkerDetails.name}</h2>
         </div>
         {stars}
         <h5 style={{ color: "#838383" }}>
@@ -49,17 +68,19 @@ export default function HawkerInfo(props) {
 
           <b>Address: </b>
           <div style={{ marginBottom: 20 }}>
-            <h5 style={{ color: "#016094" }}>{hawker.addressLocation}</h5>
+            <h5 style={{ color: "#016094" }}>
+              {hawkerDetails.addressLocation}
+            </h5>
           </div>
 
           <b>Opening Hours: </b>
           <div style={{ marginBottom: 20 }}>
-            <h5 style={{ color: "#016094" }}>{hawker.openingHours}</h5>
+            <h5 style={{ color: "#016094" }}>{hawkerDetails.openingHours}</h5>
           </div>
 
           <b>Contact: </b>
           <div style={{ marginBottom: 20 }}>
-            <h5 style={{ color: "#016094" }}>{hawker.phone}</h5>
+            <h5 style={{ color: "#016094" }}>{hawkerDetails.phone}</h5>
           </div>
         </div>
         <hr style={{ width: "60%", display: "flex" }} />

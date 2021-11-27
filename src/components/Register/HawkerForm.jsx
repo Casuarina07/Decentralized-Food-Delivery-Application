@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function HawkerForm({ addHawker }) {
   const [fileUpload, setFileUpload] = useState(false);
@@ -11,20 +12,29 @@ export default function HawkerForm({ addHawker }) {
   const [leadTime, setLeadTime] = useState(10);
   const [licenseHash, setLicenseHash] = useState("");
 
-  const register = (event) => {
+  const register = async (event) => {
+    const { create } = require("ipfs-http-client");
+    const ipfs = create({
+      host: "ipfs.infura.io",
+      port: "5001",
+      protocol: "https",
+    });
     if (fileUpload == false) {
       alert("Please add a SFA/NEA Licence file for verification");
     } else {
       console.log(licenseHash);
-      addHawker(
-        publicKey,
-        hawkerName,
-        hawkerAddress,
-        phoneNo,
-        openingHours,
-        leadTime,
-        licenseHash
-      );
+      const metaObj = {
+        name: hawkerName,
+        addressLocation: hawkerAddress,
+        phone: phoneNo,
+        openingHours: openingHours,
+        leadTime: leadTime,
+        licenseHash: licenseHash,
+      };
+      const jsonObj = JSON.stringify(metaObj);
+      const profileHash = await ipfs.add(jsonObj);
+      console.log("JSON hash: ", profileHash.path);
+      addHawker(publicKey, profileHash.path);
     }
   };
   const captureFile = async (event) => {

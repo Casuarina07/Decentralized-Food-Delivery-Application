@@ -22,6 +22,7 @@ export class HawkerModal extends Component {
   };
 
   render() {
+    console.log("What is the hawkerTime, ", this.props.hawkerTime);
     return (
       <Modal
         show={this.props.show}

@@ -20,6 +20,7 @@ function CustNavbar({
   restProdCount,
   hawkers,
   hawkersCount,
+  customer,
   custId,
   custName,
   custAdd,
@@ -122,6 +123,7 @@ function CustNavbar({
           path="/profile"
           custId={custId}
           account={account}
+          customer={customer}
           custName={custName}
           custAdd={custAdd}
           custPhone={custPhone}

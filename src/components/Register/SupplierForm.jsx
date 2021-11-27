@@ -12,18 +12,27 @@ export default function SupplierForm({ addSupplier }) {
   const [toDeliveryDay, setToDeliveryDay] = useState("Sunday");
   const [remarks, setRemarks] = useState("-");
 
-  const register = (event) => {
+  const register = async (event) => {
     var deliveryDays = fromDeliveryDay + "-" + toDeliveryDay;
-    addSupplier(
-      publicKey,
-      supplierName,
-      supplierAdd,
-      phoneNo,
-      moq,
-      leadTime,
-      deliveryDays,
-      remarks
-    );
+    const { create } = require("ipfs-http-client");
+    const ipfs = create({
+      host: "ipfs.infura.io",
+      port: "5001",
+      protocol: "https",
+    });
+    const metaObj = {
+      name: supplierName,
+      addressLocation: supplierAdd,
+      phone: phoneNo,
+      MOQ: moq,
+      leadTime: leadTime,
+      deliveryDays: deliveryDays,
+      remarks: remarks,
+    };
+    const jsonObj = JSON.stringify(metaObj);
+    const profileHash = await ipfs.add(jsonObj);
+    console.log("JSON hash: ", profileHash.path);
+    addSupplier(publicKey, profileHash.path);
   };
   const handleChangeFrom = (event) => {
     setFromDeliveryDay(event.target.value);
@@ -88,7 +97,7 @@ export default function SupplierForm({ addSupplier }) {
       <b>Delivery Details: </b>
 
       <div className="form-group" style={{ marginTop: 10 }}>
-        <label>Minimum Order (ETH)</label>
+        <label>Minimum Order (SGD)</label>
         <input
           type="number"
           min="0"

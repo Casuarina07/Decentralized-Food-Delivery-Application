@@ -18,9 +18,10 @@ contract Marketplace {
     struct FoodDelivery {
         uint256 id;
         address owner;
-        string name;
-        string email;
-        string phone;
+        // string name;
+        // string email;
+        // string phone;
+        string profileHash;
         int256 rating;
         bool available;
         // mapping(uint256 => Order) ordersAccepted;
@@ -35,21 +36,16 @@ contract Marketplace {
     uint256 public foodDeliveriesCount;
 
     //add new food delivery
-    function addFoodDelivery(
-        address _owner,
-        string memory _name,
-        string memory _email,
-        string memory _phone
-    ) public {
+    function addFoodDelivery(address _owner, string memory _profileHash)
+        public
+    {
         require(msg.sender == _owner);
         // require(msg.sender == address(_owner));
         foodDeliveriesCount++;
         foodDeliveries[foodDeliveriesCount] = FoodDelivery(
             foodDeliveriesCount,
             msg.sender,
-            _name,
-            _email,
-            _phone,
+            _profileHash,
             5,
             false,
             0,
@@ -61,13 +57,7 @@ contract Marketplace {
     struct Supplier {
         uint256 id;
         address owner;
-        string name;
-        string addressLocation;
-        string phone;
-        uint256 MOQ;
-        uint256 leadTime;
-        string deliveryDays;
-        string remarks;
+        string profileHash;
         uint256 avgRating;
         mapping(uint256 => Feedback) feedbacks;
         uint256 feedbackCount;
@@ -78,29 +68,14 @@ contract Marketplace {
     //Store Suppliers Count
     uint256 public suppliersCount;
 
-    function addSupplier(
-        address _owner,
-        string memory _name,
-        string memory _addressLocation,
-        string memory _phone,
-        uint256 _moq,
-        uint256 _leadTime,
-        string memory _deliveryDays,
-        string memory _remarks
-    ) public {
+    function addSupplier(address _owner, string memory _profileHash) public {
         require(msg.sender == _owner);
         // require(msg.sender == address(_owner));
         suppliersCount++;
         suppliers[suppliersCount] = Supplier(
             suppliersCount,
             msg.sender,
-            _name,
-            _addressLocation,
-            _phone,
-            _moq,
-            _leadTime,
-            _deliveryDays,
-            _remarks,
+            _profileHash,
             0,
             0
         );
@@ -110,13 +85,8 @@ contract Marketplace {
     struct Hawker {
         uint256 id;
         address owner;
-        string name;
-        string addressLocation;
-        string phone;
-        string openingHours;
-        uint256 leadTime;
+        string profileHash;
         uint256 avgRating;
-        string licenseHash;
         bool open;
         mapping(uint256 => Feedback) feedbacks;
         uint256 feedbackCount;
@@ -138,43 +108,33 @@ contract Marketplace {
         string comment;
     }
 
-    function addHawker(
-        address _owner,
-        string memory _name,
-        string memory _addressLocation,
-        string memory _phone,
-        string memory _openingHours,
-        uint256 _leadTime,
-        string memory _licenseHash
-    ) public {
+    function addHawker(address _owner, string memory _profileHash) public {
         require(msg.sender == _owner);
-        // require(msg.sender == address(_owner));
         hawkersCount++;
         hawkers[hawkersCount] = Hawker(
             hawkersCount,
             msg.sender,
-            _name,
-            _addressLocation,
-            _phone,
-            _openingHours,
-            _leadTime,
+            _profileHash,
             0,
-            _licenseHash,
             false,
             0,
             0
         );
     }
 
-    function editHawkerProfile(
-        uint256 _id,
-        string memory _phone,
-        string memory _OH,
-        uint256 _leadTime
-    ) public {
-        hawkers[_id].phone = _phone;
-        hawkers[_id].openingHours = _OH;
-        hawkers[_id].leadTime = _leadTime;
+    // function editHawkerProfile(
+    //     uint256 _id,
+    //     string memory _phone,
+    //     string memory _OH,
+    //     uint256 _leadTime
+    // ) public {
+    //     hawkers[_id].phone = _phone;
+    //     hawkers[_id].openingHours = _OH;
+    //     hawkers[_id].leadTime = _leadTime;
+    // }
+
+    function editHawkerProfile(uint256 _id, string memory _profileHash) public {
+        hawkers[_id].profileHash = _profileHash;
     }
 
     //change shop status
@@ -199,16 +159,7 @@ contract Marketplace {
         address payable owner;
         bool published;
         string imageHash;
-    }
-    struct SuppProfile {
-        uint256 id;
-        string name;
-        string category;
-        string location;
-        string deliveryHours;
-        address payable owner;
-        string reviews;
-        uint256 rating;
+        string expiryDate;
     }
 
     //Restaurants products
@@ -222,17 +173,6 @@ contract Marketplace {
         bool published;
         string imageHash;
         uint256 soldCount;
-    }
-
-    struct RestProfile {
-        uint256 id;
-        string name;
-        string category;
-        string location;
-        string deliveryHours;
-        address payable owner;
-        string reviews;
-        uint256 rating;
     }
 
     // event RestProdCreated(
@@ -261,12 +201,9 @@ contract Marketplace {
         uint256 _size,
         uint256 _minOrder,
         bool _published,
-        string memory _imageHash
+        string memory _imageHash,
+        string memory _expiryDate
     ) public {
-        // Require a valid name
-        // require(bytes(_name).length > 0);
-        // Require a valid price
-        // require(_price > 0);
         // Increment product count
         suppProdCount++;
         // Create the product --- msg.sender is the one who accessed the function
@@ -278,7 +215,8 @@ contract Marketplace {
             _minOrder,
             msg.sender,
             _published,
-            _imageHash
+            _imageHash,
+            _expiryDate
         );
         //trigger an event
         // emit SupplierProdCreated(
@@ -314,7 +252,7 @@ contract Marketplace {
             _imageHash,
             0
         );
-        // Trigger an event
+        // Trigger an event 
         // emit RestProdCreated(
         //     restProdCount,
         //     now,
@@ -367,9 +305,10 @@ contract Marketplace {
     struct Customer {
         uint256 id;
         address owner;
-        string name;
-        string addressLocation;
-        string phone;
+        // string name;
+        // string addressLocation;
+        // string phone;
+        string profileHash;
         mapping(uint256 => CartItem) cartItems;
         uint256 itemCount;
     }
@@ -377,46 +316,25 @@ contract Marketplace {
     mapping(uint256 => Customer) public customers;
     uint256 public customersCount;
 
-    function addCustomer(
-        address _owner,
-        string memory _name,
-        string memory _addressLocation,
-        string memory _phone
-    ) public {
+    function addCustomer(address _owner, string memory _profileHash) public {
         require(msg.sender == _owner);
         customersCount++;
         customers[customersCount] = Customer(
             customersCount,
             msg.sender,
-            _name,
-            _addressLocation,
-            _phone,
+            _profileHash,
             0
         );
     }
 
-    function editCustProfile(
-        uint256 _id,
-        string memory _phone,
-        string memory _address
-    ) public {
-        customers[_id].phone = _phone;
-        customers[_id].addressLocation = _address;
+    function editCustProfile(uint256 _id, string memory _profileHash) public {
+        customers[_id].profileHash = _profileHash;
     }
 
-    function editSupplierProfile(
-        uint256 _id,
-        string memory _phone,
-        uint256 _moq,
-        uint256 _leadTime,
-        string memory _deliveryDays,
-        string memory _remarks
-    ) public {
-        suppliers[_id].phone = _phone;
-        suppliers[_id].MOQ = _moq;
-        suppliers[_id].leadTime = _leadTime;
-        suppliers[_id].deliveryDays = _deliveryDays;
-        suppliers[_id].remarks = _remarks;
+    function editSupplierProfile(uint256 _id, string memory _profileHash)
+        public
+    {
+        suppliers[_id].profileHash = _profileHash;
     }
 
     function editProduct(

@@ -129,6 +129,7 @@ function RestNavbar({
           orders={orders}
           hawkerReports={hawkerReports}
           resolveReport={resolveReport}
+          loading={loading}
         />
         <Orders
           path="/orders"

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
+import axios from "axios";
 
 export default function Profile({
   account,
@@ -8,6 +9,24 @@ export default function Profile({
   fdAcceptedOrders,
 }) {
   const [completedCount, setCompletedCount] = useState(0);
+  const [riderDetails, setRiderDetails] = useState([]);
+  useEffect(() => {
+    retrieveFdDetails();
+  }, []);
+  async function retrieveFdDetails() {
+    const hi = axios
+      .get("https://ipfs.infura.io/ipfs/" + fdDelivery.profileHash)
+      .then(function (response) {
+        console.log("this is the data: ", response.data);
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    hi.then((details) => {
+      setRiderDetails(details);
+    });
+  }
   function changeAvailability() {
     for (var i = 0; i < fdAcceptedOrders.length; i++) {
       console.log("what is this: ", fdAcceptedOrders[i].state);
@@ -34,12 +53,12 @@ export default function Profile({
       <div>
         <b>Name: </b>
         <div style={{ padding: 5 }}>
-          <label>{fdDelivery.name}</label>
+          <label>{riderDetails.name}</label>
         </div>
 
         <b>Phone: </b>
         <div style={{ padding: 5 }}>
-          <label>{fdDelivery.phone}</label>
+          <label>{riderDetails.phone}</label>
         </div>
 
         <b>Deliveries Completed: </b>
