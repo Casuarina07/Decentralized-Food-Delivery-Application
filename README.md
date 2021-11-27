@@ -1,2 +1,2 @@
-# Decentralized-Food-Application
+# Decentralized Food Delivery Application
 
