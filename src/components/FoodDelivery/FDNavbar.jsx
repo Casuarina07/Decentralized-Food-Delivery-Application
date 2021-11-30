@@ -4,7 +4,8 @@ import Home from "./Home";
 import Orders from "./Orders";
 import Profile from "./Profile";
 import ResponsiveNavigation from "../ResponsiveNavigation";
-import logo from "../logo.svg";
+// import logo from "../logo.svg";
+import logo from "../logo.png";
 import "../Navbar.css";
 
 function FDNavbar({

@@ -9,6 +9,7 @@ import RestNavbar from "./Hawker/RestNavbar";
 import CustNavbar from "./Customer/CustNavbar";
 import FDNavbar from "./FoodDelivery/FDNavbar";
 import Register from "./Register/Register";
+import Loading from "./loading";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -491,24 +492,6 @@ export default function App() {
         return;
       }
     }
-    // if (
-    //   custAcc == true ||
-    //   hawkerAcc == true ||
-    //   fdAcc == true ||
-    //   supplierAcc == true
-    // ) {
-    //   setNewAcc(false);
-    // } else {
-    //   setNewAcc(true);
-    // }
-
-    // if (
-    //   custAcc == false &&
-    //   hawkerAcc == false &&
-    //   fdAcc == false &&
-    //   supplierAcc == false
-    // )
-    //   setNewAcc(true);
     setNewAcc(true);
     setLoading(false);
   }
@@ -990,6 +973,14 @@ export default function App() {
   return (
     <div>
       <Router>
+        {newAcc ? (
+          <Register
+            addHawker={addHawker}
+            addCustomer={addCustomer}
+            addFoodDelivery={addFoodDelivery}
+            addSupplier={addSupplier}
+          />
+        ) : null}
         {supplierAcc ? (
           <SuppNav
             account={account}
@@ -1107,14 +1098,6 @@ export default function App() {
             fdCompletedOrderItems={fdCompletedOrderItems}
             fdOngoingOrders={fdOngoingOrders}
             fdOngoingOrderItems={fdOngoingOrderItems}
-          />
-        ) : null}
-        {newAcc ? (
-          <Register
-            addHawker={addHawker}
-            addCustomer={addCustomer}
-            addFoodDelivery={addFoodDelivery}
-            addSupplier={addSupplier}
           />
         ) : null}
       </Router>

@@ -5,7 +5,8 @@ import Orders from "./Orders";
 import Sell from "./Sell";
 import Profile from "./Profile";
 import ResponsiveNavigation from "../ResponsiveNavigation";
-import logo from "../logo.svg";
+// import logo from "../logo.svg";
+import logo from "../logo.png";
 import "../Navbar.css";
 
 function SuppNavbar({

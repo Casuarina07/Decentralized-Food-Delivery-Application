@@ -46,8 +46,8 @@ contract Reports {
             _hawkerAddress,
             _claimAmt,
             now,
-            now + 60,
-            // now + 3 * 1 days,
+            // now + 60, //60 seconds
+            now + 2 * 1 days, //2 days
             _orderId,
             _title,
             _imageHash,

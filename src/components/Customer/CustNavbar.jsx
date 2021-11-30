@@ -9,7 +9,9 @@ import Cart from "./Cart";
 import ReportList from "./ReportList";
 import ReportDetails from "./ReportDetails";
 import ResponsiveNavigation from "../ResponsiveNavigation";
-import logo from "../logo.svg";
+// import logo from "../logo.svg";
+import logo from "../logo.png";
+
 import "../Navbar.css";
 
 function CustNavbar({
@@ -83,6 +85,7 @@ function CustNavbar({
         logo={logo}
         account={account}
         accBalance={accBalance}
+        clickedTab="#FFF"
         // background="#fff"
         // hoverBackground="#ddd"
         // linkColor="#777"

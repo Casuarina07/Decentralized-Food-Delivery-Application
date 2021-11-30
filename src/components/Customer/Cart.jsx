@@ -49,7 +49,7 @@ class Cart extends Component {
                               {window.web3.utils.fromWei(
                                 product.price.toString(),
                                 "Ether"
-                              )}{" "}
+                              )}{" "} 
                               Eth
                             </td>
                             {/* <td>{product.owner}</td> */}
@@ -58,8 +58,8 @@ class Cart extends Component {
                                 <label>-</label>
                               ) : (
                                 <img
-                                  height="50"
-                                  width="120"
+                                  height="70"
+                                  width="70"
                                   alt="logo"
                                   src={
                                     "https://ipfs.infura.io/ipfs/" +

@@ -12,6 +12,7 @@ function ResponsiveNavigation({
   navLinks,
   logo,
   accBalance,
+  clickedTab,
 }) {
   const [navOpen, setNavOpen] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(-1);
@@ -50,8 +51,12 @@ function ResponsiveNavigation({
             onMouseLeave={() => {
               setHoverIndex(-1);
             }}
+            // style={{
+            //   background: hoverIndex === index ? hoverBackground || "#999" : "",
+            // }}
             style={{
-              background: hoverIndex === index ? hoverBackground || "#999" : "",
+              background:
+                clickedIndex === index ? hoverBackground || "#999" : "",
             }}
           >
             <Link to={link.path} style={{ color: linkColor }}>
