@@ -5,15 +5,6 @@ pragma solidity ^0.5.4;
 pragma experimental ABIEncoderV2;
 
 contract Marketplace {
-    //constructor
-    // constructor() public {}
-
-    // event LogRefund(
-    //     address indexed receiver,
-    //     uint256 amount,
-    //     address indexed owner
-    // );
-
     //FOOD DELIVERY
     struct FoodDelivery {
         uint256 id;
@@ -122,17 +113,6 @@ contract Marketplace {
         );
     }
 
-    // function editHawkerProfile(
-    //     uint256 _id,
-    //     string memory _phone,
-    //     string memory _OH,
-    //     uint256 _leadTime
-    // ) public {
-    //     hawkers[_id].phone = _phone;
-    //     hawkers[_id].openingHours = _OH;
-    //     hawkers[_id].leadTime = _leadTime;
-    // }
-
     function editHawkerProfile(uint256 _id, string memory _profileHash) public {
         hawkers[_id].profileHash = _profileHash;
     }
@@ -175,26 +155,6 @@ contract Marketplace {
         uint256 soldCount;
     }
 
-    // event RestProdCreated(
-    //     uint256 indexed id,
-    //     uint256 indexed date,
-    //     string name,
-    //     uint256 price,
-    //     address payable indexed owner,
-    //     bool purchased,
-    //     string imageHash
-    // );
-
-    // event SupplierProdCreated(
-    //     uint256 indexed id,
-    //     uint256 indexed date,
-    //     string name,
-    //     uint256 price,
-    //     address payable indexed owner,
-    //     bool purchased,
-    //     string imageHash
-    // );
-
     function createSuppProduct(
         string memory _name,
         uint256 _price,
@@ -218,16 +178,6 @@ contract Marketplace {
             _imageHash,
             _expiryDate
         );
-        //trigger an event
-        // emit SupplierProdCreated(
-        //     suppProdCount,
-        //     now,
-        //     _name,
-        //     _price,
-        //     msg.sender,
-        //     _published,
-        //     _imageHash
-        // );
     }
 
     function createRestProduct(
@@ -252,16 +202,6 @@ contract Marketplace {
             _imageHash,
             0
         );
-        // Trigger an event 
-        // emit RestProdCreated(
-        //     restProdCount,
-        //     now,
-        //     _name,
-        //     _price,
-        //     msg.sender,
-        //     _published,
-        //     _imageHash
-        // );
     }
 
     //ORDERS
@@ -399,11 +339,6 @@ contract Marketplace {
         delete cust.cartItems[cartId];
     }
 
-    // function deleteProduct(uint256 productId) public {
-    //     restProdCount--;
-    //     delete restProducts[productId];
-    // }
-
     //indicator - 1 for customer, 2 for hawker
     function removeAllProdCart(uint256 _id, uint256 _indicator) public {
         if (_indicator == 1) {
@@ -463,15 +398,6 @@ contract Marketplace {
         return (_feedback);
     }
 
-    // function getFdFeedback(uint256 fdId, uint256 feedbackCount)
-    //     public
-    //     returns (Feedback memory)
-    // {
-    //     FoodDelivery storage fd = foodDeliveries[fdId];
-    //     Feedback memory _feedback = fd.feedbacks[feedbackCount];
-    //     return (_feedback);
-    // }
-
     function setRating(
         uint256 _orderId,
         uint256 _hawkerId,
@@ -518,14 +444,6 @@ contract Marketplace {
         orders[_orderId].state = Status.OrderCancelled;
         address(_customer).transfer(orders[_orderId].totalPrice);
     }
-
-    // event HawkerProdPurchased(
-    //     uint256 orderId,
-    //     address indexed buyer,
-    //     address indexed seller,
-    //     uint256 totalCost,
-    //     uint256 indexed date
-    // );
 
     //indicator  1 - customer, 2 - hawker
     function purchaseProduct(
