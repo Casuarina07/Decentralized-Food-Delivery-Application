@@ -47,7 +47,8 @@ contract Reports {
             _claimAmt,
             now,
             // now + 60, //60 seconds
-            now + 2 * 1 days, //2 days
+            // now + 2 * 1 days, //2 days
+            now + 2 * 1 hours,
             _orderId,
             _title,
             _imageHash,

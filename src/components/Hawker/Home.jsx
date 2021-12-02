@@ -371,8 +371,8 @@ class Home extends Component {
                             <label>-</label>
                           ) : (
                             <img
-                              height="50"
-                              width="120"
+                              height="70"
+                              width="70"
                               alt="logo"
                               src={
                                 "https://ipfs.infura.io/ipfs/" +

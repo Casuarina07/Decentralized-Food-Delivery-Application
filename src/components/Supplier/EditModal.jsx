@@ -133,7 +133,7 @@ export class EditModal extends Component {
                 />
               </div>
 
-               <b>Packaging Size (kg): </b>
+              <b>Packaging Size (kg): </b>
               <div>
                 <input
                   id="size"
@@ -167,9 +167,9 @@ export class EditModal extends Component {
                   <label>-</label>
                 ) : (
                   <img
-                    height="50"
-                    width="120"
-                    alt="logo"
+                    height="70"
+                    width="70"
+                    alt="logo"  
                     src={
                       "https://ipfs.infura.io/ipfs/" +
                       this.props.product.imageHash
